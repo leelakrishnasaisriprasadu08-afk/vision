@@ -1,0 +1,32 @@
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python cache & compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Model weights & binaries (auto-downloaded at runtime)
+*.pt
+*.pth
+*.task
+*.onnx
+*.tflite
+*.engine
+
+# Runtime outputs & test artifacts
+output/
+scratch/
+runs/
+*.log
+
+# IDE & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
