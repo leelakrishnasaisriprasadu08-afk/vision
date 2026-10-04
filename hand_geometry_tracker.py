@@ -207,6 +207,23 @@ def extract_fingers_without_palm(frame: np.ndarray):
         if area < 1800 or area > (h * w * 0.40):  # Ignore tiny noise or full-frame blobs
             continue
             
+        bx, by, bw, bh = cv2.boundingRect(cnt)
+        cx = bx + bw / 2.0
+        cy = by + bh / 2.0
+        
+        # 1. SPATIAL EXCLUSION ZONES (Zero false positives on background and face):
+        # A. Ceiling / Upper Background (Curtains, lights, wall fixtures):
+        if cy < 0.34 * h:
+            continue
+            
+        # B. Face Center Stage (Head, jaw, neck of person in front of webcam):
+        if (0.22 * w < cx < 0.78 * w) and (0.20 * h < cy < 0.74 * h):
+            continue
+            
+        # C. Excessively wide background fabric/furniture:
+        if bw > 0.45 * w:
+            continue
+            
         # Geometric Solidity & Circularity Face Filter:
         # Human faces/heads are solid convex ovals (solidity > 0.85, circularity > 0.50).
         # Hand/finger clusters have deep inter-finger gaps (solidity <= 0.82, circularity <= 0.46).
@@ -224,8 +241,8 @@ def extract_fingers_without_palm(frame: np.ndarray):
             continue
         circularity = (4.0 * np.pi * area) / (perim ** 2)
         
-        # Immediate rejection of face/head/body blobs (faces are round with circularity ~0.86 and solidity ~0.99)
-        if solidity > 0.92 or circularity > 0.58:
+        # Immediate rejection of face/head/body blobs
+        if solidity > 0.88 or circularity > 0.52:
             continue
             
         hull_indices = cv2.convexHull(cnt, returnPoints=False)
@@ -378,19 +395,19 @@ def initialize_landmarker(model_path="hand_landmarker.task", num_hands=2):
         base_options=base_options,
         running_mode=vision.RunningMode.VIDEO,
         num_hands=num_hands,
-        min_hand_detection_confidence=0.45,
-        min_hand_presence_confidence=0.45,
-        min_tracking_confidence=0.45,
+        min_hand_detection_confidence=0.35,
+        min_hand_presence_confidence=0.35,
+        min_tracking_confidence=0.35,
     )
     return vision.HandLandmarker.create_from_options(options)
 
 
-def process_hybrid_frame(frame, landmarker, timestamp_ms, show_hull=True, dark_mode=False, fps=0.0):
+def process_hybrid_frame(frame, landmarker, timestamp_ms, show_hull=True, dark_mode=False, fps=0.0, enable_fallback=True):
     """
     Hybrid inference engine:
     1. Tries neural MediaPipe 21-point tracking in VIDEO mode (40-60 FPS).
-    2. If no palm/hand is found, seamlessly switches to Geometric Finger Extractor
-       so that fingers are recognized even when the palm is hidden!
+    2. If no palm/hand is found and fallback is enabled, switches to Geometric Finger Extractor
+       with strict ceiling and face exclusion zones to prevent false positives.
     """
     import mediapipe as mp
     
@@ -409,9 +426,9 @@ def process_hybrid_frame(frame, landmarker, timestamp_ms, show_hull=True, dark_m
             landmarks_px = [(int(lm.x * w), int(lm.y * h)) for lm in hand_lms]
             render_full_neural_geometry(canvas, landmarks_px, show_hull=show_hull)
             
-    # 2. Secondary Engine: Geometric Finger Extractor (Fallback when palm is absent or occluded)
+    # 2. Secondary Engine: Geometric Finger Extractor (Active only if enabled and neural hands == 0)
     fallback_fingers_found = 0
-    if neural_hands == 0:
+    if neural_hands == 0 and enable_fallback:
         finger_groups = extract_fingers_without_palm(frame)
         if finger_groups:
             fallback_fingers_found = sum(len(g["tips"]) for g in finger_groups)
@@ -419,7 +436,7 @@ def process_hybrid_frame(frame, landmarker, timestamp_ms, show_hull=True, dark_m
             
     # 3. Geometric HUD (Zero Anatomical Names)
     hud = canvas.copy()
-    cv2.rectangle(hud, (0, 0), (370, 72), (12, 12, 12), -1)
+    cv2.rectangle(hud, (0, 0), (410, 72), (12, 12, 12), -1)
     cv2.addWeighted(hud, 0.75, canvas, 0.25, 0, canvas)
     
     cv2.putText(canvas, "HYBRID GEOMETRY VISION SYSTEM", (14, 22), cv2.FONT_HERSHEY_SIMPLEX, 0.55, COLOR_CYAN, 1, cv2.LINE_AA)
@@ -435,12 +452,13 @@ def process_hybrid_frame(frame, landmarker, timestamp_ms, show_hull=True, dark_m
         status_color = (180, 180, 180)
         
     cv2.putText(canvas, status_str, (14, 44), cv2.FONT_HERSHEY_SIMPLEX, 0.45, status_color, 1, cv2.LINE_AA)
-    cv2.putText(canvas, f"FPS: {fps:.1f} | RESOLUTION: {w}x{h}", (14, 64), cv2.FONT_HERSHEY_SIMPLEX, 0.40, (200, 200, 200), 1, cv2.LINE_AA)
+    fb_str = "FALLBACK: ON" if enable_fallback else "FALLBACK: OFF (PURE NEURAL)"
+    cv2.putText(canvas, f"FPS: {fps:.1f} | {fb_str}", (14, 64), cv2.FONT_HERSHEY_SIMPLEX, 0.40, (200, 200, 200), 1, cv2.LINE_AA)
     
     return canvas
 
 
-def run_webcam(show_hull=True, dark_mode=False):
+def run_webcam(show_hull=True, dark_mode=False, enable_fallback=True):
     """Real-time threaded webcam pipeline targeting 35-60+ FPS."""
     print("\n" + "=" * 70)
     print("  HYBRID HAND & FINGER GEOMETRY VISION SYSTEM")
@@ -451,6 +469,7 @@ def run_webcam(show_hull=True, dark_mode=False):
     print("  - Controls:")
     print("      'd' -> Toggle Dark Cyberpunk Wireframe mode")
     print("      'h' -> Toggle Geometric Outer Convex Hull")
+    print("      'f' -> Toggle Finger Fallback Engine (ON/OFF)")
     print("      'q' -> Exit")
     print("=" * 70 + "\n")
     
@@ -466,6 +485,7 @@ def run_webcam(show_hull=True, dark_mode=False):
         
     is_dark = dark_mode
     is_hull = show_hull
+    fallback_on = enable_fallback
     
     fps = 0.0
     prev_time = time.time()
@@ -495,6 +515,7 @@ def run_webcam(show_hull=True, dark_mode=False):
             show_hull=is_hull,
             dark_mode=is_dark,
             fps=fps,
+            enable_fallback=fallback_on,
         )
         
         cv2.imshow("Hand & Finger Geometry Vision", output)
@@ -505,6 +526,8 @@ def run_webcam(show_hull=True, dark_mode=False):
             is_dark = not is_dark
         elif key == ord('h'):
             is_hull = not is_hull
+        elif key == ord('f'):
+            fallback_on = not fallback_on
             
     cam.stop()
     cv2.destroyAllWindows()
