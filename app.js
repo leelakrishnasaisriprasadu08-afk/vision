@@ -110,6 +110,23 @@ const audio = new SoundEngine();
 // Deep Engineering CAD Component Registry (Real-World Parameters)
 // -------------------------------------------------------------
 const COMPONENT_SPECS = {
+  // 14 ESSENTIAL REAL-WORLD SANDBOX COMPONENTS
+  piston: { name: "Forged Slipper-Skirt Piston", sub: "Combustion Seal", eng: "Bore 95.0mm, 3 Ring Lands, CNC Valve Pockets", mat: "Forged 4032 Low-Expansion Al", rpm: "24.3 m/s Mean Speed" },
+  conrod: { name: "Forged H-Beam Connecting Rod", sub: "Kinematic Link", eng: "C-to-C: 108mm, Bronze Bushing, ARP 2000 Bolts", mat: "Forged 4340 Nickel Chromoly", rpm: "11,500 RPM Peak" },
+  crankshaft: { name: "Counterweighted Crankshaft Web", sub: "Reciprocating Hub", eng: "Stroke 63.4mm, Twin Half-Moon Cheeks", mat: "Carburized 18CrNiMo7-6 Steel", rpm: "11,500 RPM Redline" },
+  cylinder: { name: "Deep-Finned Cylinder Barrel", sub: "Thermal Block", eng: "Nikasil (Ni-SiC) Honed Bore, 12 Tiered Fins", mat: "Hypereutectic Al-Si Alloy", rpm: "Thermal: 220°C Max" },
+  head: { name: "DOHC 4-Valve Cylinder Head", sub: "Gas Exchange", eng: "Pent-Roof Chamber, Dual Cams, 4 Poppet Valves", mat: "A356-T6 Al + Ti-6Al-4V Valves", rpm: "Dual Cam 11,500 RPM" },
+  spark_plug: { name: "Iridium-Tipped Spark Plug", sub: "Ignition Source", eng: "0.6mm Laser Iridium Tip, Ribbed Ceramic", mat: "Alumina Ceramic / Steel Shell", rpm: "Voltage: 28,000V" },
+  injector: { name: "High-Pressure Piezo Fuel Injector", sub: "Fuel Delivery", eng: "Multi-Hole Micro Orifice, 200 bar Rail", mat: "Stainless 440C / Piezo Crystal", rpm: "Pressure: 20 MPa" },
+  turbo: { name: "Twin-Scroll Turbocharger", sub: "Forced Induction", eng: "Scroll Volute Snail, Billet Impeller Wheel", mat: "Inconel 713C Turbine / Al Compressor", rpm: "185,000 RPM Spool" },
+  wire_threads: { name: "6-Thread Braided Wiring Loom", sub: "Electrical Bus", eng: "6 Helically Twisted Braided Conductors", mat: "Tefzel Shielded Multi-Strand Copper", rpm: "CAN 1Mbps / 12V 15A" },
+  wire_harness: { name: "6-Thread Braided Wiring Loom", sub: "Electrical Bus", eng: "6 Helically Twisted Braided Conductors", mat: "Tefzel Shielded Multi-Strand Copper", rpm: "CAN 1Mbps / 12V 15A" },
+  ecu_chip: { name: "32-Bit Microcontroller ECU Module", sub: "Powertrain Engine Control", eng: "Dual Core 40MHz DSP, Aluminum Finned Case", mat: "FR4 Multi-Layer PCB / Polycarbonate", rpm: "Firmware: v4.8 EFI" },
+  gear: { name: "Involute Spur Gear (24-Tooth)", sub: "Power Transmission", eng: "Module 2.5, 20° Pressure Angle, Lightening Holes", mat: "Case-Hardened 8620 Alloy Steel", rpm: "Torque: 420 Nm" },
+  bearing: { name: "Deep-Groove Radial Ball Bearing", sub: "Rotary Support", eng: "ISO 6205 Grade C3, 8 Chrome Steel Balls", mat: "AISI 52100 Chrome Bearing Steel", rpm: "Speed: 16,000 RPM" },
+  clutch: { name: "Multi-Plate Wet Clutch Assembly", sub: "Torque Coupling", eng: "Slotted Basket, 7 Friction & 8 Steel Discs", mat: "Kevlar-Paper / C75 Tempered Steel", rpm: "Primary: 2.14:1" },
+  exhaust: { name: "Mandrel-Bent Swept Header Pipe", sub: "Gas Evacuation", eng: "42mm OD Mandrel-Bent Smooth Radius Runner", mat: "SUS304 Austenitic Stainless Steel", rpm: "Thermal: 950°C Max" },
+
   // 1. BIKE ENGINE
   bike_crankcase: { name: "Split Crankcase & Oil Sump", sub: "Engine Block", eng: "Integrated 6-Speed Casing", mat: "Gravity Die-Cast AlSi9Cu3", rpm: "0 (Static)" },
   bike_crankshaft: { name: "Counterweighted Crank & Magneto", sub: "Reciprocating Hub", eng: "Stroke 63.4mm, 449.7cc", mat: "Carburized 18CrNiMo7-6", rpm: "11,500 RPM REDLINE" },
@@ -457,58 +474,143 @@ class HolographicApp {
   }
 
   // -----------------------------------------------------------
-  // ELECTRICAL WIRING HARNESSES & MICROCHIP GENERATORS
+  // MULTI-THREAD BRAIDED WIRE HARNESSES & HOLOGRAPHIC MICROCHIPS
   // -----------------------------------------------------------
-  createWiringHarness(pathPoints, colorHex = 0x00f0ff, pulseCount = 1200) {
-    const curve = new THREE.CatmullRomCurve3(pathPoints.map(p => new THREE.Vector3(p[0], p[1], p[2])));
-    const tubeGeo = new THREE.TubeGeometry(curve, 48, 1.8, 8, false);
-    const tubeMat = new THREE.MeshStandardMaterial({
-      color: colorHex,
-      emissive: colorHex,
-      emissiveIntensity: 0.6,
-      transparent: true,
-      opacity: 0.85,
-      depthWrite: false
-    });
-    const tube = new THREE.Mesh(tubeGeo, tubeMat);
-
-    // Glowing electrical signal pulse voxels traveling along the wire
-    const pulseGeo = new THREE.BufferGeometry();
-    const positions = new Float32Array(pulseCount * 3);
-    const colors = new Float32Array(pulseCount * 3);
-    const uvs = new Float32Array(pulseCount);
-
-    for (let i = 0; i < pulseCount; i++) {
-      const u = Math.random();
-      uvs[i] = u;
-      const pt = curve.getPoint(u);
-      positions[i * 3] = pt.x + (Math.random() - 0.5) * 2;
-      positions[i * 3 + 1] = pt.y + (Math.random() - 0.5) * 2;
-      positions[i * 3 + 2] = pt.z + (Math.random() - 0.5) * 2;
-      colors[i * 3] = 1.0;
-      colors[i * 3 + 1] = 1.0;
-      colors[i * 3 + 2] = 1.0;
-    }
-    pulseGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    pulseGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-    const pulseMat = new THREE.PointsMaterial({
-      size: 2.5,
-      map: this.pointTexture,
-      vertexColors: true,
-      transparent: true,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false
-    });
-    const pulsePoints = new THREE.Points(pulseGeo, pulseMat);
-    pulsePoints.userData = { curve, uvs, count: pulseCount };
+  createMultiThreadWiringHarness(pathPoints, options = {}) {
+    const points = pathPoints.map(p => Array.isArray(p) ? new THREE.Vector3(p[0], p[1], p[2]) : p);
+    const curve = new THREE.CatmullRomCurve3(points);
+    const threadCount = options.threadCount || 6;
+    const twists = options.twists || 3.5;
+    const bundleRadius = options.bundleRadius || 3.2;
+    const threadRadius = options.threadRadius || 0.85;
+    const pulseCountPerThread = options.pulseCountPerThread || 650;
 
     const harnessGroup = new THREE.Group();
-    harnessGroup.add(tube);
-    harnessGroup.add(pulsePoints);
-    harnessGroup.userData = { isHarness: true, pulsePoints };
+    // Color-coded industrial strands: CAN-High, 12V+ Ignition, Sensor Return, CAN-Low, Shield Ground, Drive Pulse
+    const strandColors = [0x00f0ff, 0xff0055, 0x39ff14, 0xffaa00, 0xffffff, 0xb026ff];
+    const strands = [];
+
+    // Central high-durability conduit core
+    const coreGeo = new THREE.TubeGeometry(curve, 48, bundleRadius * 0.45, 8, false);
+    const coreMat = new THREE.MeshStandardMaterial({
+      color: 0x060c14,
+      emissive: 0x020810,
+      metalness: 0.9,
+      roughness: 0.3,
+      transparent: true,
+      opacity: 0.75
+    });
+    harnessGroup.add(new THREE.Mesh(coreGeo, coreMat));
+
+    // Sample Frenet frames for helical braid calculation
+    const sampleSteps = 64;
+    const frames = curve.computeFrenetFrames(sampleSteps, false);
+
+    for (let s = 0; s < threadCount; s++) {
+      const col = strandColors[s % strandColors.length];
+      const strandPts = [];
+      const phase = (s / threadCount) * Math.PI * 2;
+
+      for (let i = 0; i <= sampleSteps; i++) {
+        const u = i / sampleSteps;
+        const pt = curve.getPoint(u);
+        const N = frames.normals[i];
+        const B = frames.binormals[i];
+        const angle = u * Math.PI * 2 * twists + phase;
+        
+        const ox = (Math.cos(angle) * N.x + Math.sin(angle) * B.x) * bundleRadius;
+        const oy = (Math.cos(angle) * N.y + Math.sin(angle) * B.y) * bundleRadius;
+        const oz = (Math.cos(angle) * N.z + Math.sin(angle) * B.z) * bundleRadius;
+
+        strandPts.push(new THREE.Vector3(pt.x + ox, pt.y + oy, pt.z + oz));
+      }
+
+      const strandCurve = new THREE.CatmullRomCurve3(strandPts);
+      const threadGeo = new THREE.TubeGeometry(strandCurve, 48, threadRadius, 6, false);
+      const threadMat = new THREE.MeshStandardMaterial({
+        color: col,
+        emissive: col,
+        emissiveIntensity: 0.8,
+        metalness: 0.8,
+        roughness: 0.2,
+        transparent: true,
+        opacity: 0.92,
+        depthWrite: false
+      });
+      const threadMesh = new THREE.Mesh(threadGeo, threadMat);
+      harnessGroup.add(threadMesh);
+
+      // Streaming electron pulse voxels along each individual thread
+      const pGeo = new THREE.BufferGeometry();
+      const positions = new Float32Array(pulseCountPerThread * 3);
+      const colors = new Float32Array(pulseCountPerThread * 3);
+      const uvs = new Float32Array(pulseCountPerThread);
+      const baseCol = new THREE.Color(col);
+
+      for (let k = 0; k < pulseCountPerThread; k++) {
+        const u = Math.random();
+        uvs[k] = u;
+        const pt = strandCurve.getPoint(u);
+        positions[k * 3] = pt.x + (Math.random() - 0.5) * 1.2;
+        positions[k * 3 + 1] = pt.y + (Math.random() - 0.5) * 1.2;
+        positions[k * 3 + 2] = pt.z + (Math.random() - 0.5) * 1.2;
+
+        colors[k * 3] = Math.min(1.0, baseCol.r * 1.4);
+        colors[k * 3 + 1] = Math.min(1.0, baseCol.g * 1.4);
+        colors[k * 3 + 2] = Math.min(1.0, baseCol.b * 1.4);
+      }
+
+      pGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      pGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+      const pMat = new THREE.PointsMaterial({
+        size: 2.4,
+        map: this.pointTexture,
+        vertexColors: true,
+        transparent: true,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      });
+
+      const pMesh = new THREE.Points(pGeo, pMat);
+      harnessGroup.add(pMesh);
+
+      strands.push({
+        curve: strandCurve,
+        mesh: pMesh,
+        uvs,
+        count: pulseCountPerThread,
+        speed: 0.0035 + (s * 0.0006)
+      });
+    }
+
+    // Molded weather-pack connector boots on both ends
+    const startPt = curve.getPoint(0);
+    const endPt = curve.getPoint(1);
+
+    const startPlug = new THREE.Mesh(
+      new THREE.BoxGeometry(bundleRadius * 3.2, bundleRadius * 2.6, 9),
+      new THREE.MeshStandardMaterial({ color: 0x0a1018, emissive: 0x00f0ff, emissiveIntensity: 0.4 })
+    );
+    startPlug.position.copy(startPt);
+    this.addNeonEdges(startPlug, 0x00f0ff);
+    harnessGroup.add(startPlug);
+
+    const endPlug = new THREE.Mesh(
+      new THREE.BoxGeometry(bundleRadius * 3.2, bundleRadius * 2.6, 9),
+      new THREE.MeshStandardMaterial({ color: 0x0a1018, emissive: 0xff0055, emissiveIntensity: 0.4 })
+    );
+    endPlug.position.copy(endPt);
+    this.addNeonEdges(endPlug, 0xff0055);
+    harnessGroup.add(endPlug);
+
+    harnessGroup.userData = { isHarness: true, strands, pulsePoints: strands[0] };
     this.harnessObjects.push(harnessGroup);
     return harnessGroup;
+  }
+
+  createWiringHarness(pathPoints, colorHex = 0x00f0ff, pulseCount = 1200) {
+    return this.createMultiThreadWiringHarness(pathPoints, { bundleRadius: 2.8 });
   }
 
   createMicrochipModule(w, l, h, label, colorHex = 0x00f0ff) {
@@ -525,6 +627,15 @@ class HolographicApp {
     this.addNeonEdges(box, colorHex);
     chipGroup.add(box);
 
+    // Microchip heatsink fins
+    const finCount = 5;
+    for (let f = 0; f < finCount; f++) {
+      const fz = (f / (finCount - 1) - 0.5) * (l * 0.7);
+      const fin = new THREE.Mesh(new THREE.BoxGeometry(w * 0.85, 2.5, 1.2), boxMat);
+      fin.position.set(0, h / 2 + 1.25, fz);
+      chipGroup.add(fin);
+    }
+
     // Silicon die on top
     const dieGeo = new THREE.PlaneGeometry(w * 0.65, l * 0.65);
     dieGeo.rotateX(-Math.PI / 2);
@@ -532,13 +643,13 @@ class HolographicApp {
       color: colorHex,
       wireframe: true,
       transparent: true,
-      opacity: 0.9
+      opacity: 0.95
     });
     const die = new THREE.Mesh(dieGeo, dieMat);
     die.position.y = h / 2 + 0.4;
     chipGroup.add(die);
 
-    // Pin header leads
+    // Dual-row gold pin header leads
     const pinCount = 12;
     for (let i = 0; i < pinCount; i++) {
       const u = (i / (pinCount - 1) - 0.5) * (w * 0.85);
@@ -555,142 +666,976 @@ class HolographicApp {
   }
 
   // -----------------------------------------------------------
+  // 14 ESSENTIAL REAL-WORLD CAD COMPONENT FACTORY METHODS
+  // -----------------------------------------------------------
+
+  // 1. FORGED SLIPPER PISTON (Crown with 4 Valve Relief Pockets, 3 Ring Lands, Gudgeon Pin)
+  buildCADPiston(colorHex = 0x39ff14) {
+    const grp = new THREE.Group();
+    // Crown & Slipper Skirt Body
+    const bodyGeo = new THREE.CylinderGeometry(28, 28, 38, 32);
+    const bodyMesh = new THREE.Mesh(bodyGeo, this.createTranslucentShellMaterial(colorHex, colorHex));
+    this.addNeonEdges(bodyMesh, colorHex);
+    grp.add(bodyMesh);
+
+    // 4 CNC Valve Relief Depressions in Piston Crown
+    const intakePockets = [new THREE.Vector3(8.5, 18.5, -6.5), new THREE.Vector3(8.5, 18.5, 6.5)];
+    const exhaustPockets = [new THREE.Vector3(-8.5, 18.5, -5.5), new THREE.Vector3(-8.5, 18.5, 5.5)];
+
+    intakePockets.forEach(pos => {
+      const pocket = new THREE.Mesh(new THREE.CylinderGeometry(7.5, 7.5, 2.5, 20), this.createTranslucentShellMaterial(0xffaa00, 0xffaa00));
+      pocket.position.copy(pos);
+      pocket.rotation.z = 0.12;
+      this.addNeonEdges(pocket, 0xffaa00);
+      grp.add(pocket);
+    });
+    exhaustPockets.forEach(pos => {
+      const pocket = new THREE.Mesh(new THREE.CylinderGeometry(6.2, 6.2, 2.5, 20), this.createTranslucentShellMaterial(0xffaa00, 0xffaa00));
+      pocket.position.copy(pos);
+      pocket.rotation.z = -0.12;
+      this.addNeonEdges(pocket, 0xffaa00);
+      grp.add(pocket);
+    });
+
+    // 3 Circumferential Ring Land Grooves (Top Compression, Napier Scraper, Oil Control)
+    [14, 10, 6].forEach(y => {
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(28.2, 0.7, 8, 32), new THREE.MeshBasicMaterial({ color: 0x00f0ff }));
+      ring.position.y = y;
+      ring.rotation.x = Math.PI / 2;
+      grp.add(ring);
+    });
+
+    // Gudgeon / Wrist Pin Bore through bosses
+    const pin = new THREE.Mesh(new THREE.CylinderGeometry(6.5, 6.5, 36, 24), this.createTranslucentShellMaterial(0xffaa00, 0xaa5500));
+    pin.rotation.z = Math.PI / 2;
+    pin.position.y = -2;
+    this.addNeonEdges(pin, 0xffaa00);
+    grp.add(pin);
+
+    // Volumetric Contoured Pixel Cloud
+    const pixelCloud = this.createVolumetricPixelCloud((i, total) => {
+      const u = i / total;
+      if (u < 0.35) {
+        // Crown and valve reliefs
+        const theta = Math.random() * Math.PI * 2;
+        const r = Math.sqrt(Math.random()) * 27.5;
+        const y = 18 + (Math.random() - 0.5) * 1.5;
+        return { x: Math.cos(theta) * r, y, z: Math.sin(theta) * r };
+      } else if (u < 0.65) {
+        // Skirt thrust faces
+        const theta = (Math.random() > 0.5 ? 0 : Math.PI) + (Math.random() - 0.5) * 1.2;
+        const r = 27.5 + (Math.random() - 0.5) * 1.0;
+        const y = (Math.random() - 0.5) * 36;
+        return { x: Math.cos(theta) * r, y, z: Math.sin(theta) * r };
+      } else {
+        // Wrist pin and internal bosses
+        const x = (Math.random() - 0.5) * 35;
+        const theta = Math.random() * Math.PI * 2;
+        const r = 6.2 * Math.sqrt(Math.random());
+        return { x, y: -2 + Math.sin(theta) * r, z: Math.cos(theta) * r };
+      }
+    }, colorHex, 36000, 2.2);
+    grp.add(pixelCloud);
+
+    grp.userData = {
+      specKey: 'piston',
+      pixelCloud,
+      ports: [
+        { id: 'wrist_pin', pos: new THREE.Vector3(0, -2, 0), snapWith: 'small_end' },
+        { id: 'piston_crown', pos: new THREE.Vector3(0, 18.5, 0), snapWith: 'cylinder_bore' }
+      ]
+    };
+    return grp;
+  }
+
+  // 2. FORGED H-BEAM CONNECTING ROD (Small-End Eye, Fluted H-Shank, Split Cap & ARP Bolts)
+  buildCADConrod(colorHex = 0x00f0ff) {
+    const grp = new THREE.Group();
+
+    // Small-End Bronze Bushing Eye (for wrist pin)
+    const smallEye = new THREE.Mesh(new THREE.CylinderGeometry(11, 11, 14, 24), this.createTranslucentShellMaterial(colorHex, colorHex));
+    smallEye.position.y = 36;
+    smallEye.rotation.x = Math.PI / 2;
+    this.addNeonEdges(smallEye, colorHex);
+    grp.add(smallEye);
+
+    // Fluted H-Beam Column (Structural Web + Twin Thick Flanges)
+    const web = new THREE.Mesh(new THREE.BoxGeometry(4.5, 50, 11), this.createTranslucentShellMaterial(colorHex, colorHex));
+    web.position.y = 0;
+    this.addNeonEdges(web, colorHex);
+    grp.add(web);
+
+    const flangeFront = new THREE.Mesh(new THREE.BoxGeometry(13, 52, 3), this.createTranslucentShellMaterial(colorHex, colorHex));
+    flangeFront.position.set(0, 0, 5);
+    this.addNeonEdges(flangeFront, colorHex);
+    grp.add(flangeFront);
+
+    const flangeBack = new THREE.Mesh(new THREE.BoxGeometry(13, 52, 3), this.createTranslucentShellMaterial(colorHex, colorHex));
+    flangeBack.position.set(0, 0, -5);
+    this.addNeonEdges(flangeBack, colorHex);
+    grp.add(flangeBack);
+
+    // Big-End Split Journal Cap
+    const bigUpper = new THREE.Mesh(new THREE.CylinderGeometry(18, 18, 16, 24), this.createTranslucentShellMaterial(colorHex, colorHex));
+    bigUpper.position.y = -36;
+    bigUpper.rotation.x = Math.PI / 2;
+    this.addNeonEdges(bigUpper, colorHex);
+    grp.add(bigUpper);
+
+    // 2 High-Tensile ARP 2000 Rod Bolts
+    [-14, 14].forEach(bx => {
+      const bolt = new THREE.Mesh(new THREE.CylinderGeometry(2.5, 2.5, 22, 12), new THREE.MeshBasicMaterial({ color: 0xffaa00 }));
+      bolt.position.set(bx, -40, 0);
+      grp.add(bolt);
+    });
+
+    // Volumetric Contoured Pixel Cloud
+    const pixelCloud = this.createVolumetricPixelCloud((i, total) => {
+      const u = i / total;
+      if (u < 0.25) {
+        // Small eye
+        const theta = Math.random() * Math.PI * 2;
+        const r = 7 + Math.random() * 4;
+        return { x: Math.cos(theta) * r, y: 36 + Math.sin(theta) * r, z: (Math.random() - 0.5) * 14 };
+      } else if (u < 0.65) {
+        // H-Beam shank
+        const y = (Math.random() - 0.5) * 50;
+        const isFlange = Math.random() > 0.35;
+        const z = isFlange ? (Math.random() > 0.5 ? 5 : -5) + (Math.random() - 0.5) * 2 : (Math.random() - 0.5) * 8;
+        const x = (Math.random() - 0.5) * (isFlange ? 13 : 4.5);
+        return { x, y, z };
+      } else {
+        // Big end split journal & bolts
+        const theta = Math.random() * Math.PI * 2;
+        const r = 12 + Math.random() * 6;
+        return { x: Math.cos(theta) * r, y: -36 + Math.sin(theta) * r, z: (Math.random() - 0.5) * 16 };
+      }
+    }, colorHex, 32000, 2.2);
+    grp.add(pixelCloud);
+
+    grp.userData = {
+      specKey: 'conrod',
+      pixelCloud,
+      ports: [
+        { id: 'small_end', pos: new THREE.Vector3(0, 36, 0), snapWith: 'wrist_pin' },
+        { id: 'big_end', pos: new THREE.Vector3(0, -36, 0), snapWith: 'crank_pin' }
+      ]
+    };
+    return grp;
+  }
+
+  // 3. COUNTERWEIGHTED CRANKSHAFT (Offset Pin, Twin Half-Moon Lobes, Main Journals)
+  buildCADCrankshaft(colorHex = 0xffaa00) {
+    const grp = new THREE.Group();
+
+    // Main Journal Center Shaft
+    const mainShaft = new THREE.Mesh(new THREE.CylinderGeometry(11, 11, 90, 24), this.createTranslucentShellMaterial(colorHex, colorHex));
+    mainShaft.rotation.x = Math.PI / 2;
+    this.addNeonEdges(mainShaft, colorHex);
+    grp.add(mainShaft);
+
+    // Twin Aerodynamic Half-Moon Counterweight Cheeks
+    [-15, 15].forEach(z => {
+      const cheek = new THREE.Mesh(new THREE.CylinderGeometry(36, 36, 11, 24, 1, false, Math.PI / 2, Math.PI), this.createTranslucentShellMaterial(colorHex, colorHex));
+      cheek.position.set(0, 0, z);
+      cheek.rotation.x = Math.PI / 2;
+      this.addNeonEdges(cheek, colorHex);
+      grp.add(cheek);
+    });
+
+    // Offset Crankpin Journal (at x = +22)
+    const pin = new THREE.Mesh(new THREE.CylinderGeometry(11, 11, 18, 24), this.createTranslucentShellMaterial(0x00f0ff, 0x00f0ff));
+    pin.position.set(22, 0, 0);
+    pin.rotation.x = Math.PI / 2;
+    this.addNeonEdges(pin, 0x00f0ff);
+    grp.add(pin);
+
+    // Front Timing Snout & Rear Flywheel Mounting Flange
+    const frontSnout = new THREE.Mesh(new THREE.CylinderGeometry(9, 9, 22, 20), this.createTranslucentShellMaterial(colorHex, colorHex));
+    frontSnout.position.set(0, 0, 52);
+    frontSnout.rotation.x = Math.PI / 2;
+    this.addNeonEdges(frontSnout, colorHex);
+    grp.add(frontSnout);
+
+    const rearFlange = new THREE.Mesh(new THREE.CylinderGeometry(24, 24, 6, 24), this.createTranslucentShellMaterial(colorHex, colorHex));
+    rearFlange.position.set(0, 0, -50);
+    rearFlange.rotation.x = Math.PI / 2;
+    this.addNeonEdges(rearFlange, colorHex);
+    grp.add(rearFlange);
+
+    // Volumetric Contoured Pixel Cloud
+    const pixelCloud = this.createVolumetricPixelCloud((i, total) => {
+      const u = i / total;
+      if (u < 0.45) {
+        // Counterweights
+        const theta = Math.PI / 2 + Math.random() * Math.PI;
+        const r = 12 + Math.random() * 24;
+        const z = (Math.random() > 0.5 ? 15 : -15) + (Math.random() - 0.5) * 10;
+        return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
+      } else if (u < 0.70) {
+        // Crankpin journal
+        const theta = Math.random() * Math.PI * 2;
+        const r = Math.sqrt(Math.random()) * 11;
+        return { x: 22 + Math.cos(theta) * r, y: Math.sin(theta) * r, z: (Math.random() - 0.5) * 18 };
+      } else {
+        // Main shaft
+        const theta = Math.random() * Math.PI * 2;
+        const r = Math.sqrt(Math.random()) * 11;
+        const z = (Math.random() - 0.5) * 90;
+        return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
+      }
+    }, colorHex, 40000, 2.2);
+    grp.add(pixelCloud);
+
+    grp.userData = {
+      specKey: 'crankshaft',
+      pixelCloud,
+      ports: [
+        { id: 'crank_pin', pos: new THREE.Vector3(22, 0, 0), snapWith: 'big_end' },
+        { id: 'crank_front', pos: new THREE.Vector3(0, 0, 52), snapWith: 'gear_bore' },
+        { id: 'crank_rear', pos: new THREE.Vector3(0, 0, -50), snapWith: 'clutch_hub' },
+        { id: 'crank_journal', pos: new THREE.Vector3(0, 0, 24), snapWith: 'bearing_bore' }
+      ]
+    };
+    return grp;
+  }
+
+  // 4. DEEP-FINNED CYLINDER BARREL (Tiered Aerodynamic Cooling Fins & Honed Liner)
+  buildCADCylinder(colorHex = 0x00f0ff) {
+    const grp = new THREE.Group();
+
+    // Honed Cylinder Liner Sleeve
+    const liner = new THREE.Mesh(new THREE.CylinderGeometry(29, 29, 85, 32), this.createTranslucentShellMaterial(colorHex, colorHex));
+    this.addNeonEdges(liner, colorHex);
+    grp.add(liner);
+
+    // 10 Tiered Cooling Fins (Wider at the top near combustion heat zone)
+    for (let f = 0; f < 10; f++) {
+      const fy = -36 + f * 8;
+      const fr = 38 + (f / 9) * 13; // 38mm bottom to 51mm top
+      const fin = new THREE.Mesh(new THREE.CylinderGeometry(fr, fr, 2.2, 32), this.createTranslucentShellMaterial(colorHex, colorHex));
+      fin.position.y = fy;
+      this.addNeonEdges(fin, colorHex);
+      grp.add(fin);
+    }
+
+    // 4 Corner Through-Stud Columns
+    [-24, 24].forEach(x => {
+      [-24, 24].forEach(z => {
+        const stud = new THREE.Mesh(new THREE.CylinderGeometry(4.5, 4.5, 85, 16), this.createTranslucentShellMaterial(0xffaa00, 0xffaa00));
+        stud.position.set(x, 0, z);
+        this.addNeonEdges(stud, 0xffaa00);
+        grp.add(stud);
+      });
+    });
+
+    // Volumetric Contoured Pixel Cloud
+    const pixelCloud = this.createVolumetricPixelCloud((i, total) => {
+      const u = i / total;
+      if (u < 0.70) {
+        // Tiered fins
+        const finIdx = Math.floor(Math.random() * 10);
+        const y = -36 + finIdx * 8 + (Math.random() - 0.5) * 1.8;
+        const maxR = 38 + (finIdx / 9) * 13;
+        const theta = Math.random() * Math.PI * 2;
+        const r = 29 + Math.random() * (maxR - 29);
+        return { x: Math.cos(theta) * r, y, z: Math.sin(theta) * r };
+      } else {
+        // Cylinder bore liner
+        const theta = Math.random() * Math.PI * 2;
+        const r = 28.5 + (Math.random() - 0.5) * 1.0;
+        const y = (Math.random() - 0.5) * 85;
+        return { x: Math.cos(theta) * r, y, z: Math.sin(theta) * r };
+      }
+    }, colorHex, 45000, 2.2);
+    grp.add(pixelCloud);
+
+    grp.userData = {
+      specKey: 'cylinder',
+      pixelCloud,
+      ports: [
+        { id: 'cylinder_bore', pos: new THREE.Vector3(0, 0, 0), snapWith: 'piston_crown' },
+        { id: 'deck_top', pos: new THREE.Vector3(0, 42.5, 0), snapWith: 'head_deck' },
+        { id: 'deck_bottom', pos: new THREE.Vector3(0, -42.5, 0), snapWith: 'crankcase_deck' }
+      ]
+    };
+    return grp;
+  }
+
+  // 5. DOHC 4-VALVE CYLINDER HEAD (Dual Camshafts, 4 Angled Poppet Valves & Springs)
+  buildCADHead(colorHex = 0xff007f) {
+    const grp = new THREE.Group();
+
+    // Head Casting Main Block
+    const headDeck = new THREE.Mesh(new THREE.BoxGeometry(64, 34, 64), this.createTranslucentShellMaterial(colorHex, colorHex));
+    this.addNeonEdges(headDeck, colorHex);
+    grp.add(headDeck);
+
+    // 4 Angled Poppet Valves with Dual Concentric Springs
+    const valveData = [
+      { x: 14, z: -12, ang: 0.35, col: 0x39ff14, r: 7.5 },  // Intake 1
+      { x: 14, z: 12, ang: 0.35, col: 0x39ff14, r: 7.5 },   // Intake 2
+      { x: -14, z: -11, ang: -0.32, col: 0xffaa00, r: 6.2 }, // Exhaust 1
+      { x: -14, z: 11, ang: -0.32, col: 0xffaa00, r: 6.2 }   // Exhaust 2
+    ];
+    valveData.forEach(v => {
+      const vHead = new THREE.Mesh(new THREE.CylinderGeometry(v.r, v.r, 2.5, 18), this.createTranslucentShellMaterial(v.col, v.col));
+      vHead.position.set(v.x, -14, v.z);
+      grp.add(vHead);
+
+      const stem = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.2, 26, 12), this.createTranslucentShellMaterial(v.col, v.col));
+      stem.position.set(v.x, 0, v.z);
+      stem.rotation.z = v.ang;
+      grp.add(stem);
+
+      const spring = new THREE.Mesh(new THREE.CylinderGeometry(5.2, 5.2, 14, 16), this.createTranslucentShellMaterial(0x00f0ff, 0x00f0ff));
+      spring.position.set(v.x, 2, v.z);
+      spring.rotation.z = v.ang;
+      this.addNeonEdges(spring, 0x00f0ff);
+      grp.add(spring);
+    });
+
+    // Twin Overhead Camshafts (DOHC Intake & Exhaust)
+    [-15, 15].forEach(camX => {
+      const camShaft = new THREE.Mesh(new THREE.CylinderGeometry(4.8, 4.8, 58, 20), this.createTranslucentShellMaterial(0xffaa00, 0xffaa00));
+      camShaft.position.set(camX, 15, 0);
+      camShaft.rotation.x = Math.PI / 2;
+      this.addNeonEdges(camShaft, 0xffaa00);
+      grp.add(camShaft);
+
+      // 2 Asymmetric Teardrop Cam Lobes per shaft
+      [-12, 12].forEach(lz => {
+        const lobe = new THREE.Mesh(new THREE.ConeGeometry(5.8, 8, 16), this.createTranslucentShellMaterial(0x39ff14, 0x39ff14));
+        lobe.position.set(camX, 17, lz);
+        lobe.rotation.x = Math.PI / 2;
+        this.addNeonEdges(lobe, 0x39ff14);
+        grp.add(lobe);
+      });
+    });
+
+    // Spark Plug Central Recess Well
+    const sparkWell = new THREE.Mesh(new THREE.CylinderGeometry(6.5, 6.5, 20, 20), this.createTranslucentShellMaterial(0xffffff, 0xffffff));
+    sparkWell.position.set(0, 10, 0);
+    this.addNeonEdges(sparkWell, 0xffffff);
+    grp.add(sparkWell);
+
+    // Volumetric Contoured Pixel Cloud
+    const pixelCloud = this.createVolumetricPixelCloud((i, total) => {
+      const u = i / total;
+      if (u < 0.40) {
+        // Camshafts & lobes
+        const camX = Math.random() > 0.5 ? 15 : -15;
+        const z = (Math.random() - 0.5) * 58;
+        const theta = Math.random() * Math.PI * 2;
+        const r = 4.8 + Math.random() * 4.5;
+        return { x: camX + Math.cos(theta) * r, y: 15 + Math.sin(theta) * r, z };
+      } else if (u < 0.75) {
+        // 4 poppet valves & springs
+        const vd = valveData[Math.floor(Math.random() * valveData.length)];
+        const theta = Math.random() * Math.PI * 2;
+        const r = Math.random() * vd.r;
+        return { x: vd.x + Math.cos(theta) * r, y: (Math.random() - 0.5) * 26, z: vd.z + Math.sin(theta) * r };
+      } else {
+        // Head deck enclosure
+        const x = (Math.random() - 0.5) * 64;
+        const y = (Math.random() - 0.5) * 34;
+        const z = (Math.random() - 0.5) * 64;
+        return { x, y, z };
+      }
+    }, colorHex, 48000, 2.2);
+    grp.add(pixelCloud);
+
+    grp.userData = {
+      specKey: 'head',
+      pixelCloud,
+      ports: [
+        { id: 'head_deck', pos: new THREE.Vector3(0, -17, 0), snapWith: 'deck_top' },
+        { id: 'spark_port', pos: new THREE.Vector3(0, 18, 0), snapWith: 'spark_thread' },
+        { id: 'injector_port', pos: new THREE.Vector3(-20, 10, 0), snapWith: 'injector_tip' },
+        { id: 'exhaust_port', pos: new THREE.Vector3(28, -6, 0), snapWith: 'exhaust_flange' }
+      ]
+    };
+    return grp;
+  }
+
+  // 6. IRIDIUM-TIPPED SPARK PLUG (Hex Drive Body, 5-Rib Ceramic, Threaded M10, Ground Electrode)
+  buildCADSparkPlug(colorHex = 0xffffff) {
+    const grp = new THREE.Group();
+
+    // Hexagonal Steel Drive Body
+    const hex = new THREE.Mesh(new THREE.CylinderGeometry(7, 7, 8, 6), this.createTranslucentShellMaterial(0x00f0ff, 0x00f0ff));
+    this.addNeonEdges(hex, 0x00f0ff);
+    grp.add(hex);
+
+    // Threaded M10 Lower Base
+    const thread = new THREE.Mesh(new THREE.CylinderGeometry(5, 5, 14, 20), this.createTranslucentShellMaterial(0xffaa00, 0xffaa00));
+    thread.position.y = -10;
+    this.addNeonEdges(thread, 0xffaa00);
+    grp.add(thread);
+
+    // Ground Hook Strap & Center Electrode
+    const groundHook = new THREE.Mesh(new THREE.BoxGeometry(1.2, 5, 3.5), new THREE.MeshBasicMaterial({ color: 0x00f0ff }));
+    groundHook.position.set(0, -18.5, 1.8);
+    grp.add(groundHook);
+
+    // 5-Rib White Alumina Ceramic Insulator
+    const ceramic = new THREE.Mesh(new THREE.CylinderGeometry(5.2, 5.2, 22, 24), this.createTranslucentShellMaterial(colorHex, colorHex));
+    ceramic.position.y = 15;
+    this.addNeonEdges(ceramic, colorHex);
+    grp.add(ceramic);
+
+    // Top Brass SAE Terminal Nut
+    const nut = new THREE.Mesh(new THREE.CylinderGeometry(2.5, 2.5, 6, 16), new THREE.MeshBasicMaterial({ color: 0xffaa00 }));
+    nut.position.y = 28;
+    grp.add(nut);
+
+    // Volumetric Contoured Pixel Cloud
+    const pixelCloud = this.createVolumetricPixelCloud((i, total) => {
+      const u = i / total;
+      if (u < 0.45) {
+        // Ceramic insulator & ribs
+        const y = 4 + Math.random() * 22;
+        const rib = Math.sin(y * 1.8) * 1.0;
+        const theta = Math.random() * Math.PI * 2;
+        const r = 4.5 + rib + Math.random() * 0.8;
+        return { x: Math.cos(theta) * r, y, z: Math.sin(theta) * r };
+      } else if (u < 0.75) {
+        // Hex body & threads
+        const y = -16 + Math.random() * 20;
+        const theta = Math.random() * Math.PI * 2;
+        const r = y < -4 ? 5.0 + Math.random() * 0.8 : 6.8 + Math.random() * 0.6;
+        return { x: Math.cos(theta) * r, y, z: Math.sin(theta) * r };
+      } else {
+        // Terminal nut & spark gap
+        const y = 25 + Math.random() * 6;
+        const theta = Math.random() * Math.PI * 2;
+        return { x: Math.cos(theta) * 2.5, y, z: Math.sin(theta) * 2.5 };
+      }
+    }, colorHex, 20000, 2.0);
+    grp.add(pixelCloud);
+
+    grp.userData = {
+      specKey: 'spark_plug',
+      pixelCloud,
+      ports: [
+        { id: 'spark_thread', pos: new THREE.Vector3(0, -18, 0), snapWith: 'spark_port' },
+        { id: 'spark_terminal', pos: new THREE.Vector3(0, 28, 0), snapWith: 'wire_terminal' }
+      ]
+    };
+    return grp;
+  }
+
+  // 7. HIGH-PRESSURE PIEZO FUEL INJECTOR (Solenoid Body, 2-Pin Plug, Micro-Hole Tip)
+  buildCADInjector(colorHex = 0xffaa00) {
+    const grp = new THREE.Group();
+
+    // Stepped Stainless Body
+    const upperBody = new THREE.Mesh(new THREE.CylinderGeometry(7.5, 7.5, 20, 24), this.createTranslucentShellMaterial(colorHex, colorHex));
+    upperBody.position.y = 6;
+    this.addNeonEdges(upperBody, colorHex);
+    grp.add(upperBody);
+
+    const lowerBarrel = new THREE.Mesh(new THREE.CylinderGeometry(4.5, 4.5, 18, 20), this.createTranslucentShellMaterial(colorHex, colorHex));
+    lowerBarrel.position.y = -12;
+    this.addNeonEdges(lowerBarrel, colorHex);
+    grp.add(lowerBarrel);
+
+    // Fuel Rail Inlet Boss & O-Ring
+    const inletBoss = new THREE.Mesh(new THREE.CylinderGeometry(5.5, 5.5, 6, 20), this.createTranslucentShellMaterial(0x00f0ff, 0x00f0ff));
+    inletBoss.position.y = 19;
+    this.addNeonEdges(inletBoss, 0x00f0ff);
+    grp.add(inletBoss);
+
+    // 2-Pin Electrical Harness Connector Socket
+    const conn = new THREE.Mesh(new THREE.BoxGeometry(8, 9, 8), this.createTranslucentShellMaterial(0x39ff14, 0x39ff14));
+    conn.position.set(8, 8, 0);
+    this.addNeonEdges(conn, 0x39ff14);
+    grp.add(conn);
+
+    // Micro-Hole Spray Tip
+    const tip = new THREE.Mesh(new THREE.ConeGeometry(3, 4, 16), new THREE.MeshBasicMaterial({ color: 0xff0055 }));
+    tip.position.y = -22;
+    tip.rotation.x = Math.PI;
+    grp.add(tip);
+
+    // Volumetric Contoured Pixel Cloud
+    const pixelCloud = this.createVolumetricPixelCloud((i, total) => {
+      const u = i / total;
+      if (u < 0.60) {
+        // Main injector body
+        const y = -18 + Math.random() * 38;
+        const r = y < -4 ? 4.5 * Math.sqrt(Math.random()) : 7.5 * Math.sqrt(Math.random());
+        const theta = Math.random() * Math.PI * 2;
+        return { x: Math.cos(theta) * r, y, z: Math.sin(theta) * r };
+      } else {
+        // Connector socket & spray tip
+        const isConn = Math.random() > 0.4;
+        if (isConn) {
+          return { x: 8 + (Math.random() - 0.5) * 8, y: 8 + (Math.random() - 0.5) * 9, z: (Math.random() - 0.5) * 8 };
+        } else {
+          const theta = Math.random() * Math.PI * 2;
+          return { x: Math.cos(theta) * 2.5, y: -22 - Math.random() * 3, z: Math.sin(theta) * 2.5 };
+        }
+      }
+    }, colorHex, 20000, 2.0);
+    grp.add(pixelCloud);
+
+    grp.userData = {
+      specKey: 'injector',
+      pixelCloud,
+      ports: [
+        { id: 'injector_tip', pos: new THREE.Vector3(0, -22, 0), snapWith: 'injector_port' },
+        { id: 'injector_plug', pos: new THREE.Vector3(8, 8, 0), snapWith: 'wire_lead' }
+      ]
+    };
+    return grp;
+  }
+
+  // 8. TWIN-SCROLL TURBOCHARGER (Logarithmic Snail Volute, Compressor Housing & Impeller)
+  buildCADTurbo(colorHex = 0x39ff14) {
+    const grp = new THREE.Group();
+
+    // Snail Exhaust Turbine Volute Housing (Expanding Logarithmic Helix)
+    const snailPts = [];
+    for (let t = 0; t <= 32; t++) {
+      const theta = (t / 32) * Math.PI * 2 * 1.25;
+      const r = 10 + Math.pow(t / 32, 1.3) * 22;
+      snailPts.push(new THREE.Vector3(Math.cos(theta) * r, Math.sin(theta) * r, (t / 32) * 12 - 6));
+    }
+    const snailCurve = new THREE.CatmullRomCurve3(snailPts);
+    const snailGeo = new THREE.TubeGeometry(snailCurve, 36, 6.5, 12, false);
+    const snailMesh = new THREE.Mesh(snailGeo, this.createTranslucentShellMaterial(0xffaa00, 0xffaa00));
+    this.addNeonEdges(snailMesh, 0xffaa00);
+    grp.add(snailMesh);
+
+    // Aluminum Compressor Scroll Housing
+    const compHousing = new THREE.Mesh(new THREE.TorusGeometry(24, 8.5, 16, 32), this.createTranslucentShellMaterial(colorHex, colorHex));
+    compHousing.position.z = 18;
+    this.addNeonEdges(compHousing, colorHex);
+    grp.add(compHousing);
+
+    // Axial Inducer Bellmouth & Billet Impeller Wheel
+    const inducer = new THREE.Mesh(new THREE.CylinderGeometry(14, 18, 12, 24), this.createTranslucentShellMaterial(0x00f0ff, 0x00f0ff));
+    inducer.position.z = 24;
+    inducer.rotation.x = Math.PI / 2;
+    this.addNeonEdges(inducer, 0x00f0ff);
+    grp.add(inducer);
+
+    // Center Bearing CHRA Cartridge
+    const chra = new THREE.Mesh(new THREE.CylinderGeometry(11, 11, 14, 20), this.createTranslucentShellMaterial(0xff0055, 0xff0055));
+    chra.position.z = 7;
+    chra.rotation.x = Math.PI / 2;
+    this.addNeonEdges(chra, 0xff0055);
+    grp.add(chra);
+
+    // Pneumatic Wastegate Canister & Link Rod
+    const wg = new THREE.Mesh(new THREE.CylinderGeometry(7, 7, 16, 16), this.createTranslucentShellMaterial(0xffffff, 0xffffff));
+    wg.position.set(-28, 22, 8);
+    this.addNeonEdges(wg, 0xffffff);
+    grp.add(wg);
+
+    const wgRod = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.5, 26, 8), new THREE.MeshBasicMaterial({ color: 0xffaa00 }));
+    wgRod.position.set(-18, 12, 4);
+    wgRod.rotation.z = -0.7;
+    grp.add(wgRod);
+
+    // Volumetric Contoured Pixel Cloud
+    const pixelCloud = this.createVolumetricPixelCloud((i, total) => {
+      const u = i / total;
+      if (u < 0.50) {
+        // Snail turbine volute
+        const t = Math.random();
+        const pt = snailCurve.getPoint(t);
+        const theta = Math.random() * Math.PI * 2;
+        const r = Math.random() * 6.5;
+        return { x: pt.x + Math.cos(theta) * r, y: pt.y + Math.sin(theta) * r, z: pt.z + (Math.random() - 0.5) * 4 };
+      } else if (u < 0.85) {
+        // Compressor housing
+        const theta = Math.random() * Math.PI * 2;
+        const r = 18 + Math.random() * 12;
+        return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z: 18 + (Math.random() - 0.5) * 8.5 };
+      } else {
+        // CHRA & wastegate
+        return { x: -28 + (Math.random() - 0.5) * 14, y: 18 + (Math.random() - 0.5) * 16, z: 8 + (Math.random() - 0.5) * 12 };
+      }
+    }, colorHex, 45000, 2.2);
+    grp.add(pixelCloud);
+
+    grp.userData = {
+      specKey: 'turbo',
+      pixelCloud,
+      ports: [
+        { id: 'turbo_inlet', pos: new THREE.Vector3(-26, 0, 0), snapWith: 'exhaust_flange' },
+        { id: 'turbo_outlet', pos: new THREE.Vector3(22, 16, 0), snapWith: 'intake_pipe' }
+      ]
+    };
+    return grp;
+  }
+
+  // 9. 6-THREAD BRAIDED WIRING LOOM (Color-Coded Strands, Connectors & Animated Signals)
+  buildCADWireLoom(pathPoints, colorHex = 0x00f0ff) {
+    const pts = pathPoints || [[-35, 0, 0], [-18, 16, 12], [0, 8, -10], [18, 20, 8], [35, 0, 0]];
+    const grp = this.createMultiThreadWiringHarness(pts, {
+      threadCount: 6,
+      bundleRadius: 3.2,
+      threadRadius: 0.85,
+      twists: 3.8
+    });
+    grp.userData.specKey = 'wire_threads';
+    grp.userData.ports = [
+      { id: 'wire_terminal', pos: new THREE.Vector3(-35, 0, 0), snapWith: 'spark_terminal' },
+      { id: 'wire_lead', pos: new THREE.Vector3(-35, 0, 0), snapWith: 'injector_plug' },
+      { id: 'wire_ecu_plug', pos: new THREE.Vector3(35, 0, 0), snapWith: 'ecu_socket' }
+    ];
+    return grp;
+  }
+
+  // 10. 32-BIT MICROCONTROLLER ECU (Finned Enclosure, 34-Pin Socket, Silicon DSP Core)
+  buildCADECU(colorHex = 0x39ff14) {
+    const grp = this.createMicrochipModule(40, 52, 9, "POWERTRAIN-DSP", colorHex);
+    grp.userData.specKey = 'ecu_chip';
+    grp.userData.ports = [
+      { id: 'ecu_socket', pos: new THREE.Vector3(0, -14, 26), snapWith: 'wire_ecu_plug' }
+    ];
+    return grp;
+  }
+
+  // 11. INVOLUTE SPUR GEAR (24 Machined Involute Teeth, Center Keyed Bore, Lightening Holes)
+  buildCADGear(colorHex = 0xffaa00) {
+    const grp = new THREE.Group();
+
+    // Gear Rim & Center Hub
+    const rim = new THREE.Mesh(new THREE.CylinderGeometry(25, 25, 14, 32), this.createTranslucentShellMaterial(colorHex, colorHex));
+    this.addNeonEdges(rim, colorHex);
+    grp.add(rim);
+
+    // 24 Individual Machined Involute Teeth
+    for (let t = 0; t < 24; t++) {
+      const angle = (t / 24) * Math.PI * 2;
+      const tooth = new THREE.Mesh(new THREE.BoxGeometry(3.6, 14, 5.5), this.createTranslucentShellMaterial(colorHex, colorHex));
+      tooth.position.set(Math.cos(angle) * 27, 0, Math.sin(angle) * 27);
+      tooth.rotation.y = -angle;
+      this.addNeonEdges(tooth, colorHex);
+      grp.add(tooth);
+    }
+
+    // Keyed Shaft Bore Hub
+    const hub = new THREE.Mesh(new THREE.CylinderGeometry(11, 11, 16, 24), this.createTranslucentShellMaterial(0x00f0ff, 0x00f0ff));
+    this.addNeonEdges(hub, 0x00f0ff);
+    grp.add(hub);
+
+    // 4 Web Lightening Cutout Rings
+    for (let h = 0; h < 4; h++) {
+      const hAngle = (h / 4) * Math.PI * 2;
+      const cut = new THREE.Mesh(new THREE.CylinderGeometry(4.2, 4.2, 14.5, 16), new THREE.MeshBasicMaterial({ color: 0x040810, wireframe: true }));
+      cut.position.set(Math.cos(hAngle) * 17.5, 0, Math.sin(hAngle) * 17.5);
+      grp.add(cut);
+    }
+
+    // Volumetric Contoured Pixel Cloud
+    const pixelCloud = this.createVolumetricPixelCloud((i, total) => {
+      const u = i / total;
+      if (u < 0.50) {
+        // Involute teeth
+        const tIdx = Math.floor(Math.random() * 24);
+        const angle = (tIdx / 24) * Math.PI * 2 + (Math.random() - 0.5) * 0.12;
+        const r = 24.5 + Math.random() * 5.5;
+        return { x: Math.cos(angle) * r, y: (Math.random() - 0.5) * 14, z: Math.sin(angle) * r };
+      } else {
+        // Gear web & hub
+        const angle = Math.random() * Math.PI * 2;
+        const r = 6 + Math.random() * 18;
+        return { x: Math.cos(angle) * r, y: (Math.random() - 0.5) * 14, z: Math.sin(angle) * r };
+      }
+    }, colorHex, 35000, 2.2);
+    grp.add(pixelCloud);
+
+    grp.userData = {
+      specKey: 'gear',
+      pixelCloud,
+      ports: [
+        { id: 'gear_bore', pos: new THREE.Vector3(0, 0, 0), snapWith: 'crank_front' }
+      ]
+    };
+    return grp;
+  }
+
+  // 12. DEEP-GROOVE RADIAL BALL BEARING (Inner/Outer Races, Stamped Cage & 8 Chrome Balls)
+  buildCADBearing(colorHex = 0x00f0ff) {
+    const grp = new THREE.Group();
+
+    // Outer Ground Raceway
+    const outerRace = new THREE.Mesh(new THREE.CylinderGeometry(28, 28, 14, 32), this.createTranslucentShellMaterial(colorHex, colorHex));
+    this.addNeonEdges(outerRace, colorHex);
+    grp.add(outerRace);
+
+    // Inner Shaft Journal Bore
+    const innerRace = new THREE.Mesh(new THREE.CylinderGeometry(15, 15, 14, 32), this.createTranslucentShellMaterial(colorHex, colorHex));
+    this.addNeonEdges(innerRace, colorHex);
+    grp.add(innerRace);
+
+    // 8 Spherical Mirror-Finish Ball Bearings in Stamped Retainer
+    for (let b = 0; b < 8; b++) {
+      const angle = (b / 8) * Math.PI * 2;
+      const ball = new THREE.Mesh(new THREE.SphereGeometry(4.4, 16, 16), new THREE.MeshStandardMaterial({
+        color: 0xffffff,
+        emissive: 0x00f0ff,
+        emissiveIntensity: 0.5,
+        metalness: 0.95,
+        roughness: 0.1
+      }));
+      ball.position.set(Math.cos(angle) * 21.5, 0, Math.sin(angle) * 21.5);
+      grp.add(ball);
+    }
+
+    // Volumetric Contoured Pixel Cloud
+    const pixelCloud = this.createVolumetricPixelCloud((i, total) => {
+      const u = i / total;
+      if (u < 0.45) {
+        // 8 Chrome balls
+        const bIdx = Math.floor(Math.random() * 8);
+        const angle = (bIdx / 8) * Math.PI * 2;
+        const bx = Math.cos(angle) * 21.5;
+        const bz = Math.sin(angle) * 21.5;
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.random() * Math.PI;
+        const r = 4.4 * Math.cbrt(Math.random());
+        return {
+          x: bx + r * Math.sin(phi) * Math.cos(theta),
+          y: r * Math.cos(phi),
+          z: bz + r * Math.sin(phi) * Math.sin(theta)
+        };
+      } else {
+        // Inner and outer raceways
+        const isOuter = Math.random() > 0.45;
+        const theta = Math.random() * Math.PI * 2;
+        const r = isOuter ? 26 + Math.random() * 2 : 15 + Math.random() * 2;
+        return { x: Math.cos(theta) * r, y: (Math.random() - 0.5) * 14, z: Math.sin(theta) * r };
+      }
+    }, colorHex, 32000, 2.2);
+    grp.add(pixelCloud);
+
+    grp.userData = {
+      specKey: 'bearing',
+      pixelCloud,
+      ports: [
+        { id: 'bearing_bore', pos: new THREE.Vector3(0, 0, 0), snapWith: 'crank_journal' }
+      ]
+    };
+    return grp;
+  }
+
+  // 13. MULTI-PLATE WET CLUTCH ASSEMBLY (Slotted Basket, Friction Plates & Coil Springs)
+  buildCADClutch(colorHex = 0x39ff14) {
+    const grp = new THREE.Group();
+
+    // Outer Slotted Alloy Clutch Basket
+    const basket = new THREE.Mesh(new THREE.CylinderGeometry(32, 32, 22, 32), this.createTranslucentShellMaterial(colorHex, colorHex));
+    this.addNeonEdges(basket, colorHex);
+    grp.add(basket);
+
+    // Multi-Plate Pack (Alternating Friction & Steel Discs)
+    for (let p = 0; p < 6; p++) {
+      const py = -8 + p * 3.2;
+      const isFriction = p % 2 === 0;
+      const plate = new THREE.Mesh(
+        new THREE.CylinderGeometry(30, 30, 1.6, 24),
+        this.createTranslucentShellMaterial(isFriction ? 0xffaa00 : 0x00f0ff, isFriction ? 0xffaa00 : 0x00f0ff)
+      );
+      plate.position.y = py;
+      this.addNeonEdges(plate, isFriction ? 0xffaa00 : 0x00f0ff);
+      grp.add(plate);
+    }
+
+    // 5 Clutch Pressure Plate Spring Retainers & Hex Bolts
+    for (let s = 0; s < 5; s++) {
+      const angle = (s / 5) * Math.PI * 2;
+      const spring = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 12, 16), new THREE.MeshBasicMaterial({ color: 0xff0055, wireframe: true }));
+      spring.position.set(Math.cos(angle) * 18, 6, Math.sin(angle) * 18);
+      grp.add(spring);
+
+      const bolt = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.6, 14, 8), new THREE.MeshBasicMaterial({ color: 0xffaa00 }));
+      bolt.position.set(Math.cos(angle) * 18, 6, Math.sin(angle) * 18);
+      grp.add(bolt);
+    }
+
+    // Center Splined Hub
+    const hub = new THREE.Mesh(new THREE.CylinderGeometry(10, 10, 24, 20), this.createTranslucentShellMaterial(0x00f0ff, 0x00f0ff));
+    this.addNeonEdges(hub, 0x00f0ff);
+    grp.add(hub);
+
+    // Volumetric Contoured Pixel Cloud
+    const pixelCloud = this.createVolumetricPixelCloud((i, total) => {
+      const u = i / total;
+      if (u < 0.45) {
+        // Multi-disc pack
+        const theta = Math.random() * Math.PI * 2;
+        const r = 12 + Math.random() * 18;
+        const pIdx = Math.floor(Math.random() * 6);
+        return { x: Math.cos(theta) * r, y: -8 + pIdx * 3.2 + (Math.random() - 0.5) * 1.5, z: Math.sin(theta) * r };
+      } else if (u < 0.75) {
+        // Slotted outer basket
+        const theta = Math.random() * Math.PI * 2;
+        const r = 30 + Math.random() * 2.5;
+        return { x: Math.cos(theta) * r, y: (Math.random() - 0.5) * 22, z: Math.sin(theta) * r };
+      } else {
+        // 5 Spring retainers
+        const sIdx = Math.floor(Math.random() * 5);
+        const angle = (sIdx / 5) * Math.PI * 2;
+        const sx = Math.cos(angle) * 18 + (Math.random() - 0.5) * 6;
+        const sz = Math.sin(angle) * 18 + (Math.random() - 0.5) * 6;
+        return { x: sx, y: 6 + (Math.random() - 0.5) * 12, z: sz };
+      }
+    }, colorHex, 36000, 2.2);
+    grp.add(pixelCloud);
+
+    grp.userData = {
+      specKey: 'clutch',
+      pixelCloud,
+      ports: [
+        { id: 'clutch_hub', pos: new THREE.Vector3(0, 0, 0), snapWith: 'crank_rear' }
+      ]
+    };
+    return grp;
+  }
+
+  // 14. SWEPT MANDREL-BENT EXHAUST HEADER (Smooth Curved Runner, Laser Flange & Flared Exit)
+  buildCADExhaust(colorHex = 0xffaa00) {
+    const grp = new THREE.Group();
+
+    // 3D Swept Mandrel-Bent Primary Runner Tube
+    const runnerPts = [
+      new THREE.Vector3(0, 26, 0),
+      new THREE.Vector3(12, 18, -12),
+      new THREE.Vector3(26, -4, -18),
+      new THREE.Vector3(18, -26, -10),
+      new THREE.Vector3(6, -45, 6)
+    ];
+    const curve = new THREE.CatmullRomCurve3(runnerPts);
+    const pipeGeo = new THREE.TubeGeometry(curve, 48, 6.5, 16, false);
+    const pipe = new THREE.Mesh(pipeGeo, this.createTranslucentShellMaterial(colorHex, colorHex));
+    this.addNeonEdges(pipe, colorHex);
+    grp.add(pipe);
+
+    // 3-Bolt Laser-Cut Mounting Flange
+    const flange = new THREE.Mesh(new THREE.BoxGeometry(22, 4, 18), this.createTranslucentShellMaterial(0x00f0ff, 0x00f0ff));
+    flange.position.set(0, 26, 0);
+    this.addNeonEdges(flange, 0x00f0ff);
+    grp.add(flange);
+
+    // Flared Tailpipe Collector Exit
+    const exitCone = new THREE.Mesh(new THREE.ConeGeometry(9.5, 14, 20, 1, true), this.createTranslucentShellMaterial(colorHex, colorHex));
+    exitCone.position.set(6, -48, 6);
+    exitCone.rotation.x = Math.PI;
+    this.addNeonEdges(exitCone, colorHex);
+    grp.add(exitCone);
+
+    // Volumetric Contoured Pixel Cloud
+    const pixelCloud = this.createVolumetricPixelCloud((i, total) => {
+      const u = i / total;
+      if (u < 0.85) {
+        // Swept runner pipe
+        const t = Math.random();
+        const pt = curve.getPoint(t);
+        const theta = Math.random() * Math.PI * 2;
+        const r = 6.5 + (Math.random() - 0.5) * 1.0;
+        return { x: pt.x + Math.cos(theta) * r, y: pt.y + Math.sin(theta) * r, z: pt.z + (Math.random() - 0.5) * 2 };
+      } else {
+        // Flange & flared collector
+        return { x: (Math.random() - 0.5) * 22, y: 26 + (Math.random() - 0.5) * 4, z: (Math.random() - 0.5) * 18 };
+      }
+    }, colorHex, 28000, 2.2);
+    grp.add(pixelCloud);
+
+    grp.userData = {
+      specKey: 'exhaust',
+      pixelCloud,
+      ports: [
+        { id: 'exhaust_flange', pos: new THREE.Vector3(0, 26, 0), snapWith: 'exhaust_port' }
+      ]
+    };
+    return grp;
+  }
+
+  // -----------------------------------------------------------
   // 1. BIKE ENGINE (4-Stroke High-Rev DOHC Motorcycle Powertrain)
   // -----------------------------------------------------------
   buildBikeEngineModel() {
     this.clearAssembly();
 
-    // 1. Split Crankcase with Sump & Gearbox Cavity (40,000 Voxels)
+    // 1. Split Crankcase with Sump & Gearbox Cavity (45,000 Voxels)
     const caseGroup = new THREE.Group();
-    const casePixels = this.createVolumetricPixelCloud((i, total) => {
-      const x = (Math.random() - 0.5) * 75;
-      const y = (Math.random() - 0.5) * 55;
-      const z = (Math.random() - 0.5) * 85;
-      return { x, y, z };
-    }, 0x00f0ff, 40000, 2.2);
-    caseGroup.add(casePixels);
-    const caseMesh = new THREE.Mesh(new THREE.BoxGeometry(75, 55, 85), this.createTranslucentShellMaterial(0x00f0ff, 0x0066aa));
+    const caseGeo = new THREE.BoxGeometry(78, 56, 88);
+    const caseMesh = new THREE.Mesh(caseGeo, this.createTranslucentShellMaterial(0x00f0ff, 0x0066aa));
     this.addNeonEdges(caseMesh, 0x00f0ff);
     caseGroup.add(caseMesh);
+
+    // Lower Ribbed Oil Sump
+    const sump = new THREE.Mesh(new THREE.BoxGeometry(60, 16, 70), this.createTranslucentShellMaterial(0x00f0ff, 0x0066aa));
+    sump.position.y = -34;
+    this.addNeonEdges(sump, 0x00f0ff);
+    caseGroup.add(sump);
+
+    const casePixels = this.createVolumetricPixelCloud((i, total) => {
+      const x = (Math.random() - 0.5) * 78;
+      const y = (Math.random() - 0.5) * 56;
+      const z = (Math.random() - 0.5) * 88;
+      return { x, y, z };
+    }, 0x00f0ff, 45000, 2.2);
+    caseGroup.add(casePixels);
     caseGroup.userData = { specKey: 'bike_crankcase', baseZ: -140, pixelCloud: casePixels };
     this.registerPart(caseGroup);
 
-    // 2. Counterweighted Crankshaft & Flywheel Magneto (38,000 Voxels)
-    const crankGroup = new THREE.Group();
-    const crankPixels = this.createVolumetricPixelCloud((i, total) => {
-      const theta = (i / total) * Math.PI * 2 * 32;
-      const r = 32 * Math.sqrt(Math.random());
-      const z = (Math.random() - 0.5) * 50;
-      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z: z };
-    }, 0xffaa00, 38000, 2.2);
-    crankGroup.add(crankPixels);
-    const crankMesh = new THREE.Mesh(new THREE.CylinderGeometry(32, 32, 50, 24), this.createTranslucentShellMaterial(0xffaa00, 0xaa5500));
-    crankMesh.rotation.z = Math.PI / 2;
-    this.addNeonEdges(crankMesh, 0xffaa00);
-    crankGroup.add(crankMesh);
-    crankGroup.userData = { specKey: 'bike_crankshaft', baseZ: -85, pixelCloud: crankPixels };
+    // 2. Counterweighted Crankshaft (buildCADCrankshaft)
+    const crankGroup = this.buildCADCrankshaft(0xffaa00);
+    crankGroup.userData.specKey = 'bike_crankshaft';
+    crankGroup.userData.baseZ = -85;
     this.registerPart(crankGroup);
 
-    // 3. Forged H-Beam Connecting Rod (28,000 Voxels)
-    const rodGroup = new THREE.Group();
-    const rodPixels = this.createVolumetricPixelCloud((i, total) => {
-      const u = i / total;
-      const y = (u - 0.5) * 75;
-      const x = (Math.random() - 0.5) * 16;
-      const z = (Math.random() - 0.5) * 14;
-      return { x, y, z };
-    }, 0x00f0ff, 28000, 2.2);
-    rodGroup.add(rodPixels);
-    const rodMesh = new THREE.Mesh(new THREE.BoxGeometry(16, 75, 14), this.createTranslucentShellMaterial(0x00f0ff, 0x0077bb));
-    this.addNeonEdges(rodMesh, 0x00f0ff);
-    rodGroup.add(rodMesh);
-    rodGroup.userData = { specKey: 'bike_conrod', baseZ: -35, pixelCloud: rodPixels };
+    // 3. Forged H-Beam Connecting Rod (buildCADConrod)
+    const rodGroup = this.buildCADConrod(0x00f0ff);
+    rodGroup.userData.specKey = 'bike_conrod';
+    rodGroup.userData.baseZ = -35;
     this.registerPart(rodGroup);
 
-    // 4. Forged Slipper Piston with 3 Ring Lands (32,000 Voxels)
-    const pistonGroup = new THREE.Group();
-    const pistonPixels = this.createVolumetricPixelCloud((i, total) => {
-      const theta = (i / total) * Math.PI * 2 * 36;
-      const r = 36 * Math.sqrt(Math.random());
-      const z = (Math.random() - 0.5) * 45;
-      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z: z };
-    }, 0x39ff14, 32000, 2.2);
-    pistonGroup.add(pistonPixels);
-    const pistonMesh = new THREE.Mesh(new THREE.CylinderGeometry(36, 36, 45, 28), this.createTranslucentShellMaterial(0x39ff14, 0x11aa00));
-    pistonMesh.rotation.x = Math.PI / 2;
-    this.addNeonEdges(pistonMesh, 0x39ff14);
-    pistonGroup.add(pistonMesh);
-    pistonGroup.userData = { specKey: 'bike_piston', baseZ: 20, pixelCloud: pistonPixels };
+    // 4. Forged Slipper Piston with 4 Valve Relief Pockets (buildCADPiston)
+    const pistonGroup = this.buildCADPiston(0x39ff14);
+    pistonGroup.userData.specKey = 'bike_piston';
+    pistonGroup.userData.baseZ = 20;
     this.registerPart(pistonGroup);
 
-    // 5. Deep-Finned Cylinder Barrel with Nikasil Bore (48,000 Voxels)
-    const cylGroup = new THREE.Group();
-    const cylPixels = this.createVolumetricPixelCloud((i, total) => {
-      const u = i / total;
-      const finIdx = Math.floor(u * 12);
-      const isFin = (u * 12 - finIdx) > 0.45;
-      const r = isFin ? 54 + Math.random() * 6 : 38 + Math.random() * 4;
-      const theta = (i / total) * Math.PI * 2 * 45;
-      const z = (u - 0.5) * 80;
-      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z: z };
-    }, 0x00f0ff, 48000, 2.2);
-    cylGroup.add(cylPixels);
-    const cylMesh = new THREE.Mesh(new THREE.CylinderGeometry(48, 48, 80, 28), this.createTranslucentShellMaterial(0x00f0ff, 0x0066aa));
-    cylMesh.rotation.x = Math.PI / 2;
-    this.addNeonEdges(cylMesh, 0x00f0ff);
-    cylGroup.add(cylMesh);
-    cylGroup.userData = { specKey: 'bike_cylinder', baseZ: 85, pixelCloud: cylPixels };
+    // 5. Deep-Finned Cylinder Barrel with Nikasil Liner (buildCADCylinder)
+    const cylGroup = this.buildCADCylinder(0x00f0ff);
+    cylGroup.userData.specKey = 'bike_cylinder';
+    cylGroup.userData.baseZ = 85;
     this.registerPart(cylGroup);
 
-    // 6. DOHC Cylinder Head & 4-Poppet Valves (44,000 Voxels)
-    const headGroup = new THREE.Group();
-    const headPixels = this.createVolumetricPixelCloud((i, total) => {
-      const x = (Math.random() - 0.5) * 65;
-      const y = (Math.random() - 0.5) * 65;
-      const z = (Math.random() - 0.5) * 45;
-      return { x, y, z };
-    }, 0xff007f, 44000, 2.2);
-    headGroup.add(headPixels);
-    const headMesh = new THREE.Mesh(new THREE.BoxGeometry(65, 65, 45), this.createTranslucentShellMaterial(0xff007f, 0xaa0055));
-    this.addNeonEdges(headMesh, 0xff007f);
-    headGroup.add(headMesh);
-    headGroup.userData = { specKey: 'bike_head', baseZ: 145, pixelCloud: headPixels };
+    // 6. DOHC Cylinder Head & 4-Valves with Cams (buildCADHead)
+    const headGroup = this.buildCADHead(0xff007f);
+    headGroup.userData.specKey = 'bike_head';
+    headGroup.userData.baseZ = 150;
     this.registerPart(headGroup);
 
-    // 7. Multi-Plate Wet Clutch Assembly (34,000 Voxels)
-    const clutchGroup = new THREE.Group();
-    const clutchPixels = this.createVolumetricPixelCloud((i, total) => {
-      const theta = (i / total) * Math.PI * 2 * 36;
-      const r = 24 + Math.random() * 24;
-      const z = (Math.random() - 0.5) * 35;
-      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z: z };
-    }, 0x39ff14, 34000, 2.2);
-    clutchGroup.add(clutchPixels);
-    clutchGroup.userData = { specKey: 'bike_clutch', baseZ: 200, pixelCloud: clutchPixels };
+    // 7. Multi-Plate Wet Clutch Assembly (buildCADClutch)
+    const clutchGroup = this.buildCADClutch(0x39ff14);
+    clutchGroup.userData.specKey = 'bike_clutch';
+    clutchGroup.userData.baseZ = 210;
     this.registerPart(clutchGroup);
 
-    // 8. Tuned Exhaust Header Pipe (25,000 Voxels)
-    const exGroup = new THREE.Group();
-    const exPixels = this.createVolumetricPixelCloud((i, total) => {
-      const u = i / total;
-      const theta = u * Math.PI * 1.4;
-      const cx = Math.sin(theta) * 55;
-      const cy = -Math.cos(theta) * 45;
-      const cz = (u - 0.5) * 75;
-      return { x: cx + (Math.random() - 0.5) * 12, y: cy + (Math.random() - 0.5) * 12, z: cz };
-    }, 0xffaa00, 25000, 2.2);
-    exGroup.add(exPixels);
-    exGroup.userData = { specKey: 'bike_exhaust', baseZ: 260, pixelCloud: exPixels };
+    // 8. Tuned Swept Header Pipe (buildCADExhaust)
+    const exGroup = this.buildCADExhaust(0xffaa00);
+    exGroup.userData.specKey = 'bike_exhaust';
+    exGroup.userData.baseZ = 270;
     this.registerPart(exGroup);
 
-    // Integrated Wire Harness & ECU Microchip Module
-    const harness = this.createWiringHarness([
-      [-40, 45, 145], [-35, 30, 85], [-30, 10, 20], [-45, -20, -85], [-50, -40, -140]
-    ], 0x00f0ff);
+    // Integrated 6-Thread Braided Wire Harness & Microchip ECU
+    const harness = this.createMultiThreadWiringHarness([
+      [-40, 45, 150], [-35, 30, 85], [-30, 10, 20], [-45, -20, -85], [-52, -40, -140]
+    ], { threadCount: 6, bundleRadius: 3.2 });
     this.assemblyGroup.add(harness);
 
-    const ecu = this.createMicrochipModule(24, 32, 6, "EFI-ECU", 0x39ff14);
-    ecu.position.set(-48, -25, -140);
+    const ecu = this.createMicrochipModule(28, 38, 7, "EFI-ECU", 0x39ff14);
+    ecu.position.set(-50, -25, -140);
     this.assemblyGroup.add(ecu);
 
     this.updateAssemblyPositions();
@@ -703,83 +1648,105 @@ class HolographicApp {
   buildCarEngineModel() {
     this.clearAssembly();
 
-    // 1. 90-Degree V8 Engine Block (55,000 Voxels)
+    // 1. 90-Degree V8 Engine Block with Cross-Bolted Main Caps (60,000 Voxels)
     const blockGroup = new THREE.Group();
+    const blockMesh = new THREE.Mesh(new THREE.BoxGeometry(94, 78, 125), this.createTranslucentShellMaterial(0x00f0ff, 0x0066aa));
+    this.addNeonEdges(blockMesh, 0x00f0ff);
+    blockGroup.add(blockMesh);
+
     const blockPixels = this.createVolumetricPixelCloud((i, total) => {
       const bank = i % 2 === 0 ? 1 : -1;
-      const ang = bank * 0.785; // 45 deg
+      const ang = bank * 0.785;
       const u = (i / total);
       const r = 24 + Math.random() * 26;
       const x = Math.sin(ang) * (35 + r * 0.4);
       const y = Math.cos(ang) * (35 + r * 0.4);
-      const z = (u - 0.5) * 120;
+      const z = (u - 0.5) * 125;
       return { x, y, z };
-    }, 0x00f0ff, 55000, 2.2);
+    }, 0x00f0ff, 60000, 2.2);
     blockGroup.add(blockPixels);
-    const blockMesh = new THREE.Mesh(new THREE.BoxGeometry(90, 75, 120), this.createTranslucentShellMaterial(0x00f0ff, 0x0066aa));
-    this.addNeonEdges(blockMesh, 0x00f0ff);
-    blockGroup.add(blockMesh);
     blockGroup.userData = { specKey: 'car_block', baseZ: -120, pixelCloud: blockPixels };
     this.registerPart(blockGroup);
 
-    // 2. Crossplane V8 Crankshaft (42,000 Voxels)
+    // 2. Crossplane V8 Crankshaft (48,000 Voxels)
     const crankGroup = new THREE.Group();
     const crankPixels = this.createVolumetricPixelCloud((i, total) => {
       const u = i / total;
-      const z = (u - 0.5) * 115;
+      const z = (u - 0.5) * 120;
       const pinIdx = Math.floor(u * 4);
       const pinAngle = pinIdx * (Math.PI / 2);
-      const r = 26 * Math.sqrt(Math.random());
+      const r = 28 * Math.sqrt(Math.random());
       return { x: Math.cos(pinAngle) * r, y: Math.sin(pinAngle) * r, z };
-    }, 0xffaa00, 42000, 2.2);
+    }, 0xffaa00, 48000, 2.2);
     crankGroup.add(crankPixels);
     crankGroup.userData = { specKey: 'car_crankshaft', baseZ: -60, pixelCloud: crankPixels };
     this.registerPart(crankGroup);
 
-    // 3. Dual Quad-Cam Cylinder Heads (52,000 Voxels)
+    // 3. Dual Quad-Cam Cylinder Heads (56,000 Voxels)
     const headsGroup = new THREE.Group();
+    [-46, 46].forEach(bx => {
+      const bHead = new THREE.Mesh(new THREE.BoxGeometry(32, 28, 115), this.createTranslucentShellMaterial(0xff007f, 0xaa0055));
+      bHead.position.set(bx, 44, 0);
+      bHead.rotation.z = bx > 0 ? -0.785 : 0.785;
+      this.addNeonEdges(bHead, 0xff007f);
+      headsGroup.add(bHead);
+    });
+
     const headsPixels = this.createVolumetricPixelCloud((i, total) => {
       const bank = i % 2 === 0 ? 1 : -1;
-      const bx = bank * 45 + (Math.random() - 0.5) * 20;
-      const by = 45 + (Math.random() - 0.5) * 20;
-      const bz = (Math.random() - 0.5) * 110;
+      const bx = bank * 46 + (Math.random() - 0.5) * 24;
+      const by = 44 + (Math.random() - 0.5) * 24;
+      const bz = (Math.random() - 0.5) * 115;
       return { x: bx, y: by, z: bz };
-    }, 0xff007f, 52000, 2.2);
+    }, 0xff007f, 56000, 2.2);
     headsGroup.add(headsPixels);
     headsGroup.userData = { specKey: 'car_heads', baseZ: 10, pixelCloud: headsPixels };
     this.registerPart(headsGroup);
 
-    // 4. Symmetric Twin Turbochargers (48,000 Voxels)
+    // 4. Symmetric Twin Turbochargers (54,000 Voxels)
     const turboGroup = new THREE.Group();
+    const leftTurbo = this.buildCADTurbo(0x39ff14);
+    leftTurbo.position.set(-58, -10, 0);
+    turboGroup.add(leftTurbo);
+
+    const rightTurbo = this.buildCADTurbo(0x39ff14);
+    rightTurbo.position.set(58, -10, 0);
+    turboGroup.add(rightTurbo);
+
     const turboPixels = this.createVolumetricPixelCloud((i, total) => {
       const side = i % 2 === 0 ? 1 : -1;
-      const cx = side * 55;
+      const cx = side * 58;
       const theta = (i / total) * Math.PI * 2 * 32;
       const r = (theta / (Math.PI * 2 * 32)) * 26 + 8;
       const x = cx + Math.cos(theta) * r;
       const y = -10 + Math.sin(theta) * r;
       const z = (Math.random() - 0.5) * 35;
       return { x, y, z };
-    }, 0x39ff14, 48000, 2.2);
+    }, 0x39ff14, 54000, 2.2);
     turboGroup.add(turboPixels);
     turboGroup.userData = { specKey: 'car_turbos', baseZ: 85, pixelCloud: turboPixels };
     this.registerPart(turboGroup);
 
-    // 5. Symmetric Intake Plenum Runners (38,000 Voxels)
+    // 5. Symmetric Intake Plenum Runners with 8 Trumpets (42,000 Voxels)
     const plenumGroup = new THREE.Group();
+    const plenumMesh = new THREE.Mesh(new THREE.BoxGeometry(58, 22, 100), this.createTranslucentShellMaterial(0x00f0ff, 0x00f0ff));
+    plenumMesh.position.y = 66;
+    this.addNeonEdges(plenumMesh, 0x00f0ff);
+    plenumGroup.add(plenumMesh);
+
     const plenumPixels = this.createVolumetricPixelCloud((i, total) => {
-      const x = (Math.random() - 0.5) * 55;
-      const y = 65 + (Math.random() - 0.5) * 25;
-      const z = (Math.random() - 0.5) * 95;
+      const x = (Math.random() - 0.5) * 58;
+      const y = 66 + (Math.random() - 0.5) * 24;
+      const z = (Math.random() - 0.5) * 100;
       return { x, y, z };
-    }, 0x00f0ff, 38000, 2.2);
+    }, 0x00f0ff, 42000, 2.2);
     plenumGroup.add(plenumPixels);
-    plenumGroup.userData = { specKey: 'car_plenum', baseZ: 155, pixelCloud: plenumPixels };
+    plenumGroup.userData = { specKey: 'car_plenum', baseZ: 160, pixelCloud: plenumPixels };
     this.registerPart(plenumGroup);
 
-    // Automotive Multi-Branch CAN Wiring Harness & Dual-DSP ECU
-    const leftHarness = this.createWiringHarness([[-45, 55, 60], [-40, 40, 0], [-35, 10, -60], [0, 65, -120]], 0x39ff14);
-    const rightHarness = this.createWiringHarness([[45, 55, 60], [40, 40, 0], [35, 10, -60], [0, 65, -120]], 0x00f0ff);
+    // Dual Multi-Thread Braided Wiring Harnesses & V8 PCM
+    const leftHarness = this.createMultiThreadWiringHarness([[-46, 55, 60], [-40, 40, 0], [-35, 10, -60], [0, 68, -120]], { threadCount: 6 });
+    const rightHarness = this.createMultiThreadWiringHarness([[46, 55, 60], [40, 40, 0], [35, 10, -60], [0, 68, -120]], { threadCount: 6 });
     this.assemblyGroup.add(leftHarness);
     this.assemblyGroup.add(rightHarness);
 
@@ -797,53 +1764,64 @@ class HolographicApp {
   buildAutoEngineModel() {
     this.clearAssembly();
 
-    // 1. Commuter Crankcase Unit (38,000 Voxels)
+    // 1. Commuter Crankcase Unit (42,000 Voxels)
     const caseGroup = new THREE.Group();
+    const caseGeo = new THREE.BoxGeometry(64, 52, 74);
+    const caseMesh = new THREE.Mesh(caseGeo, this.createTranslucentShellMaterial(0x00f0ff, 0x0066aa));
+    this.addNeonEdges(caseMesh, 0x00f0ff);
+    caseGroup.add(caseMesh);
+
     const casePixels = this.createVolumetricPixelCloud((i, total) => {
-      const x = (Math.random() - 0.5) * 60;
-      const y = (Math.random() - 0.5) * 50;
-      const z = (Math.random() - 0.5) * 70;
+      const x = (Math.random() - 0.5) * 64;
+      const y = (Math.random() - 0.5) * 52;
+      const z = (Math.random() - 0.5) * 74;
       return { x, y, z };
-    }, 0x00f0ff, 38000, 2.2);
+    }, 0x00f0ff, 42000, 2.2);
     caseGroup.add(casePixels);
     caseGroup.userData = { specKey: 'auto_case', baseZ: -100, pixelCloud: casePixels };
     this.registerPart(caseGroup);
 
-    // 2. Cast Iron Finned Cylinder (42,000 Voxels)
-    const cylGroup = new THREE.Group();
-    const cylPixels = this.createVolumetricPixelCloud((i, total) => {
-      const theta = (i / total) * Math.PI * 2 * 36;
-      const r = 32 + (i % 8 === 0 ? 14 : 2);
-      const z = (i / total) * 65 - 32.5;
-      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
-    }, 0xffaa00, 42000, 2.2);
-    cylGroup.add(cylPixels);
-    cylGroup.userData = { specKey: 'auto_cylinder', baseZ: -25, pixelCloud: cylPixels };
+    // 2. Cast Iron Finned Cylinder (46,000 Voxels)
+    const cylGroup = this.buildCADCylinder(0xffaa00);
+    cylGroup.userData.specKey = 'auto_cylinder';
+    cylGroup.userData.baseZ = -25;
     this.registerPart(cylGroup);
 
-    // 3. Forced-Air Cooling Fan Shroud (36,000 Voxels)
+    // 3. Forced-Air Cooling Fan Shroud & Vanes (40,000 Voxels)
     const fanGroup = new THREE.Group();
+    const fanShroud = new THREE.Mesh(new THREE.CylinderGeometry(44, 44, 24, 28), this.createTranslucentShellMaterial(0x39ff14, 0x39ff14));
+    this.addNeonEdges(fanShroud, 0x39ff14);
+    fanGroup.add(fanShroud);
+
     const fanPixels = this.createVolumetricPixelCloud((i, total) => {
       const theta = (i / total) * Math.PI * 2 * 28;
-      const r = 42 * Math.sqrt(Math.random());
-      const z = (Math.random() - 0.5) * 28;
+      const r = 44 * Math.sqrt(Math.random());
+      const z = (Math.random() - 0.5) * 24;
       return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
-    }, 0x39ff14, 36000, 2.2);
+    }, 0x39ff14, 40000, 2.2);
     fanGroup.add(fanPixels);
-    fanGroup.userData = { specKey: 'auto_fan_shroud', baseZ: 45, pixelCloud: fanPixels };
+    fanGroup.userData = { specKey: 'auto_fan_shroud', baseZ: 50, pixelCloud: fanPixels };
     this.registerPart(fanGroup);
 
-    // 4. Variable Venturi Carburetor (28,000 Voxels)
+    // 4. Variable Venturi Slide Carburetor (32,000 Voxels)
     const carbGroup = new THREE.Group();
+    const carbMesh = new THREE.Mesh(new THREE.BoxGeometry(26, 38, 26), this.createTranslucentShellMaterial(0xff007f, 0xff007f));
+    this.addNeonEdges(carbMesh, 0xff007f);
+    carbGroup.add(carbMesh);
+
     const carbPixels = this.createVolumetricPixelCloud((i, total) => {
-      const x = 35 + (Math.random() - 0.5) * 24;
-      const y = 20 + (Math.random() - 0.5) * 35;
-      const z = (Math.random() - 0.5) * 24;
+      const x = 35 + (Math.random() - 0.5) * 26;
+      const y = 20 + (Math.random() - 0.5) * 38;
+      const z = (Math.random() - 0.5) * 26;
       return { x, y, z };
-    }, 0xff007f, 28000, 2.2);
+    }, 0xff007f, 32000, 2.2);
     carbGroup.add(carbPixels);
-    carbGroup.userData = { specKey: 'auto_carb', baseZ: 110, pixelCloud: carbPixels };
+    carbGroup.userData = { specKey: 'auto_carb', baseZ: 115, pixelCloud: carbPixels };
     this.registerPart(carbGroup);
+
+    // Multi-Thread Ignition Wire & Spark Plug
+    const harness = this.createMultiThreadWiringHarness([[20, 20, 115], [0, 45, 50], [0, 40, -25]], { threadCount: 4 });
+    this.assemblyGroup.add(harness);
 
     this.updateAssemblyPositions();
     this.refreshVoxelCount();
@@ -855,52 +1833,70 @@ class HolographicApp {
   buildTractorEngineModel() {
     this.clearAssembly();
 
-    // 1. Cast-Iron Heavy Diesel Block (54,000 Voxels)
+    // 1. Cast-Iron Heavy Diesel Block (58,000 Voxels)
     const blockGroup = new THREE.Group();
+    const blockMesh = new THREE.Mesh(new THREE.BoxGeometry(74, 88, 140), this.createTranslucentShellMaterial(0x00f0ff, 0x0066aa));
+    this.addNeonEdges(blockMesh, 0x00f0ff);
+    blockGroup.add(blockMesh);
+
     const blockPixels = this.createVolumetricPixelCloud((i, total) => {
-      const x = (Math.random() - 0.5) * 70;
-      const y = (Math.random() - 0.5) * 85;
-      const z = (Math.random() - 0.5) * 135;
+      const x = (Math.random() - 0.5) * 74;
+      const y = (Math.random() - 0.5) * 88;
+      const z = (Math.random() - 0.5) * 140;
       return { x, y, z };
-    }, 0x00f0ff, 54000, 2.2);
+    }, 0x00f0ff, 58000, 2.2);
     blockGroup.add(blockPixels);
     blockGroup.userData = { specKey: 'tractor_block', baseZ: -110, pixelCloud: blockPixels };
     this.registerPart(blockGroup);
 
-    // 2. Mechanical Inline Fuel Injection Pump (44,000 Voxels)
+    // 2. Mechanical Inline Fuel Injection Pump (48,000 Voxels)
     const pumpGroup = new THREE.Group();
+    const pumpMesh = new THREE.Mesh(new THREE.BoxGeometry(26, 38, 90), this.createTranslucentShellMaterial(0xffaa00, 0xffaa00));
+    pumpMesh.position.set(-48, -10, 0);
+    this.addNeonEdges(pumpMesh, 0xffaa00);
+    pumpGroup.add(pumpMesh);
+
     const pumpPixels = this.createVolumetricPixelCloud((i, total) => {
-      const x = -48 + (Math.random() - 0.5) * 24;
-      const y = -10 + (Math.random() - 0.5) * 35;
-      const z = (Math.random() - 0.5) * 85;
+      const x = -48 + (Math.random() - 0.5) * 26;
+      const y = -10 + (Math.random() - 0.5) * 38;
+      const z = (Math.random() - 0.5) * 90;
       return { x, y, z };
-    }, 0xffaa00, 44000, 2.2);
+    }, 0xffaa00, 48000, 2.2);
     pumpGroup.add(pumpPixels);
     pumpGroup.userData = { specKey: 'tractor_pump', baseZ: -35, pixelCloud: pumpPixels };
     this.registerPart(pumpGroup);
 
-    // 3. High-Inertia Industrial Flywheel (42,000 Voxels)
+    // 3. High-Inertia Industrial Flywheel (46,000 Voxels)
     const flyGroup = new THREE.Group();
+    const flyMesh = new THREE.Mesh(new THREE.CylinderGeometry(54, 54, 28, 32), this.createTranslucentShellMaterial(0x39ff14, 0x39ff14));
+    this.addNeonEdges(flyMesh, 0x39ff14);
+    flyGroup.add(flyMesh);
+
     const flyPixels = this.createVolumetricPixelCloud((i, total) => {
       const theta = (i / total) * Math.PI * 2 * 36;
-      const r = 52 * Math.sqrt(Math.random());
-      const z = (Math.random() - 0.5) * 26;
+      const r = 54 * Math.sqrt(Math.random());
+      const z = (Math.random() - 0.5) * 28;
       return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
-    }, 0x39ff14, 42000, 2.2);
+    }, 0x39ff14, 46000, 2.2);
     flyGroup.add(flyPixels);
-    flyGroup.userData = { specKey: 'tractor_flywheel', baseZ: 40, pixelCloud: flyPixels };
+    flyGroup.userData = { specKey: 'tractor_flywheel', baseZ: 45, pixelCloud: flyPixels };
     this.registerPart(flyGroup);
 
-    // 4. Cyclone Oil-Bath Air Cleaner (35,000 Voxels)
+    // 4. Cyclone Oil-Bath Air Cleaner (38,000 Voxels)
     const filterGroup = new THREE.Group();
+    const filterMesh = new THREE.Mesh(new THREE.CylinderGeometry(30, 30, 80, 24), this.createTranslucentShellMaterial(0xff007f, 0xff007f));
+    filterMesh.position.set(40, 48, 0);
+    this.addNeonEdges(filterMesh, 0xff007f);
+    filterGroup.add(filterMesh);
+
     const filterPixels = this.createVolumetricPixelCloud((i, total) => {
       const theta = (i / total) * Math.PI * 2 * 28;
-      const r = 28 * Math.sqrt(Math.random());
-      const z = (i / total) * 75 - 37.5;
-      return { x: 38 + Math.cos(theta) * r, y: 45 + Math.sin(theta) * r, z };
-    }, 0xff007f, 35000, 2.2);
+      const r = 30 * Math.sqrt(Math.random());
+      const z = (i / total) * 80 - 40;
+      return { x: 40 + Math.cos(theta) * r, y: 48 + Math.sin(theta) * r, z };
+    }, 0xff007f, 38000, 2.2);
     filterGroup.add(filterPixels);
-    filterGroup.userData = { specKey: 'tractor_filter', baseZ: 115, pixelCloud: filterPixels };
+    filterGroup.userData = { specKey: 'tractor_filter', baseZ: 120, pixelCloud: filterPixels };
     this.registerPart(filterGroup);
 
     this.updateAssemblyPositions();
@@ -913,53 +1909,69 @@ class HolographicApp {
   buildTruckEngineModel() {
     this.clearAssembly();
 
-    // 1. 13-Liter Monolithic CGI Block (58,000 Voxels)
+    // 1. 13-Liter Monolithic CGI Block (64,000 Voxels)
     const blockGroup = new THREE.Group();
+    const blockMesh = new THREE.Mesh(new THREE.BoxGeometry(84, 98, 150), this.createTranslucentShellMaterial(0x00f0ff, 0x0066aa));
+    this.addNeonEdges(blockMesh, 0x00f0ff);
+    blockGroup.add(blockMesh);
+
     const blockPixels = this.createVolumetricPixelCloud((i, total) => {
-      const x = (Math.random() - 0.5) * 80;
-      const y = (Math.random() - 0.5) * 95;
-      const z = (Math.random() - 0.5) * 145;
+      const x = (Math.random() - 0.5) * 84;
+      const y = (Math.random() - 0.5) * 98;
+      const z = (Math.random() - 0.5) * 150;
       return { x, y, z };
-    }, 0x00f0ff, 58000, 2.2);
+    }, 0x00f0ff, 64000, 2.2);
     blockGroup.add(blockPixels);
     blockGroup.userData = { specKey: 'truck_block', baseZ: -125, pixelCloud: blockPixels };
     this.registerPart(blockGroup);
 
-    // 2. 2,500-Bar Piezo Common Rail Line (42,000 Voxels)
+    // 2. 2,500-Bar Piezo Common Rail Line (46,000 Voxels)
     const railGroup = new THREE.Group();
+    const railMesh = new THREE.Mesh(new THREE.CylinderGeometry(6, 6, 135, 16), this.createTranslucentShellMaterial(0xffaa00, 0xffaa00));
+    railMesh.position.set(-36, 40, 0);
+    railMesh.rotation.x = Math.PI / 2;
+    this.addNeonEdges(railMesh, 0xffaa00);
+    railGroup.add(railMesh);
+
     const railPixels = this.createVolumetricPixelCloud((i, total) => {
-      const z = (i / total) * 130 - 65;
+      const z = (i / total) * 135 - 67.5;
       const theta = (i / total) * Math.PI * 2 * 24;
-      const r = 8 + (i % 6 === 0 ? 16 : 0);
-      return { x: -35 + Math.cos(theta) * r, y: 38 + Math.sin(theta) * r, z };
-    }, 0xffaa00, 42000, 2.2);
+      const r = 8 + (i % 6 === 0 ? 18 : 0);
+      return { x: -36 + Math.cos(theta) * r, y: 40 + Math.sin(theta) * r, z };
+    }, 0xffaa00, 46000, 2.2);
     railGroup.add(railPixels);
     railGroup.userData = { specKey: 'truck_common_rail', baseZ: -50, pixelCloud: railPixels };
     this.registerPart(railGroup);
 
-    // 3. Variable Geometry Turbocharger (48,000 Voxels)
-    const vgtGroup = new THREE.Group();
-    const vgtPixels = this.createVolumetricPixelCloud((i, total) => {
-      const theta = (i / total) * Math.PI * 2 * 36;
-      const r = 36 * Math.sqrt(Math.random());
-      const z = (Math.random() - 0.5) * 45;
-      return { x: 48 + Math.cos(theta) * r, y: 15 + Math.sin(theta) * r, z };
-    }, 0x39ff14, 48000, 2.2);
-    vgtGroup.add(vgtPixels);
-    vgtGroup.userData = { specKey: 'truck_turbo', baseZ: 25, pixelCloud: vgtPixels };
+    // 3. Variable Geometry Turbocharger (VGT, 52,000 Voxels)
+    const vgtGroup = this.buildCADTurbo(0x39ff14);
+    vgtGroup.position.set(50, 18, 0);
+    vgtGroup.userData.specKey = 'truck_turbo';
+    vgtGroup.userData.baseZ = 28;
     this.registerPart(vgtGroup);
 
-    // 4. CGI Cylinder Head with Compression Brake (46,000 Voxels)
+    // 4. CGI Overhead Cam Head with Compression Brake (50,000 Voxels)
     const headGroup = new THREE.Group();
+    const headMesh = new THREE.Mesh(new THREE.BoxGeometry(80, 32, 140), this.createTranslucentShellMaterial(0xff007f, 0xaa0055));
+    headMesh.position.y = 54;
+    this.addNeonEdges(headMesh, 0xff007f);
+    headGroup.add(headMesh);
+
     const headPixels = this.createVolumetricPixelCloud((i, total) => {
-      const x = (Math.random() - 0.5) * 75;
-      const y = 52 + (Math.random() - 0.5) * 28;
-      const z = (Math.random() - 0.5) * 135;
+      const x = (Math.random() - 0.5) * 80;
+      const y = 54 + (Math.random() - 0.5) * 32;
+      const z = (Math.random() - 0.5) * 140;
       return { x, y, z };
-    }, 0xff007f, 46000, 2.2);
+    }, 0xff007f, 50000, 2.2);
     headGroup.add(headPixels);
-    headGroup.userData = { specKey: 'truck_head', baseZ: 100, pixelCloud: headPixels };
+    headGroup.userData = { specKey: 'truck_head', baseZ: 105, pixelCloud: headPixels };
     this.registerPart(headGroup);
+
+    // Heavy Multi-Thread Engine Harness & ECU
+    const harness = this.createMultiThreadWiringHarness([
+      [-36, 40, 60], [-25, 20, 0], [30, 15, -40], [50, 18, -80]
+    ], { threadCount: 6 });
+    this.assemblyGroup.add(harness);
 
     this.updateAssemblyPositions();
     this.refreshVoxelCount();
@@ -971,41 +1983,56 @@ class HolographicApp {
   buildTrainEngineModel() {
     this.clearAssembly();
 
-    // 1. Fabricated V16 Locomotive Crankcase (65,000 Voxels)
+    // 1. Fabricated V16 Locomotive Crankcase (70,000 Voxels)
     const caseGroup = new THREE.Group();
+    const caseMesh = new THREE.Mesh(new THREE.BoxGeometry(98, 115, 185), this.createTranslucentShellMaterial(0x00f0ff, 0x0066aa));
+    this.addNeonEdges(caseMesh, 0x00f0ff);
+    caseGroup.add(caseMesh);
+
     const casePixels = this.createVolumetricPixelCloud((i, total) => {
-      const x = (Math.random() - 0.5) * 95;
-      const y = (Math.random() - 0.5) * 110;
-      const z = (Math.random() - 0.5) * 180;
+      const x = (Math.random() - 0.5) * 98;
+      const y = (Math.random() - 0.5) * 115;
+      const z = (Math.random() - 0.5) * 185;
       return { x, y, z };
-    }, 0x00f0ff, 65000, 2.2);
+    }, 0x00f0ff, 70000, 2.2);
     caseGroup.add(casePixels);
     caseGroup.userData = { specKey: 'train_crankcase', baseZ: -140, pixelCloud: casePixels };
     this.registerPart(caseGroup);
 
-    // 2. Dual Massive Industrial Turbo-Superchargers (55,000 Voxels)
+    // 2. Dual Massive Industrial Turbo-Superchargers (58,000 Voxels)
     const turboGroup = new THREE.Group();
+    [-52, 52].forEach(tx => {
+      const tMesh = new THREE.Mesh(new THREE.CylinderGeometry(44, 44, 55, 28), this.createTranslucentShellMaterial(0xffaa00, 0xffaa00));
+      tMesh.position.set(tx, 68, 0);
+      this.addNeonEdges(tMesh, 0xffaa00);
+      turboGroup.add(tMesh);
+    });
+
     const turboPixels = this.createVolumetricPixelCloud((i, total) => {
       const side = i % 2 === 0 ? 1 : -1;
-      const cx = side * 50;
+      const cx = side * 52;
       const theta = (i / total) * Math.PI * 2 * 36;
-      const r = 42 * Math.sqrt(Math.random());
-      return { x: cx + Math.cos(theta) * r, y: 65 + Math.sin(theta) * r, z: (Math.random() - 0.5) * 60 };
-    }, 0xffaa00, 55000, 2.2);
+      const r = 44 * Math.sqrt(Math.random());
+      return { x: cx + Math.cos(theta) * r, y: 68 + Math.sin(theta) * r, z: (Math.random() - 0.5) * 60 };
+    }, 0xffaa00, 58000, 2.2);
     turboGroup.add(turboPixels);
     turboGroup.userData = { specKey: 'train_turbos', baseZ: -40, pixelCloud: turboPixels };
     this.registerPart(turboGroup);
 
-    // 3. Traction Alternator Coupling Hub (50,000 Voxels)
+    // 3. Traction Alternator Coupling Hub (54,000 Voxels)
     const altGroup = new THREE.Group();
+    const altMesh = new THREE.Mesh(new THREE.CylinderGeometry(64, 64, 58, 36), this.createTranslucentShellMaterial(0x39ff14, 0x39ff14));
+    this.addNeonEdges(altMesh, 0x39ff14);
+    altGroup.add(altMesh);
+
     const altPixels = this.createVolumetricPixelCloud((i, total) => {
       const theta = (i / total) * Math.PI * 2 * 48;
-      const r = 62 * Math.sqrt(Math.random());
-      const z = (Math.random() - 0.5) * 55;
+      const r = 64 * Math.sqrt(Math.random());
+      const z = (Math.random() - 0.5) * 58;
       return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
-    }, 0x39ff14, 50000, 2.2);
+    }, 0x39ff14, 54000, 2.2);
     altGroup.add(altPixels);
-    altGroup.userData = { specKey: 'train_alternator', baseZ: 60, pixelCloud: altPixels };
+    altGroup.userData = { specKey: 'train_alternator', baseZ: 65, pixelCloud: altPixels };
     this.registerPart(altGroup);
 
     this.updateAssemblyPositions();
@@ -1018,87 +2045,96 @@ class HolographicApp {
   buildTurbineModel() {
     this.clearAssembly();
 
-    // 1. Intake Cowl Cone (25,000 Voxels)
+    // 1. Titanium Intake Spinner Cone with Vortex Spiral (28,000 Voxels)
     const coneGroup = new THREE.Group();
+    const coneMesh = new THREE.Mesh(new THREE.ConeGeometry(32, 65, 32), this.createTranslucentShellMaterial(0x00f0ff, 0x00f0ff));
+    coneMesh.rotation.x = Math.PI;
+    this.addNeonEdges(coneMesh, 0x00f0ff);
+    coneGroup.add(coneMesh);
+
     const conePixels = this.createVolumetricPixelCloud((i, total) => {
       const u = i / total;
       const r = Math.pow(u, 0.72) * 32 + (Math.random() - 0.5) * 1.2;
       const z = (1 - u) * 65 - 32.5;
       const theta = i * 2.399963;
       return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z: z };
-    }, 0x00f0ff, 25000, 2.2);
+    }, 0x00f0ff, 28000, 2.2);
     coneGroup.add(conePixels);
     coneGroup.userData = { specKey: 'cone', baseZ: -140, pixelCloud: conePixels };
     this.registerPart(coneGroup);
 
-    // 2. Wide-Chord Fan Rotor (18 Blades, 80,000 Voxels)
+    // 2. Wide-Chord Hollow Titanium Fan Blades (18 Blades, 85,000 Voxels)
     const fanGroup = new THREE.Group();
+    const fanHub = new THREE.Mesh(new THREE.CylinderGeometry(28, 28, 16, 24), this.createTranslucentShellMaterial(0x39ff14, 0x39ff14));
+    fanHub.rotation.x = Math.PI / 2;
+    fanGroup.add(fanHub);
+
     const fanBladePixels = this.createVolumetricPixelCloud((i, total) => {
       const bladeIdx = Math.floor(i / (total / 18));
       const bladeAngle = (bladeIdx / 18) * Math.PI * 2;
       const localIdx = i % (total / 18);
       const u = localIdx / (total / 18);
-      const span = 26 + u * 58;
-      const chord = (Math.random() - 0.5) * (14 - u * 4);
+      const span = 26 + u * 60;
+      const chord = (Math.random() - 0.5) * (15 - u * 4);
       const twist = 0.45 + (1 - u) * 0.35;
       const bx = Math.cos(bladeAngle) * span - Math.sin(bladeAngle) * chord * Math.cos(twist);
       const by = Math.sin(bladeAngle) * span + Math.cos(bladeAngle) * chord * Math.cos(twist);
       const bz = chord * Math.sin(twist) + (Math.random() - 0.5) * 1.8;
       return { x: bx, y: by, z: bz };
-    }, 0x39ff14, 80000, 2.2);
+    }, 0x39ff14, 85000, 2.2);
     fanGroup.add(fanBladePixels);
     fanGroup.userData = { specKey: 'fan', baseZ: -80, pixelCloud: fanBladePixels };
     this.registerPart(fanGroup);
 
-    // 3. LP & HP Compressor Disks (45,000 Voxels)
+    // 3. LP & HP Compressor Staged Blisks (48,000 Voxels)
     const compGroup = new THREE.Group();
     const compPixels = this.createVolumetricPixelCloud((i, total) => {
       const stage = Math.floor((i / total) * 4);
-      const stageZ = (stage - 1.5) * 12;
+      const stageZ = (stage - 1.5) * 14;
       const stageRadius = 52 + stage * 4.5;
       const theta = (i / total) * Math.PI * 2 * 64;
       const r = 18 + Math.random() * (stageRadius - 18);
       return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z: stageZ };
-    }, 0x00f0ff, 45000, 2.2);
+    }, 0x00f0ff, 48000, 2.2);
     compGroup.add(compPixels);
     compGroup.userData = { specKey: 'compressor', baseZ: -18, pixelCloud: compPixels };
     this.registerPart(compGroup);
 
-    // 4. Annular Combustor Core & Nozzles (40,000 Voxels)
+    // 4. Annular Combustor Core & 16 Swirl Nozzles (44,000 Voxels)
     const combGroup = new THREE.Group();
     const combPixels = this.createVolumetricPixelCloud((i, total) => {
       const theta = (i / total) * Math.PI * 2 * 32;
       const r = 48 + Math.random() * 16;
       const z = (Math.random() - 0.5) * 52;
       return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
-    }, 0xffaa00, 40000, 2.2);
+    }, 0xffaa00, 44000, 2.2);
     combGroup.add(combPixels);
     combGroup.userData = { specKey: 'combustor', baseZ: 48, pixelCloud: combPixels };
     this.registerPart(combGroup);
 
-    // 5. HP Turbine Stage (38,000 Voxels)
+    // 5. HP Turbine Single-Crystal Stage (40,000 Voxels)
     const turbGroup = new THREE.Group();
     const turbPixels = this.createVolumetricPixelCloud((i, total) => {
       const bladeIdx = Math.floor(i / (total / 28));
       const bladeAngle = (bladeIdx / 28) * Math.PI * 2;
       const u = (i % (total / 28)) / (total / 28);
-      const r = 26 + u * 38;
+      const r = 26 + u * 40;
       const z = (Math.random() - 0.5) * 18;
       return { x: Math.cos(bladeAngle) * r, y: Math.sin(bladeAngle) * r, z };
-    }, 0xb026ff, 38000, 2.2);
+    }, 0xb026ff, 40000, 2.2);
     turbGroup.add(turbPixels);
     turbGroup.userData = { specKey: 'turbine', baseZ: 110, pixelCloud: turbPixels };
     this.registerPart(turbGroup);
 
-    // 6. Thrust Nozzle Cowl (32,000 Voxels)
+    // 6. Thrust Nozzle Cowl (36,000 Voxels)
     const nozzGroup = new THREE.Group();
     const nozzPixels = this.createVolumetricPixelCloud((i, total) => {
       const u = i / total;
       const z = u * 75 - 37.5;
-      const r = 58 - u * 18;
+      const r = 60 - u * 20;
       const theta = (i / total) * Math.PI * 2 * 45;
       return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
-    }, 0xff007f, 32000, 2.2);
+    }, 0xff007f, 36000, 2.2);
     nozzGroup.add(nozzPixels);
     nozzGroup.userData = { specKey: 'nozzle', baseZ: 175, pixelCloud: nozzPixels };
     this.registerPart(nozzGroup);
@@ -1113,55 +2149,55 @@ class HolographicApp {
   buildRocketEngineModel() {
     this.clearAssembly();
 
-    // 1. Dual Staged Turbopump Assembly (44,000 Voxels)
+    // 1. Dual Staged Turbopump Assembly (48,000 Voxels)
     const pumpGroup = new THREE.Group();
     const pumpPixels = this.createVolumetricPixelCloud((i, total) => {
       const side = i % 2 === 0 ? 1 : -1;
-      const cx = side * 30;
+      const cx = side * 32;
       const theta = (i / total) * Math.PI * 2 * 36;
-      const r = 22 * Math.sqrt(Math.random());
-      return { x: cx + Math.cos(theta) * r, y: Math.sin(theta) * r, z: (Math.random() - 0.5) * 35 };
-    }, 0x00f0ff, 44000, 2.2);
+      const r = 24 * Math.sqrt(Math.random());
+      return { x: cx + Math.cos(theta) * r, y: Math.sin(theta) * r, z: (Math.random() - 0.5) * 36 };
+    }, 0x00f0ff, 48000, 2.2);
     pumpGroup.add(pumpPixels);
     pumpGroup.userData = { specKey: 'rocket_turbopump', baseZ: -120, pixelCloud: pumpPixels };
     this.registerPart(pumpGroup);
 
-    // 2. Preburner & Gimbal Actuators (38,000 Voxels)
+    // 2. Preburner & Hydraulic Gimbal Actuators (42,000 Voxels)
     const gimbalGroup = new THREE.Group();
     const gimbalPixels = this.createVolumetricPixelCloud((i, total) => {
       const theta = (i / total) * Math.PI * 2 * 28;
       const r = 26 + (Math.random() - 0.5) * 6;
       const z = (Math.random() - 0.5) * 45;
       return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
-    }, 0xffaa00, 38000, 2.2);
+    }, 0xffaa00, 42000, 2.2);
     gimbalGroup.add(gimbalPixels);
     gimbalGroup.userData = { specKey: 'rocket_gimbal', baseZ: -55, pixelCloud: gimbalPixels };
     this.registerPart(gimbalGroup);
 
-    // 3. Regenerative Main Combustion Chamber (45,000 Voxels)
+    // 3. Regenerative Main Combustion Chamber (48,000 Voxels)
     const combGroup = new THREE.Group();
     const combPixels = this.createVolumetricPixelCloud((i, total) => {
       const u = i / total;
-      const r = 32 - Math.sin(u * Math.PI) * 10;
+      const r = 34 - Math.sin(u * Math.PI) * 11;
       const theta = (i / total) * Math.PI * 2 * 45;
-      const z = (u - 0.5) * 55;
+      const z = (u - 0.5) * 58;
       return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
-    }, 0x39ff14, 45000, 2.2);
+    }, 0x39ff14, 48000, 2.2);
     combGroup.add(combPixels);
     combGroup.userData = { specKey: 'rocket_combustor', baseZ: 15, pixelCloud: combPixels };
     this.registerPart(combGroup);
 
-    // 4. Contoured Regenerative Bell Nozzle with Cooling Tubes (68,000 Voxels)
+    // 4. Contoured Parabolic Bell Nozzle with Regenerative Cooling Channels (72,000 Voxels)
     const bellGroup = new THREE.Group();
     const bellPixels = this.createVolumetricPixelCloud((i, total) => {
       const u = i / total;
-      const r = 22 + Math.pow(u, 1.4) * 65; // Rao parabolic expansion bell
+      const r = 22 + Math.pow(u, 1.38) * 68;
       const theta = (i / total) * Math.PI * 2 * 64;
-      const z = u * 110 - 20;
+      const z = u * 115 - 20;
       return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
-    }, 0xff007f, 68000, 2.2);
+    }, 0xff007f, 72000, 2.2);
     bellGroup.add(bellPixels);
-    bellGroup.userData = { specKey: 'rocket_bell', baseZ: 95, pixelCloud: bellPixels };
+    bellGroup.userData = { specKey: 'rocket_bell', baseZ: 98, pixelCloud: bellPixels };
     this.registerPart(bellGroup);
 
     this.updateAssemblyPositions();
@@ -1174,29 +2210,30 @@ class HolographicApp {
   buildGearboxModel() {
     this.clearAssembly();
 
+    // 1. Splined Input Drive Shaft (28,000 Voxels)
     const shaftGroup = new THREE.Group();
+    const shaftMesh = new THREE.Mesh(new THREE.CylinderGeometry(12, 12, 85, 24), this.createTranslucentShellMaterial(0x00f0ff, 0x00f0ff));
+    shaftMesh.rotation.x = Math.PI / 2;
+    this.addNeonEdges(shaftMesh, 0x00f0ff);
+    shaftGroup.add(shaftMesh);
+
     const shaftPixels = this.createVolumetricPixelCloud((i, total) => {
       const z = (i / total) * 85 - 42.5;
       const theta = (i / total) * Math.PI * 2 * 28;
       const r = 12 * Math.sqrt(Math.random());
       return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
-    }, 0x00f0ff, 26000, 2.2);
+    }, 0x00f0ff, 28000, 2.2);
     shaftGroup.add(shaftPixels);
     shaftGroup.userData = { specKey: 'shaft_in', baseZ: -125, pixelCloud: shaftPixels };
     this.registerPart(shaftGroup);
 
-    const sunGroup = new THREE.Group();
-    const sunPixels = this.createVolumetricPixelCloud((i, total) => {
-      const theta = (i / total) * Math.PI * 2 * 28;
-      const tooth = Math.sin(theta * 14) * 5.0;
-      const r = 26 + tooth;
-      const z = (Math.random() - 0.5) * 26;
-      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
-    }, 0xffaa00, 48000, 2.2);
-    sunGroup.add(sunPixels);
-    sunGroup.userData = { specKey: 'sun_gear', baseZ: -55, pixelCloud: sunPixels };
+    // 2. 14-Tooth Sun Drive Gear (buildCADGear)
+    const sunGroup = this.buildCADGear(0xffaa00);
+    sunGroup.userData.specKey = 'sun_gear';
+    sunGroup.userData.baseZ = -55;
     this.registerPart(sunGroup);
 
+    // 3. Triple Planet Carrier Assembly (98,000 Voxels)
     const planetGroup = new THREE.Group();
     const planetPixels = this.createVolumetricPixelCloud((i, total) => {
       const pIdx = Math.floor(i / (total / 3));
@@ -1209,11 +2246,12 @@ class HolographicApp {
       const r = 20 + tooth;
       const z = (Math.random() - 0.5) * 22;
       return { x: cx + Math.cos(theta) * r, y: cy + Math.sin(theta) * r, z };
-    }, 0x39ff14, 96000, 2.2);
+    }, 0x39ff14, 98000, 2.2);
     planetGroup.add(planetPixels);
     planetGroup.userData = { specKey: 'planet_gears', baseZ: 10, pixelCloud: planetPixels };
     this.registerPart(planetGroup);
 
+    // 4. Internal Annulus Ring Gear (54,000 Voxels)
     const ringGroup = new THREE.Group();
     const ringPixels = this.createVolumetricPixelCloud((i, total) => {
       const theta = (i / total) * Math.PI * 2 * 56;
@@ -1221,18 +2259,19 @@ class HolographicApp {
       const r = 84 + tooth;
       const z = (Math.random() - 0.5) * 34;
       return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
-    }, 0xff007f, 50000, 2.2);
+    }, 0xff007f, 54000, 2.2);
     ringGroup.add(ringPixels);
     ringGroup.userData = { specKey: 'ring_gear', baseZ: 75, pixelCloud: ringPixels };
     this.registerPart(ringGroup);
 
+    // 5. Output Flange Hub (30,000 Voxels)
     const outGroup = new THREE.Group();
     const outPixels = this.createVolumetricPixelCloud((i, total) => {
       const z = (i / total) * 75 - 37.5;
       const theta = (i / total) * Math.PI * 2 * 24;
       const r = 18 * Math.sqrt(Math.random());
       return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
-    }, 0x00f0ff, 28000, 2.2);
+    }, 0x00f0ff, 30000, 2.2);
     outGroup.add(outPixels);
     outGroup.userData = { specKey: 'shaft_out', baseZ: 140, pixelCloud: outPixels };
     this.registerPart(outGroup);
@@ -1247,50 +2286,55 @@ class HolographicApp {
   buildRobotArmModel() {
     this.clearAssembly();
 
+    // 1. Base Turret Flange (48,000 Voxels)
     const baseGroup = new THREE.Group();
     const basePixels = this.createVolumetricPixelCloud((i, total) => {
       const theta = (i / total) * Math.PI * 2 * 36;
       const r = 30 + Math.random() * 45;
       const z = (Math.random() - 0.5) * 26;
       return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
-    }, 0x00f0ff, 46000, 2.2);
+    }, 0x00f0ff, 48000, 2.2);
     baseGroup.add(basePixels);
     baseGroup.userData = { specKey: 'base_turret', baseZ: -120, pixelCloud: basePixels };
     this.registerPart(baseGroup);
 
+    // 2. Brushless Stator Motor (58,000 Voxels)
     const statGroup = new THREE.Group();
     const statPixels = this.createVolumetricPixelCloud((i, total) => {
       const theta = (i / total) * Math.PI * 2 * 48;
       const r = 24 + Math.random() * 30;
       const z = (Math.random() - 0.5) * 38;
       return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
-    }, 0xff007f, 55000, 2.2);
+    }, 0xff007f, 58000, 2.2);
     statGroup.add(statPixels);
     statGroup.userData = { specKey: 'stator_motor', baseZ: -50, pixelCloud: statPixels };
     this.registerPart(statGroup);
 
+    // 3. Harmonic Wave Flexspline (44,000 Voxels)
     const harmGroup = new THREE.Group();
     const harmPixels = this.createVolumetricPixelCloud((i, total) => {
       const theta = (i / total) * Math.PI * 2 * 48;
       const r = 38 + Math.random() * 12;
       const z = (Math.random() - 0.5) * 26;
       return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
-    }, 0xffaa00, 42000, 2.2);
+    }, 0xffaa00, 44000, 2.2);
     harmGroup.add(harmPixels);
     harmGroup.userData = { specKey: 'harmonic_drive', baseZ: 15, pixelCloud: harmPixels };
     this.registerPart(harmGroup);
 
+    // 4. Billet 7075-T6 Pitch Yoke Arm (48,000 Voxels)
     const yokeGroup = new THREE.Group();
     const yokePixels = this.createVolumetricPixelCloud((i, total) => {
       const x = (Math.random() - 0.5) * 44;
       const y = (Math.random() - 0.5) * 78;
       const z = (Math.random() - 0.5) * 32;
       return { x, y, z };
-    }, 0x00f0ff, 46000, 2.2);
+    }, 0x00f0ff, 48000, 2.2);
     yokeGroup.add(yokePixels);
     yokeGroup.userData = { specKey: 'pivot_yoke', baseZ: 75, pixelCloud: yokePixels };
     this.registerPart(yokeGroup);
 
+    // 5. Adaptive Gripper End-Effector (46,000 Voxels)
     const gripGroup = new THREE.Group();
     const gripPixels = this.createVolumetricPixelCloud((i, total) => {
       const isLeft = i % 2 === 0;
@@ -1299,7 +2343,7 @@ class HolographicApp {
       const y = (Math.random() - 0.5) * 46;
       const z = (Math.random() - 0.5) * 18;
       return { x, y, z };
-    }, 0x39ff14, 44000, 2.2);
+    }, 0x39ff14, 46000, 2.2);
     gripGroup.add(gripPixels);
     gripGroup.userData = { specKey: 'end_effector', baseZ: 145, pixelCloud: gripPixels };
     this.registerPart(gripGroup);
@@ -1324,20 +2368,20 @@ class HolographicApp {
   buildComponentsTray() {
     this.trayParts = [];
     const matParts = [
-      { key: 'bike_piston', geo: new THREE.CylinderGeometry(28, 28, 36, 24), col: 0x39ff14, x: -320 },
-      { key: 'bike_conrod', geo: new THREE.BoxGeometry(14, 55, 12), col: 0x00f0ff, x: -210 },
-      { key: 'bike_cylinder', geo: new THREE.CylinderGeometry(38, 38, 55, 24), col: 0x00f0ff, x: -100 },
-      { key: 'sun_gear', geo: new THREE.CylinderGeometry(24, 24, 18, 14), col: 0xffaa00, x: 10 },
-      { key: 'rocket_bell', geo: new THREE.ConeGeometry(32, 65, 32), col: 0xff007f, x: 120 },
-      { key: 'fan', geo: new THREE.CylinderGeometry(36, 36, 12, 24), col: 0x39ff14, x: 230 },
-      { key: 'turbo', geo: new THREE.TorusGeometry(24, 10, 16, 32), col: 0xffaa00, x: 340 }
+      { key: 'piston', buildFn: () => this.buildCADPiston(0x39ff14), x: -360 },
+      { key: 'conrod', buildFn: () => this.buildCADConrod(0x00f0ff), x: -240 },
+      { key: 'crankshaft', buildFn: () => this.buildCADCrankshaft(0xffaa00), x: -120 },
+      { key: 'cylinder', buildFn: () => this.buildCADCylinder(0x00f0ff), x: 0 },
+      { key: 'head', buildFn: () => this.buildCADHead(0xff007f), x: 120 },
+      { key: 'turbo', buildFn: () => this.buildCADTurbo(0x39ff14), x: 240 },
+      { key: 'gear', buildFn: () => this.buildCADGear(0xffaa00), x: 360 }
     ];
 
     matParts.forEach(p => {
-      const mesh = new THREE.Mesh(p.geo, this.createTranslucentShellMaterial(p.col, p.col));
-      this.addNeonEdges(mesh, p.col);
-      mesh.position.set(p.x, -20, 0);
-      mesh.userData = { specKey: p.key, isTrayItem: true };
+      const part = p.buildFn();
+      part.position.set(p.x, -20, 0);
+      part.userData.specKey = p.key;
+      part.userData.isTrayItem = true;
 
       const pedGeo = new THREE.CylinderGeometry(35, 42, 5, 32);
       const pedMat = new THREE.MeshBasicMaterial({ color: 0x00f0ff, wireframe: true });
@@ -1345,8 +2389,8 @@ class HolographicApp {
       ped.position.set(p.x, -50, 0);
       this.componentsTrayGroup.add(ped);
 
-      this.componentsTrayGroup.add(mesh);
-      this.trayParts.push(mesh);
+      this.componentsTrayGroup.add(part);
+      this.trayParts.push(part);
     });
   }
 
@@ -1354,55 +2398,51 @@ class HolographicApp {
   // ZONE 03 SANDBOX MODULAR SPAWNER & MAGNETIC SNAPPING
   // -----------------------------------------------------------
   spawnSandboxPart(partType) {
-    let newMesh = null;
-    let ports = [];
-    const colors = { piston: 0x39ff14, conrod: 0x00f0ff, crankshaft: 0xffaa00, cylinder: 0x00f0ff, turbo: 0xffaa00, ecu_chip: 0x39ff14, wire_harness: 0x00f0ff, gear: 0xffaa00, rocket_bell: 0xff007f };
-    const col = colors[partType] || 0x00f0ff;
+    let newPart = null;
 
     if (partType === 'piston') {
-      newMesh = new THREE.Mesh(new THREE.CylinderGeometry(26, 26, 35, 24), this.createTranslucentShellMaterial(col, col));
-      ports = [{ id: 'wrist_pin', pos: new THREE.Vector3(0, -10, 0), snapWith: 'small_end' }];
+      newPart = this.buildCADPiston(0x39ff14);
     } else if (partType === 'conrod') {
-      newMesh = new THREE.Mesh(new THREE.BoxGeometry(14, 55, 12), this.createTranslucentShellMaterial(col, col));
-      ports = [
-        { id: 'small_end', pos: new THREE.Vector3(0, 26, 0), snapWith: 'wrist_pin' },
-        { id: 'big_end', pos: new THREE.Vector3(0, -26, 0), snapWith: 'crank_pin' }
-      ];
+      newPart = this.buildCADConrod(0x00f0ff);
     } else if (partType === 'crankshaft') {
-      newMesh = new THREE.Mesh(new THREE.CylinderGeometry(28, 28, 45, 24), this.createTranslucentShellMaterial(col, col));
-      newMesh.rotation.z = Math.PI / 2;
-      ports = [{ id: 'crank_pin', pos: new THREE.Vector3(22, 0, 0), snapWith: 'big_end' }];
+      newPart = this.buildCADCrankshaft(0xffaa00);
     } else if (partType === 'cylinder') {
-      newMesh = new THREE.Mesh(new THREE.CylinderGeometry(36, 36, 65, 24), this.createTranslucentShellMaterial(col, col));
-      ports = [{ id: 'cylinder_base', pos: new THREE.Vector3(0, -32, 0), snapWith: 'wrist_pin' }];
+      newPart = this.buildCADCylinder(0x00f0ff);
+    } else if (partType === 'head') {
+      newPart = this.buildCADHead(0xff007f);
+    } else if (partType === 'spark_plug') {
+      newPart = this.buildCADSparkPlug(0xffffff);
+    } else if (partType === 'injector') {
+      newPart = this.buildCADInjector(0xffaa00);
     } else if (partType === 'turbo') {
-      newMesh = new THREE.Mesh(new THREE.TorusGeometry(26, 12, 16, 32), this.createTranslucentShellMaterial(col, col));
-      ports = [{ id: 'turbo_flange', pos: new THREE.Vector3(-25, 0, 0), snapWith: 'exhaust_port' }];
+      newPart = this.buildCADTurbo(0x39ff14);
+    } else if (partType === 'wire_threads' || partType === 'wire_harness') {
+      newPart = this.buildCADWireLoom();
     } else if (partType === 'ecu_chip') {
-      newMesh = this.createMicrochipModule(28, 38, 7, "SANDBOX-ECU", 0x39ff14);
-      ports = [{ id: 'ecu_port', pos: new THREE.Vector3(0, 0, 0), snapWith: 'loom_lead' }];
-    } else if (partType === 'wire_harness') {
-      newMesh = this.createWiringHarness([[-25, 0, 0], [0, 20, 0], [25, 0, 0]], 0x00f0ff);
-      ports = [{ id: 'loom_lead', pos: new THREE.Vector3(25, 0, 0), snapWith: 'ecu_port' }];
+      newPart = this.buildCADECU(0x39ff14);
     } else if (partType === 'gear') {
-      newMesh = new THREE.Mesh(new THREE.CylinderGeometry(26, 26, 16, 18), this.createTranslucentShellMaterial(col, col));
-      ports = [{ id: 'gear_bore', pos: new THREE.Vector3(0, 0, 0), snapWith: 'shaft_hub' }];
+      newPart = this.buildCADGear(0xffaa00);
+    } else if (partType === 'bearing') {
+      newPart = this.buildCADBearing(0x00f0ff);
+    } else if (partType === 'clutch') {
+      newPart = this.buildCADClutch(0x39ff14);
+    } else if (partType === 'exhaust') {
+      newPart = this.buildCADExhaust(0xffaa00);
     } else {
-      newMesh = new THREE.Mesh(new THREE.ConeGeometry(32, 65, 32), this.createTranslucentShellMaterial(col, col));
-      ports = [{ id: 'bell_throat', pos: new THREE.Vector3(0, -30, 0), snapWith: 'combustor_port' }];
+      newPart = this.buildCADPiston(0x00f0ff);
     }
 
-    this.addNeonEdges(newMesh, col);
-    // Random placement in sandbox view
     const spawnX = (Math.random() - 0.5) * 160;
     const spawnY = (Math.random() - 0.5) * 80;
-    newMesh.position.set(spawnX, spawnY, 0);
-    newMesh.userData = { isSandboxItem: true, partType, ports, specKey: `bike_${partType}` };
+    newPart.position.set(spawnX, spawnY, 0);
+    newPart.userData.isSandboxItem = true;
+    newPart.userData.partType = partType;
+    newPart.userData.specKey = partType;
 
-    this.workspaceSandboxGroup.add(newMesh);
-    this.sandboxParts.push(newMesh);
+    this.workspaceSandboxGroup.add(newPart);
+    this.sandboxParts.push(newPart);
     audio.playAirClick();
-    this.updateTelemetry(`bike_${partType}`);
+    this.updateTelemetry(partType);
   }
 
   clearSandbox() {
@@ -2222,6 +3262,35 @@ class HolographicApp {
       if (e.key === '-' || e.key === '_') document.getElementById('btn-zoom-out').click();
       if (e.key === '0') document.getElementById('btn-zoom-reset').click();
     });
+
+    // Direct Mouse Click-and-Drag Support for Sandbox Assembly (in addition to hands-free tracking)
+    let isMouseDragging = false;
+    this.canvas.addEventListener('mousedown', (e) => {
+      if (e.button === 0) {
+        this.testPartGrab(e.clientX, e.clientY);
+        if (this.grabbedMesh) {
+          isMouseDragging = true;
+          this.controls.enabled = false;
+        }
+      }
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (isMouseDragging && this.grabbedMesh) {
+        this.handlePartDrag(e.clientX, e.clientY);
+      }
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (isMouseDragging) {
+        if (this.grabbedMesh && this.currentZone === 3) {
+          this.checkMagneticSnapping(this.grabbedMesh);
+        }
+        isMouseDragging = false;
+        this.grabbedMesh = null;
+        this.controls.enabled = true;
+      }
+    });
   }
 
   onWindowResize() {
@@ -2250,21 +3319,36 @@ class HolographicApp {
       if (statusPill) statusPill.textContent = `LIVE ${this.currentFPS}FPS`;
     }
 
-    // Pulse active electrical signals along wiring harnesses
+    // Pulse active electrical signals along multi-thread wiring harnesses
     this.pulseClock += 0.008;
     this.harnessObjects.forEach(h => {
-      const p = h.userData.pulsePoints;
-      if (p && p.userData && p.userData.curve) {
-        const curve = p.userData.curve;
-        const uvs = p.userData.uvs;
-        const count = p.userData.count;
-        const posAttr = p.geometry.attributes.position;
-        for (let i = 0; i < count; i++) {
-          uvs[i] = (uvs[i] + 0.004) % 1.0;
-          const pt = curve.getPoint(uvs[i]);
-          posAttr.setXYZ(i, pt.x, pt.y, pt.z);
+      if (h.userData && h.userData.strands) {
+        h.userData.strands.forEach(s => {
+          const curve = s.curve;
+          const uvs = s.uvs;
+          const count = s.count;
+          const posAttr = s.mesh.geometry.attributes.position;
+          for (let i = 0; i < count; i++) {
+            uvs[i] = (uvs[i] + s.speed) % 1.0;
+            const pt = curve.getPoint(uvs[i]);
+            posAttr.setXYZ(i, pt.x, pt.y, pt.z);
+          }
+          posAttr.needsUpdate = true;
+        });
+      } else {
+        const p = h.userData.pulsePoints;
+        if (p && p.userData && p.userData.curve) {
+          const curve = p.userData.curve;
+          const uvs = p.userData.uvs;
+          const count = p.userData.count;
+          const posAttr = p.geometry.attributes.position;
+          for (let i = 0; i < count; i++) {
+            uvs[i] = (uvs[i] + 0.004) % 1.0;
+            const pt = curve.getPoint(uvs[i]);
+            posAttr.setXYZ(i, pt.x, pt.y, pt.z);
+          }
+          posAttr.needsUpdate = true;
         }
-        posAttr.needsUpdate = true;
       }
     });
 
