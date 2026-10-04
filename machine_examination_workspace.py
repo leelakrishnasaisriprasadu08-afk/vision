@@ -341,36 +341,45 @@ class KineticController:
         """Processes hand landmarks to compute explosion, pinch grabbing, and rotation."""
         num_hands = len(hands_landmarks)
 
-        # 1. Two-Hand Explosion Gesture
+        # 1. Two-Hand Explosion Gesture (Scale-Invariant)
         if num_hands >= 2:
             w1 = np.array(hands_landmarks[0][0][:2], dtype=float)
             w2 = np.array(hands_landmarks[1][0][:2], dtype=float)
             dist = np.linalg.norm(w2 - w1)
             
+            p1_scale = np.linalg.norm(np.array(hands_landmarks[0][0][:2], dtype=float) - np.array(hands_landmarks[0][9][:2], dtype=float))
+            p2_scale = np.linalg.norm(np.array(hands_landmarks[1][0][:2], dtype=float) - np.array(hands_landmarks[1][9][:2], dtype=float))
+            avg_palm = max(10.0, (p1_scale + p2_scale) * 0.5)
+
             # EMA Smoothing
             self.smooth_hand_dist = 0.82 * self.smooth_hand_dist + 0.18 * dist
-            norm_factor = np.clip((self.smooth_hand_dist - self.min_dist) / (self.max_dist - self.min_dist), 0.0, 1.0)
+            norm_factor = np.clip((self.smooth_hand_dist - avg_palm * 0.45) / (avg_palm * 2.2), 0.0, 1.0)
             self.explosion_factor = float(norm_factor)
 
-        # 2. Precision Pinch-to-Grab State Machine
+        # 2. Precision Scale-Invariant Pinch-to-Grab State Machine
         pinch_detected = False
         active_pinch_pt = None
 
         for hand in hands_landmarks:
+            wrist = np.array(hand[0][:2], dtype=float)
+            mid_mcp = np.array(hand[9][:2], dtype=float)
+            palm_scale = max(10.0, np.linalg.norm(wrist - mid_mcp))
+
             thumb_tip = np.array(hand[4][:2], dtype=float)
             index_tip = np.array(hand[8][:2], dtype=float)
             p_dist = np.linalg.norm(index_tip - thumb_tip)
+            pinch_ratio = p_dist / palm_scale
             p_center = tuple(((thumb_tip + index_tip) * 0.5).astype(int))
 
             if not self.is_pinching:
-                if p_dist < self.pinch_grab_thresh:
+                if pinch_ratio < 0.22:
                     self.is_pinching = True
                     self.pinch_pos_2d = p_center
                     active_pinch_pt = p_center
                     pinch_detected = True
                     break
             else:
-                if p_dist < self.pinch_release_thresh:
+                if pinch_ratio < 0.38:
                     self.pinch_pos_2d = p_center
                     active_pinch_pt = p_center
                     pinch_detected = True

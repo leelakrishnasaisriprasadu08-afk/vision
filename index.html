@@ -93,6 +93,33 @@
       </div>
     </div>
 
+    <!-- Floating Live Running Usage & Voxel Telemetry Panel -->
+    <div id="running-usage-chip" class="floating-panel mini-card usage-card">
+      <div class="chip-header">
+        <span class="neon-icon neon-green-text">⚡</span>
+        <span class="chip-title">RUNNING METRICS & VOXELS</span>
+        <span id="usage-status" class="status-pill green-pill">LIVE 60FPS</span>
+      </div>
+      <div class="chip-content">
+        <div class="chip-row">
+          <span class="chip-label">ACTIVE VOXELS:</span>
+          <span id="usage-voxels" class="chip-val neon-green-text">42,600 PTS</span>
+        </div>
+        <div class="chip-row">
+          <span class="chip-label">BUFFER MEMORY:</span>
+          <span id="usage-vram" class="chip-val neon-cyan-text">18.4 MB VRAM</span>
+        </div>
+        <div class="chip-row">
+          <span class="chip-label">PIXEL KINETIC:</span>
+          <span id="usage-rate" class="chip-val neon-magenta-text">0.0 PX/S</span>
+        </div>
+        <div class="chip-row">
+          <span class="chip-label">HAND ENGINE:</span>
+          <span id="usage-mode" class="chip-val">AIR-CURSOR READY</span>
+        </div>
+      </div>
+    </div>
+
     <!-- Floating Top-Right Live Vision Sensor (Compact Mini-PiP) -->
     <div id="sensor-pip" class="floating-panel mini-pip">
       <div class="pip-header">
@@ -146,10 +173,35 @@
     <!-- Discreet Bottom Gesture Bar -->
     <div id="gesture-guide" class="gesture-guide">
       <span>👐 <strong>Two Hands:</strong> Axial & Pixel Cloud Explosion</span>
-      <span>🤏 <strong>Pinch:</strong> Grab & Extract Part</span>
-      <span>✋ <strong>Palm:</strong> 3D Orbit</span>
+      <span>🤏 <strong>Air-Pinch:</strong> Click Buttons & 3D Drag Orbit</span>
+      <span>⏱ <strong>Air-Hover:</strong> Dwell Auto-Click Any Button</span>
+      <span>✋ <strong>1 Hand:</strong> Air-Cursor Tracking</span>
     </div>
 
+  </div>
+
+  <!-- Virtual Air-Cursor for 100% Touchless / Zero Keyboard & Mouse Interaction -->
+  <div id="air-cursor" class="air-cursor">
+    <div class="cursor-reticle">
+      <div class="reticle-core"></div>
+      <div class="reticle-ring"></div>
+      <svg class="dwell-progress-ring" viewBox="0 0 44 44">
+        <circle class="dwell-circle-bg" cx="22" cy="22" r="18"></circle>
+        <circle id="dwell-circle-bar" class="dwell-circle-bar" cx="22" cy="22" r="18"></circle>
+      </svg>
+      <div class="reticle-label" id="air-cursor-label">AIR-CURSOR</div>
+    </div>
+  </div>
+
+  <!-- Touchless Initial Sensor Activation Banner (Auto-dismisses on hand detection) -->
+  <div id="touchless-overlay" class="touchless-overlay">
+    <div class="touchless-modal">
+      <div class="neon-pulse-ring"></div>
+      <h2>TOUCHLESS HOLOGRAPHIC CAD</h2>
+      <p>Operate the complete CAD system without touching keyboard or mouse.</p>
+      <p class="sub">Show your hand to the camera to begin air-pointing and gesture manipulation.</p>
+      <button id="btn-touchless-start" class="start-btn">INITIALIZE SENSOR</button>
+    </div>
   </div>
 
   <!-- Main Application Logic -->
