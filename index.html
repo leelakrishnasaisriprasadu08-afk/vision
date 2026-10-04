@@ -64,14 +64,22 @@
         <button id="btn-reset-assembly" class="action-btn" title="Reset Assembly">
           <span class="btn-icon">↺</span> RESET
         </button>
+        <button id="btn-toggle-zen" class="action-btn zen-btn" title="Toggle Full 100% Workspace View (Shortcut: F or Z)">
+          <span class="btn-icon">⛶</span> FULL VIEW
+        </button>
       </div>
     </header>
+
+    <!-- Edge Pull-Tab Expanders (Shown when side panels are collapsed) -->
+    <button id="tab-reopen-inspector" class="edge-tab left" title="Reopen Telemetry Panel">◈ TELEMETRY</button>
+    <button id="tab-reopen-hud" class="edge-tab right" title="Reopen Spatial Kinetics HUD">☵ KINETICS</button>
 
     <!-- Left Component Inspector & Telemetry Panel -->
     <aside id="inspector-panel" class="glass-panel">
       <div class="panel-header">
         <span class="panel-icon">◈</span>
         <h2>COMPONENT TELEMETRY</h2>
+        <button id="btn-collapse-inspector" class="panel-collapse-btn" title="Collapse Telemetry (Shortcut: [ )">◀</button>
       </div>
       
       <div class="inspector-body">
@@ -129,20 +137,24 @@
         <div class="live-dot"></div>
         <h2>SPATIAL KINETICS HUD</h2>
         <span id="fps-badge" class="fps-pill">60 FPS</span>
+        <button id="btn-collapse-hud" class="panel-collapse-btn" title="Collapse HUD (Shortcut: ] )">▶</button>
       </div>
 
       <!-- Live Webcam PIP Stream with Canvas Wireframe Overlay -->
-      <div class="webcam-viewport">
+      <div id="webcam-viewport" class="webcam-viewport">
         <video id="webcam-video" autoplay playsinline muted></video>
         <canvas id="hand-overlay-canvas"></canvas>
         <div id="camera-loading" class="cam-overlay-msg">
           <div class="spinner"></div>
           <span>INITIALIZING VISION ENGINE...</span>
         </div>
-        <button id="btn-toggle-camera" class="cam-toggle-btn">TOGGLE CAMERA</button>
+        <div class="pip-actions">
+          <button id="btn-minimize-cam" class="cam-toggle-btn" title="Minimize / Hide Camera Window">🗕 MINIMIZE CAM</button>
+          <button id="btn-toggle-camera" class="cam-toggle-btn">TOGGLE SENSOR</button>
+        </div>
       </div>
 
-      <!-- Kinetic State Indicators -->
+      <!-- Kinetic State Indicators (Sleek Compact Layout) -->
       <div class="kinetic-indicators">
         <div class="kinetic-card">
           <div class="kinetic-label">HANDS TRACKED</div>
@@ -163,20 +175,30 @@
       </div>
     </aside>
 
+    <!-- Floating 3D Navigation & Quick Tools Dock (Always accessible) -->
+    <div id="floating-dock" class="floating-dock">
+      <button id="btn-zoom-in" class="dock-btn" title="Zoom In (+)">+</button>
+      <button id="btn-zoom-reset" class="dock-btn" title="Fit Scene (0)">⟲</button>
+      <button id="btn-zoom-out" class="dock-btn" title="Zoom Out (-)">−</button>
+      <div id="floating-status-chip" class="dock-chip">
+        <span id="chip-machine">TURBOFAN JET</span> // <span id="chip-part">ASSEMBLY LOCKED</span> // EXP: <span id="chip-exp">0%</span>
+      </div>
+    </div>
+
     <!-- Bottom Gesture Guide & Status Bar -->
     <footer id="bottom-bar" class="glass-panel">
       <div class="gesture-hints">
         <div class="hint-pill">
           <span class="hint-glyph">👐</span>
-          <span class="hint-text"><strong>Two-Hand Expand:</strong> Pull apart to explode machine continuously</span>
+          <span class="hint-text"><strong>Two-Hand Expand:</strong> Explode machine continuously</span>
         </div>
         <div class="hint-pill">
           <span class="hint-glyph">🤏</span>
-          <span class="hint-text"><strong>Index + Thumb Pinch:</strong> Grab, extract, and manipulate part</span>
+          <span class="hint-text"><strong>Pinch:</strong> Grab & extract part</span>
         </div>
         <div class="hint-pill">
           <span class="hint-glyph">✋</span>
-          <span class="hint-text"><strong>Single Palm Move:</strong> Orbit and examine in 3D</span>
+          <span class="hint-text"><strong>Palm Move:</strong> 3D Orbit</span>
         </div>
       </div>
 

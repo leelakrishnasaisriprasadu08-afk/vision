@@ -59,10 +59,17 @@ body, html {
   z-index: 10;
   pointer-events: none;
   display: grid;
-  grid-template-rows: 64px 1fr 58px;
-  grid-template-columns: 320px 1fr 340px;
-  padding: 12px 16px;
+  grid-template-rows: 56px 1fr 48px;
+  grid-template-columns: 280px 1fr 280px;
+  padding: 10px 14px;
   gap: 12px;
+  transition: all var(--transition-smooth);
+}
+
+body.zen-mode #ui-container {
+  grid-template-columns: 0px 1fr 0px;
+  gap: 0px;
+  padding: 10px 14px 6px 14px;
 }
 
 /* Reusable Glassmorphism Panels */
@@ -232,6 +239,69 @@ body, html {
   color: var(--accent-cyan);
 }
 
+.action-btn.zen-btn {
+  border-color: var(--accent-cyan);
+  background: rgba(0, 240, 255, 0.12);
+  color: var(--accent-cyan);
+  font-weight: 700;
+}
+
+body.zen-mode .action-btn.zen-btn {
+  background: var(--accent-cyan);
+  color: #07090e;
+  box-shadow: 0 0 16px var(--accent-cyan);
+}
+
+/* Edge Pull-Tab Expanders (Shown when sidebars collapsed) */
+.edge-tab {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--bg-panel);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--border-cyan);
+  color: var(--accent-cyan);
+  padding: 12px 6px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  z-index: 30;
+  writing-mode: vertical-rl;
+  border-radius: 0 8px 8px 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: all var(--transition-fast);
+}
+
+.edge-tab.right {
+  right: 0;
+  left: auto;
+  border-radius: 8px 0 0 8px;
+  border-right: none;
+}
+
+.edge-tab.left {
+  left: 0;
+  right: auto;
+  border-left: none;
+}
+
+.edge-tab:hover {
+  background: rgba(0, 240, 255, 0.22);
+  box-shadow: 0 0 18px rgba(0, 240, 255, 0.4);
+  color: #fff;
+}
+
+body.zen-mode .edge-tab,
+#inspector-panel.collapsed ~ .edge-tab.left,
+#hand-hud-panel.collapsed ~ .edge-tab.right {
+  opacity: 0.85;
+  pointer-events: auto;
+}
+
 /* -------------------------------------------------------------
    Left Component Inspector Panel
    ------------------------------------------------------------- */
@@ -240,21 +310,50 @@ body, html {
   grid-row: 2;
   display: flex;
   flex-direction: column;
-  padding: 16px;
-  gap: 16px;
+  padding: 12px;
+  gap: 10px;
   overflow-y: auto;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s, visibility 0.35s;
+}
+
+#inspector-panel.collapsed,
+body.zen-mode #inspector-panel {
+  transform: translateX(-115%);
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
 }
 
 .panel-header {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding-bottom: 12px;
+  padding-bottom: 10px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+.panel-collapse-btn {
+  margin-left: auto;
+  background: rgba(16, 22, 32, 0.85);
+  border: 1px solid var(--border-cyan);
+  color: var(--accent-cyan);
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.panel-collapse-btn:hover {
+  background: rgba(0, 240, 255, 0.25);
+  color: #fff;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+}
+
 .panel-header h2 {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 1.5px;
   color: var(--accent-cyan);
@@ -380,8 +479,17 @@ body, html {
   grid-row: 2;
   display: flex;
   flex-direction: column;
-  padding: 16px;
-  gap: 14px;
+  padding: 12px;
+  gap: 10px;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s, visibility 0.35s;
+}
+
+#hand-hud-panel.collapsed,
+body.zen-mode #hand-hud-panel {
+  transform: translateX(115%);
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
 }
 
 .live-dot {
@@ -408,11 +516,21 @@ body, html {
 .webcam-viewport {
   position: relative;
   width: 100%;
-  height: 180px;
+  height: 150px;
   background: #000;
   border-radius: 8px;
   overflow: hidden;
   border: 1px solid rgba(0, 240, 255, 0.3);
+  transition: height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.webcam-viewport.minimized {
+  height: 36px;
+}
+
+.webcam-viewport.minimized #webcam-video,
+.webcam-viewport.minimized #hand-overlay-canvas {
+  display: none;
 }
 
 #webcam-video {
@@ -443,9 +561,9 @@ body, html {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   color: var(--accent-cyan);
   transition: opacity 0.3s;
 }
@@ -456,8 +574,8 @@ body, html {
 }
 
 .spinner {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   border: 2px solid rgba(0, 240, 255, 0.2);
   border-top-color: var(--accent-cyan);
   border-radius: 50%;
@@ -468,18 +586,28 @@ body, html {
   to { transform: rotate(360deg); }
 }
 
-.cam-toggle-btn {
+.pip-actions {
   position: absolute;
-  bottom: 8px;
-  right: 8px;
+  bottom: 6px;
+  left: 6px;
+  right: 6px;
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  z-index: 5;
+}
+
+.cam-toggle-btn {
   background: rgba(10, 14, 22, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   color: var(--text-main);
   padding: 4px 8px;
   border-radius: 4px;
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: 0.62rem;
+  font-weight: 600;
   cursor: pointer;
+  transition: all var(--transition-fast);
 }
 
 .cam-toggle-btn:hover {
@@ -491,29 +619,29 @@ body, html {
 .kinetic-indicators {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  gap: 6px;
 }
 
 .kinetic-card {
   background: rgba(8, 12, 18, 0.55);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  padding: 10px;
+  border-radius: 6px;
+  padding: 8px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
 }
 
 .kinetic-label {
   font-family: var(--font-mono);
-  font-size: 0.62rem;
+  font-size: 0.58rem;
   color: var(--text-dim);
   letter-spacing: 0.5px;
 }
 
 .kinetic-value {
   font-family: var(--font-mono);
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 700;
   color: var(--text-main);
 }
@@ -532,6 +660,67 @@ body, html {
 }
 
 /* -------------------------------------------------------------
+   Floating 3D Navigation & Zoom Dock (Always accessible)
+   ------------------------------------------------------------- */
+.floating-dock {
+  position: absolute;
+  bottom: 66px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(10, 14, 22, 0.78);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--border-cyan);
+  border-radius: 30px;
+  padding: 5px 12px;
+  pointer-events: auto;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.55);
+  z-index: 20;
+  transition: all var(--transition-fast);
+}
+
+.dock-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(20, 26, 38, 0.9);
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  color: var(--accent-cyan);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.dock-btn:hover {
+  background: rgba(0, 240, 255, 0.25);
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 10px var(--accent-cyan);
+  transform: scale(1.1);
+}
+
+.dock-chip {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  padding: 0 8px;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.dock-chip span {
+  color: var(--accent-cyan);
+  font-weight: 600;
+}
+
+/* -------------------------------------------------------------
    Bottom Status & Gesture Guide
    ------------------------------------------------------------- */
 #bottom-bar {
@@ -539,7 +728,18 @@ body, html {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 16px;
+  transition: all var(--transition-smooth);
+}
+
+body.zen-mode #bottom-bar {
+  opacity: 0.2;
+  transform: translateY(18px);
+}
+
+body.zen-mode #bottom-bar:hover {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .gesture-hints {
@@ -550,8 +750,8 @@ body, html {
 .hint-pill {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.78rem;
+  gap: 6px;
+  font-size: 0.74rem;
   color: var(--text-dim);
 }
 
@@ -560,17 +760,17 @@ body, html {
 }
 
 .hint-glyph {
-  font-size: 1rem;
+  font-size: 0.95rem;
 }
 
 .sound-btn {
   background: rgba(16, 22, 32, 0.85);
   border: 1px solid rgba(255, 255, 255, 0.12);
   color: var(--text-main);
-  padding: 6px 14px;
+  padding: 5px 12px;
   border-radius: 6px;
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.70rem;
   cursor: pointer;
   display: flex;
   align-items: center;

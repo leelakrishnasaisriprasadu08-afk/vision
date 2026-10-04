@@ -121,8 +121,8 @@ class HolographicApp {
     this.scene.background = new THREE.Color(0x07090e);
     this.scene.fog = new THREE.FogExp2(0x07090e, 0.004);
 
-    this.camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 2000);
-    this.camera.position.set(0, 80, 320);
+    this.camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 2500);
+    this.camera.position.set(0, 75, 380);
 
     this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, antialias: true, alpha: true });
     this.renderer.setSize(width, height);
@@ -133,8 +133,8 @@ class HolographicApp {
     this.controls = new THREE.OrbitControls(this.camera, this.canvas);
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.05;
-    this.controls.maxDistance = 600;
-    this.controls.minDistance = 60;
+    this.controls.maxDistance = 800;
+    this.controls.minDistance = 50;
     this.controls.target.set(0, 0, 0);
 
     // Dynamic Lighting
@@ -360,11 +360,11 @@ class HolographicApp {
   buildComponentsTray() {
     this.trayParts = [];
     const matParts = [
-      { key: 'fan', geo: new THREE.CylinderGeometry(28, 28, 10, 18), col: 0x39ff14, x: -140 },
-      { key: 'compressor', geo: new THREE.CylinderGeometry(24, 30, 16, 20), col: 0x00f0ff, x: -70 },
+      { key: 'fan', geo: new THREE.CylinderGeometry(28, 28, 10, 18), col: 0x39ff14, x: -220 },
+      { key: 'compressor', geo: new THREE.CylinderGeometry(24, 30, 16, 20), col: 0x00f0ff, x: -110 },
       { key: 'sun_gear', geo: new THREE.CylinderGeometry(18, 18, 14, 12), col: 0xff9900, x: 0 },
-      { key: 'combustor', geo: new THREE.CylinderGeometry(22, 22, 26, 24, 1, true), col: 0xff007f, x: 70 },
-      { key: 'nozzle', geo: new THREE.ConeGeometry(20, 36, 24), col: 0xffffff, x: 140 }
+      { key: 'combustor', geo: new THREE.CylinderGeometry(22, 22, 26, 24, 1, true), col: 0xff007f, x: 110 },
+      { key: 'nozzle', geo: new THREE.ConeGeometry(20, 36, 24), col: 0xffffff, x: 220 }
     ];
 
     matParts.forEach(p => {
@@ -412,9 +412,15 @@ class HolographicApp {
   setExplosion(val) {
     this.explosionFactor = Math.max(0, Math.min(1, val));
     this.updateAssemblyPositions();
-    document.getElementById('explosion-percentage').textContent = `${Math.round(this.explosionFactor * 100)}%`;
-    document.getElementById('explosion-meter-bar').style.width = `${Math.round(this.explosionFactor * 100)}%`;
-    document.getElementById('manual-explosion-slider').value = Math.round(this.explosionFactor * 100);
+    const expStr = `${Math.round(this.explosionFactor * 100)}%`;
+    const expElem = document.getElementById('explosion-percentage');
+    if (expElem) expElem.textContent = expStr;
+    const meterBar = document.getElementById('explosion-meter-bar');
+    if (meterBar) meterBar.style.width = expStr;
+    const expSlider = document.getElementById('manual-explosion-slider');
+    if (expSlider) expSlider.value = Math.round(this.explosionFactor * 100);
+    const chipExp = document.getElementById('chip-exp');
+    if (chipExp) chipExp.textContent = expStr;
   }
 
   toggleWireframe() {
@@ -463,6 +469,9 @@ class HolographicApp {
     document.getElementById('part-tolerance').textContent = spec.tol;
     document.getElementById('part-mass').textContent = spec.mass;
     document.getElementById('part-rpm').textContent = spec.rpm;
+
+    const chipPart = document.getElementById('chip-part');
+    if (chipPart) chipPart.textContent = spec.name.toUpperCase();
   }
 
   // -----------------------------------------------------------
@@ -659,8 +668,98 @@ class HolographicApp {
     document.getElementById('tab-zone-2').onclick = () => this.switchZone(2);
     document.getElementById('tab-zone-3').onclick = () => this.switchZone(3);
 
+    // Zen / Full 100% Workspace Mode Toggle
+    const toggleZen = () => {
+      document.body.classList.toggle('zen-mode');
+      const isZen = document.body.classList.contains('zen-mode');
+      const zenBtn = document.getElementById('btn-toggle-zen');
+      if (zenBtn) {
+        zenBtn.classList.toggle('active', isZen);
+        zenBtn.innerHTML = isZen ? '<span class="btn-icon">🗗</span> EXIT ZEN' : '<span class="btn-icon">⛶</span> FULL VIEW';
+      }
+      setTimeout(() => this.onWindowResize(), 360);
+    };
+    const zenBtnElem = document.getElementById('btn-toggle-zen');
+    if (zenBtnElem) zenBtnElem.onclick = toggleZen;
+
+    // Collapsible Left Telemetry Panel & Pull-Tab
+    const inspector = document.getElementById('inspector-panel');
+    const collapseInspBtn = document.getElementById('btn-collapse-inspector');
+    if (collapseInspBtn && inspector) {
+      collapseInspBtn.onclick = () => {
+        inspector.classList.add('collapsed');
+        setTimeout(() => this.onWindowResize(), 360);
+      };
+    }
+    const tabReopenInsp = document.getElementById('tab-reopen-inspector');
+    if (tabReopenInsp && inspector) {
+      tabReopenInsp.onclick = () => {
+        document.body.classList.remove('zen-mode');
+        inspector.classList.remove('collapsed');
+        setTimeout(() => this.onWindowResize(), 360);
+      };
+    }
+
+    // Collapsible Right Spatial Kinetics HUD Panel & Pull-Tab
+    const hud = document.getElementById('hand-hud-panel');
+    const collapseHudBtn = document.getElementById('btn-collapse-hud');
+    if (collapseHudBtn && hud) {
+      collapseHudBtn.onclick = () => {
+        hud.classList.add('collapsed');
+        setTimeout(() => this.onWindowResize(), 360);
+      };
+    }
+    const tabReopenHud = document.getElementById('tab-reopen-hud');
+    if (tabReopenHud && hud) {
+      tabReopenHud.onclick = () => {
+        document.body.classList.remove('zen-mode');
+        hud.classList.remove('collapsed');
+        setTimeout(() => this.onWindowResize(), 360);
+      };
+    }
+
+    // Minimize Webcam PIP Preview (Reclaim HUD space)
+    const camViewport = document.getElementById('webcam-viewport');
+    const minCamBtn = document.getElementById('btn-minimize-cam');
+    if (minCamBtn && camViewport) {
+      minCamBtn.onclick = () => {
+        camViewport.classList.toggle('minimized');
+        const isMin = camViewport.classList.contains('minimized');
+        minCamBtn.textContent = isMin ? '🗖 EXPAND CAM' : '🗕 MINIMIZE CAM';
+      };
+    }
+
+    // Floating 3D Navigation & Quick Tools Dock
+    const zoomInBtn = document.getElementById('btn-zoom-in');
+    if (zoomInBtn) {
+      zoomInBtn.onclick = () => {
+        this.camera.position.z = Math.max(120, this.camera.position.z - 40);
+      };
+    }
+    const zoomOutBtn = document.getElementById('btn-zoom-out');
+    if (zoomOutBtn) {
+      zoomOutBtn.onclick = () => {
+        this.camera.position.z = Math.min(750, this.camera.position.z + 40);
+      };
+    }
+    const zoomResetBtn = document.getElementById('btn-zoom-reset');
+    if (zoomResetBtn) {
+      zoomResetBtn.onclick = () => {
+        this.camera.position.set(0, 75, 380);
+        this.controls.target.set(0, 0, 0);
+      };
+    }
+
     document.getElementById('machine-select').onchange = (e) => {
       this.currentMachine = e.target.value;
+      const machineNames = {
+        turbine: 'TURBOFAN JET',
+        gearbox: 'PLANETARY GEARBOX',
+        robot_arm: 'ROBOTIC ACTUATOR'
+      };
+      const chipMachine = document.getElementById('chip-machine');
+      if (chipMachine) chipMachine.textContent = machineNames[this.currentMachine] || this.currentMachine.toUpperCase();
+
       if (this.currentMachine === 'turbine') this.buildTurbineModel();
       else if (this.currentMachine === 'gearbox') this.buildGearboxModel();
       else this.buildRobotArmModel();
@@ -684,6 +783,8 @@ class HolographicApp {
       document.getElementById('btn-sound-toggle').textContent = `${audio.enabled ? '🔊' : '🔇'} AUDIO: ${audio.enabled ? 'ON' : 'OFF'}`;
     };
 
+    window.addEventListener('resize', () => this.onWindowResize());
+
     // Keyboard Shortcuts
     window.addEventListener('keydown', (e) => {
       if (e.key === '1') this.switchZone(1);
@@ -691,6 +792,13 @@ class HolographicApp {
       if (e.key === '3') this.switchZone(3);
       if (e.key === 'w' || e.key === 'W') this.toggleWireframe();
       if (e.key === 'r' || e.key === 'R') document.getElementById('btn-reset-assembly').click();
+      if (e.key === 'f' || e.key === 'F' || e.key === 'z' || e.key === 'Z') toggleZen();
+      if (e.key === 'c' || e.key === 'C') { if (minCamBtn) minCamBtn.click(); }
+      if (e.key === '[') { if (collapseInspBtn) collapseInspBtn.click(); }
+      if (e.key === ']') { if (collapseHudBtn) collapseHudBtn.click(); }
+      if (e.key === '+' || e.key === '=') { if (zoomInBtn) zoomInBtn.click(); }
+      if (e.key === '-' || e.key === '_') { if (zoomOutBtn) zoomOutBtn.click(); }
+      if (e.key === '0') { if (zoomResetBtn) zoomResetBtn.click(); }
     });
   }
 
