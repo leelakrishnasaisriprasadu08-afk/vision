@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nexus CAD // Holographic Machine & Component Examination Workspace</title>
+  <meta name="description" content="Real-time 3D holographic machine examination system with dual-hand continuous explosion, pinch component extraction, and modular assembly sandbox.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Three.js 3D Engine -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- OrbitControls for standard rotation -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  
+  <!-- MediaPipe Hands & Camera Utils for Real-Time In-Browser Tracking -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <!-- 3D WebGL Canvas Layer -->
+  <canvas id="webgl-canvas"></canvas>
+
+  <!-- Holographic UI Overlay Container -->
+  <div id="ui-container">
+    
+    <!-- Top Navigation Header -->
+    <header id="top-nav" class="glass-panel">
+      <div class="brand">
+        <div class="pulse-indicator"></div>
+        <h1 class="brand-title">NEXUS<span>//CAD</span></h1>
+        <span class="system-badge">HOLOGRAPHIC INSPECTOR v2.4</span>
+      </div>
+
+      <!-- Zone Selector Tabs -->
+      <nav class="zone-tabs" role="tablist">
+        <button id="tab-zone-1" class="tab-btn active" role="tab" aria-selected="true">
+          <span class="tab-num">01</span>
+          <span class="tab-label">MACHINES CATALOG</span>
+        </button>
+        <button id="tab-zone-2" class="tab-btn" role="tab" aria-selected="false">
+          <span class="tab-num">02</span>
+          <span class="tab-label">COMPONENTS TRAY</span>
+        </button>
+        <button id="tab-zone-3" class="tab-btn" role="tab" aria-selected="false">
+          <span class="tab-num">03</span>
+          <span class="tab-label">ASSEMBLY SANDBOX</span>
+        </button>
+      </nav>
+
+      <!-- Machine Model Switcher & Visual Modes -->
+      <div class="header-actions">
+        <select id="machine-select" class="cyber-select" aria-label="Select Machine Model">
+          <option value="turbine">TURBOFAN JET ENGINE</option>
+          <option value="gearbox">PLANETARY GEARBOX</option>
+          <option value="robot_arm">ROBOTIC ACTUATOR JOINT</option>
+        </select>
+        
+        <button id="btn-toggle-wireframe" class="action-btn" title="Toggle Wireframe / Shaded">
+          <span class="btn-icon">⚡</span> WIREFRAME
+        </button>
+        <button id="btn-reset-assembly" class="action-btn" title="Reset Assembly">
+          <span class="btn-icon">↺</span> RESET
+        </button>
+      </div>
+    </header>
+
+    <!-- Left Component Inspector & Telemetry Panel -->
+    <aside id="inspector-panel" class="glass-panel">
+      <div class="panel-header">
+        <span class="panel-icon">◈</span>
+        <h2>COMPONENT TELEMETRY</h2>
+      </div>
+      
+      <div class="inspector-body">
+        <div class="spec-group">
+          <label>COMPONENT NAME</label>
+          <div id="part-name" class="spec-value highlight">ASSEMBLY LOCKED</div>
+        </div>
+        <div class="spec-group">
+          <label>SUBSYSTEM</label>
+          <div id="part-subsystem" class="spec-value">PROPULSION CORE</div>
+        </div>
+        <div class="spec-row">
+          <div class="spec-group">
+            <label>MATERIAL</label>
+            <div id="part-material" class="spec-value">Ti-6Al-4V</div>
+          </div>
+          <div class="spec-group">
+            <label>TOLERANCE</label>
+            <div id="part-tolerance" class="spec-value">±0.005 mm</div>
+          </div>
+        </div>
+        <div class="spec-row">
+          <div class="spec-group">
+            <label>MASS</label>
+            <div id="part-mass" class="spec-value">14.8 kg</div>
+          </div>
+          <div class="spec-group">
+            <label>ROTATION / RPM</label>
+            <div id="part-rpm" class="spec-value">12,500 RPM</div>
+          </div>
+        </div>
+        <div class="spec-group">
+          <label>INSPECTION STATUS</label>
+          <div id="part-status" class="status-badge optimal">NOMINAL // ZERO DEFECT</div>
+        </div>
+      </div>
+
+      <!-- Exploded View Slider (Manual / Hand Kinetic Indicator) -->
+      <div class="explosion-control-box">
+        <div class="explosion-header">
+          <span>AXIAL EXPLOSION</span>
+          <span id="explosion-percentage">0%</span>
+        </div>
+        <div class="meter-track">
+          <div id="explosion-meter-bar" class="meter-fill" style="width: 0%;"></div>
+        </div>
+        <input type="range" id="manual-explosion-slider" min="0" max="100" value="0" aria-label="Explosion Level">
+        <small class="hint">Spread both hands apart to explode continuously</small>
+      </div>
+    </aside>
+
+    <!-- Right Webcam & Hand Kinetic Tracking HUD -->
+    <aside id="hand-hud-panel" class="glass-panel">
+      <div class="panel-header">
+        <div class="live-dot"></div>
+        <h2>SPATIAL KINETICS HUD</h2>
+        <span id="fps-badge" class="fps-pill">60 FPS</span>
+      </div>
+
+      <!-- Live Webcam PIP Stream with Canvas Wireframe Overlay -->
+      <div class="webcam-viewport">
+        <video id="webcam-video" autoplay playsinline muted></video>
+        <canvas id="hand-overlay-canvas"></canvas>
+        <div id="camera-loading" class="cam-overlay-msg">
+          <div class="spinner"></div>
+          <span>INITIALIZING VISION ENGINE...</span>
+        </div>
+        <button id="btn-toggle-camera" class="cam-toggle-btn">TOGGLE CAMERA</button>
+      </div>
+
+      <!-- Kinetic State Indicators -->
+      <div class="kinetic-indicators">
+        <div class="kinetic-card">
+          <div class="kinetic-label">HANDS TRACKED</div>
+          <div id="hud-hand-count" class="kinetic-value">0 DETECTED</div>
+        </div>
+        <div class="kinetic-card">
+          <div class="kinetic-label">PINCH LOCK</div>
+          <div id="hud-pinch-status" class="kinetic-value inactive">INACTIVE</div>
+        </div>
+        <div class="kinetic-card">
+          <div class="kinetic-label">TWO-HAND DIST</div>
+          <div id="hud-hand-dist" class="kinetic-value">0 px</div>
+        </div>
+        <div class="kinetic-card">
+          <div class="kinetic-label">ACTIVE MODE</div>
+          <div id="hud-active-mode" class="kinetic-value accent">EXPLODED VIEW</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Bottom Gesture Guide & Status Bar -->
+    <footer id="bottom-bar" class="glass-panel">
+      <div class="gesture-hints">
+        <div class="hint-pill">
+          <span class="hint-glyph">👐</span>
+          <span class="hint-text"><strong>Two-Hand Expand:</strong> Pull apart to explode machine continuously</span>
+        </div>
+        <div class="hint-pill">
+          <span class="hint-glyph">🤏</span>
+          <span class="hint-text"><strong>Index + Thumb Pinch:</strong> Grab, extract, and manipulate part</span>
+        </div>
+        <div class="hint-pill">
+          <span class="hint-glyph">✋</span>
+          <span class="hint-text"><strong>Single Palm Move:</strong> Orbit and examine in 3D</span>
+        </div>
+      </div>
+
+      <div class="sound-toggle-container">
+        <button id="btn-sound-toggle" class="sound-btn" title="Toggle Sci-Fi Audio Synthesizer">
+          <span id="sound-icon">🔊</span> AUDIO: ON
+        </button>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Main Application Logic -->
+  <script src="app.js"></script>
+</body>
+</html>
