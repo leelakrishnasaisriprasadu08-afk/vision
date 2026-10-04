@@ -204,23 +204,49 @@ def extract_fingers_without_palm(frame: np.ndarray):
     
     for cnt in contours:
         area = cv2.contourArea(cnt)
-        if area < 1500:  # Ignore tiny artifacts
+        if area < 1800 or area > (h * w * 0.40):  # Ignore tiny noise or full-frame blobs
             continue
             
-        hull = cv2.convexHull(cnt, returnPoints=False)
-        if hull is None or len(hull) < 3:
+        # Geometric Solidity & Circularity Face Filter:
+        # Human faces/heads are solid convex ovals (solidity > 0.85, circularity > 0.50).
+        # Hand/finger clusters have deep inter-finger gaps (solidity <= 0.82, circularity <= 0.46).
+        hull_pts = cv2.convexHull(cnt, returnPoints=True)
+        if hull_pts is None or len(hull_pts) < 3:
+            continue
+            
+        hull_area = cv2.contourArea(hull_pts)
+        if hull_area <= 0:
+            continue
+            
+        solidity = area / hull_area
+        perim = cv2.arcLength(cnt, True)
+        if perim <= 0:
+            continue
+        circularity = (4.0 * np.pi * area) / (perim ** 2)
+        
+        # Immediate rejection of face/head/body blobs (faces are round with circularity ~0.86 and solidity ~0.99)
+        if solidity > 0.92 or circularity > 0.58:
+            continue
+            
+        hull_indices = cv2.convexHull(cnt, returnPoints=False)
+        if hull_indices is None or len(hull_indices) < 3:
             continue
             
         candidate_tips = []
         valleys = []
         
         try:
-            defects = cv2.convexityDefects(cnt, hull)
+            defects = cv2.convexityDefects(cnt, hull_indices)
             if defects is not None:
                 for s, e, f, d in defects.reshape(-1, 4):
                     start = (int(cnt[s][0][0]), int(cnt[s][0][1]))
                     end = (int(cnt[e][0][0]), int(cnt[e][0][1]))
                     far = (int(cnt[f][0][0]), int(cnt[f][0][1]))
+                    
+                    # Defect depth must be at least 12 pixels (d is fixed-point, scaled by 256)
+                    depth_px = d / 256.0
+                    if depth_px < 12.0:
+                        continue
                     
                     # Check apex angle at the valley
                     start_pt = np.array(start, dtype=float)
@@ -235,43 +261,53 @@ def extract_fingers_without_palm(frame: np.ndarray):
                         cos_angle = (b**2 + c**2 - a**2) / (2 * b * c)
                         angle = np.degrees(np.arccos(np.clip(cos_angle, -1.0, 1.0)))
                         
-                        # Defect must be a deep valley between fingers
-                        if angle <= 88 and d > 800:
+                        # Finger valleys must be sharp/acute (<= 82 deg)
+                        if angle <= 82:
                             valleys.append(far)
-                            candidate_tips.append(start)
-                            candidate_tips.append(end)
+                            # Ensure the tip is noticeably higher/further than the valley
+                            if np.linalg.norm(start_pt - far_pt) > 20:
+                                candidate_tips.append(start)
+                            if np.linalg.norm(end_pt - far_pt) > 20:
+                                candidate_tips.append(end)
         except Exception:
             pass
-                        
-        # Also include extreme contour points (topmost)
-        top_idx = cnt[:, :, 1].argmin()
-        topmost = (int(cnt[top_idx][0][0]), int(cnt[top_idx][0][1]))
-        candidate_tips.append(topmost)
-        
-        # 3. Cluster & Filter Fingertip Peaks (merge nearby points on the same finger tip)
+            
+        # Single isolated pointing finger handling (when no valleys exist)
+        if len(candidate_tips) == 0 and len(valleys) == 0:
+            # Check bounding box elongation: a single finger must be thin and long
+            bx, by, bw, bh = cv2.boundingRect(cnt)
+            elongation = max(bh / max(bw, 1), bw / max(bh, 1))
+            if elongation > 2.0 and area < (h * w * 0.15):
+                top_idx = cnt[:, :, 1].argmin()
+                topmost = (int(cnt[top_idx][0][0]), int(cnt[top_idx][0][1]))
+                candidate_tips.append(topmost)
+                
+        # 3. Cluster & Filter Fingertip Peaks (merge duplicate vertices)
         filtered_tips = []
         for pt in candidate_tips:
-            # Check distance from existing filtered tips
-            if not any(np.linalg.norm(np.array(pt) - np.array(existing)) < 28 for existing in filtered_tips):
-                # Ensure the tip is not deep down at the boundary
-                if pt[1] < h - 15:
+            if not any(np.linalg.norm(np.array(pt) - np.array(existing)) < 26 for existing in filtered_tips):
+                if pt[1] < h - 15:  # Not touching the very bottom edge
                     filtered_tips.append(pt)
                     
-        # Sort tips by x-coordinate (left to right)
+        # Sort tips left-to-right (max 5 fingers)
         filtered_tips = sorted(filtered_tips, key=lambda p: p[0])[:5]
         
+        # Only accept if at least 1 genuine finger protrusion is confirmed
         if len(filtered_tips) > 0:
-            # Calculate base anchor (center of the lowest points of contour)
-            lowest_pts = sorted(cnt[:, 0], key=lambda p: p[1], reverse=True)[:max(5, len(cnt)//8)]
+            lowest_pts = sorted(cnt[:, 0], key=lambda p: p[1], reverse=True)[:max(5, len(cnt) // 8)]
             base_x = int(np.mean([p[0] for p in lowest_pts]))
             base_y = int(np.mean([p[1] for p in lowest_pts]))
             
-            detected_finger_groups.append({
-                "base": (base_x, base_y),
-                "tips": filtered_tips,
-                "valleys": valleys,
-                "contour": cnt,
-            })
+            # Ensure tips are physically separated from base
+            valid_tips = [t for t in filtered_tips if np.linalg.norm(np.array(t) - np.array((base_x, base_y))) > 35]
+            
+            if len(valid_tips) > 0:
+                detected_finger_groups.append({
+                    "base": (base_x, base_y),
+                    "tips": valid_tips,
+                    "valleys": valleys,
+                    "contour": cnt,
+                })
             
     return detected_finger_groups
 
