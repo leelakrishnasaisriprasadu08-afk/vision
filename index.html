@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nexus CAD // Holographic Machine & Component Examination Workspace</title>
-  <meta name="description" content="Real-time 3D holographic machine examination system with dual-hand continuous explosion, pinch component extraction, and modular assembly sandbox.">
+  <title>Nexus CAD // Holographic Neon Machine & Pixel Cloud Workspace</title>
+  <meta name="description" content="Real-time 3D holographic machine examination workspace with neon CAD rendering, continuous dual-hand explosion, and micro-pixel dispersion matrix.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Outfit:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   
   <!-- Three.js 3D Engine -->
@@ -20,194 +20,135 @@
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
 </head>
 <body>
-  <!-- 3D WebGL Canvas Layer -->
+  <!-- 3D WebGL Canvas Layer (Full Viewport Hero) -->
   <canvas id="webgl-canvas"></canvas>
 
-  <!-- Holographic UI Overlay Container -->
-  <div id="ui-container">
+  <!-- Holographic Floating HUD Overlay (Zero screen-blocking sidebars) -->
+  <div id="hud-root">
     
-    <!-- Top Navigation Header -->
-    <header id="top-nav" class="glass-panel">
+    <!-- Top Floating Header Bar -->
+    <header id="top-hud" class="floating-panel">
       <div class="brand">
-        <div class="pulse-indicator"></div>
-        <h1 class="brand-title">NEXUS<span>//CAD</span></h1>
-        <span class="system-badge">HOLOGRAPHIC INSPECTOR v2.4</span>
+        <div class="neon-pulse-dot"></div>
+        <h1 class="brand-title">NEXUS<span>//NEON-CAD</span></h1>
       </div>
 
-      <!-- Zone Selector Tabs -->
-      <nav class="zone-tabs" role="tablist">
-        <button id="tab-zone-1" class="tab-btn active" role="tab" aria-selected="true">
-          <span class="tab-num">01</span>
-          <span class="tab-label">MACHINES CATALOG</span>
+      <!-- Zone Selector Pills -->
+      <nav class="zone-pills" role="tablist">
+        <button id="tab-zone-1" class="pill-btn active" role="tab" aria-selected="true">
+          <span class="pill-dot">●</span> 01 MACHINES
         </button>
-        <button id="tab-zone-2" class="tab-btn" role="tab" aria-selected="false">
-          <span class="tab-num">02</span>
-          <span class="tab-label">COMPONENTS TRAY</span>
+        <button id="tab-zone-2" class="pill-btn" role="tab" aria-selected="false">
+          <span class="pill-dot">●</span> 02 COMPONENTS
         </button>
-        <button id="tab-zone-3" class="tab-btn" role="tab" aria-selected="false">
-          <span class="tab-num">03</span>
-          <span class="tab-label">ASSEMBLY SANDBOX</span>
+        <button id="tab-zone-3" class="pill-btn" role="tab" aria-selected="false">
+          <span class="pill-dot">●</span> 03 SANDBOX
         </button>
       </nav>
 
-      <!-- Machine Model Switcher & Visual Modes -->
-      <div class="header-actions">
+      <!-- Machine Select & Visual Modes -->
+      <div class="hud-actions">
         <select id="machine-select" class="cyber-select" aria-label="Select Machine Model">
           <option value="turbine">TURBOFAN JET ENGINE</option>
           <option value="gearbox">PLANETARY GEARBOX</option>
           <option value="robot_arm">ROBOTIC ACTUATOR JOINT</option>
         </select>
         
-        <button id="btn-toggle-wireframe" class="action-btn" title="Toggle Wireframe / Shaded">
+        <button id="btn-toggle-wireframe" class="action-btn" title="Toggle Neon Wireframe (W)">
           <span class="btn-icon">⚡</span> WIREFRAME
         </button>
-        <button id="btn-reset-assembly" class="action-btn" title="Reset Assembly">
-          <span class="btn-icon">↺</span> RESET
+        <button id="btn-toggle-pixels" class="action-btn active" title="Toggle Pixel & Particle Dispersion Matrix (P)">
+          <span class="btn-icon">✦</span> PIXELS: ON
         </button>
-        <button id="btn-toggle-zen" class="action-btn zen-btn" title="Toggle Full 100% Workspace View (Shortcut: F or Z)">
-          <span class="btn-icon">⛶</span> FULL VIEW
+        <button id="btn-reset-assembly" class="action-btn" title="Reset Assembly (R)">
+          <span class="btn-icon">↺</span> RESET
         </button>
       </div>
     </header>
 
-    <!-- Edge Pull-Tab Expanders (Shown when side panels are collapsed) -->
-    <button id="tab-reopen-inspector" class="edge-tab left" title="Reopen Telemetry Panel">◈ TELEMETRY</button>
-    <button id="tab-reopen-hud" class="edge-tab right" title="Reopen Spatial Kinetics HUD">☵ KINETICS</button>
-
-    <!-- Left Component Inspector & Telemetry Panel -->
-    <aside id="inspector-panel" class="glass-panel">
-      <div class="panel-header">
-        <span class="panel-icon">◈</span>
-        <h2>COMPONENT TELEMETRY</h2>
-        <button id="btn-collapse-inspector" class="panel-collapse-btn" title="Collapse Telemetry (Shortcut: [ )">◀</button>
+    <!-- Floating Top-Left Telemetry Card (Sleek, Compact, Non-blocking) -->
+    <div id="telemetry-chip" class="floating-panel mini-card">
+      <div class="chip-header">
+        <span class="neon-icon">◈</span>
+        <span class="chip-title">COMPONENT TELEMETRY</span>
+        <span id="chip-status" class="status-pill">NOMINAL</span>
       </div>
-      
-      <div class="inspector-body">
-        <div class="spec-group">
-          <label>COMPONENT NAME</label>
-          <div id="part-name" class="spec-value highlight">ASSEMBLY LOCKED</div>
+      <div class="chip-content">
+        <div class="chip-row">
+          <span class="chip-label">PART:</span>
+          <span id="part-name" class="chip-val highlight">ASSEMBLY LOCKED</span>
         </div>
-        <div class="spec-group">
-          <label>SUBSYSTEM</label>
-          <div id="part-subsystem" class="spec-value">PROPULSION CORE</div>
+        <div class="chip-row">
+          <span class="chip-label">SUBSYSTEM:</span>
+          <span id="part-subsystem" class="chip-val">PROPULSION CORE</span>
         </div>
-        <div class="spec-row">
-          <div class="spec-group">
-            <label>MATERIAL</label>
-            <div id="part-material" class="spec-value">Ti-6Al-4V</div>
-          </div>
-          <div class="spec-group">
-            <label>TOLERANCE</label>
-            <div id="part-tolerance" class="spec-value">±0.005 mm</div>
-          </div>
+        <div class="chip-row">
+          <span class="chip-label">MATERIAL:</span>
+          <span id="part-material" class="chip-val">Ti-6Al-4V Ti</span>
         </div>
-        <div class="spec-row">
-          <div class="spec-group">
-            <label>MASS</label>
-            <div id="part-mass" class="spec-value">14.8 kg</div>
-          </div>
-          <div class="spec-group">
-            <label>ROTATION / RPM</label>
-            <div id="part-rpm" class="spec-value">12,500 RPM</div>
-          </div>
+        <div class="chip-row">
+          <span class="chip-label">RPM:</span>
+          <span id="part-rpm" class="chip-val">12,500 RPM</span>
         </div>
-        <div class="spec-group">
-          <label>INSPECTION STATUS</label>
-          <div id="part-status" class="status-badge optimal">NOMINAL // ZERO DEFECT</div>
-        </div>
-      </div>
-
-      <!-- Exploded View Slider (Manual / Hand Kinetic Indicator) -->
-      <div class="explosion-control-box">
-        <div class="explosion-header">
-          <span>AXIAL EXPLOSION</span>
-          <span id="explosion-percentage">0%</span>
-        </div>
-        <div class="meter-track">
-          <div id="explosion-meter-bar" class="meter-fill" style="width: 0%;"></div>
-        </div>
-        <input type="range" id="manual-explosion-slider" min="0" max="100" value="0" aria-label="Explosion Level">
-        <small class="hint">Spread both hands apart to explode continuously</small>
-      </div>
-    </aside>
-
-    <!-- Right Webcam & Hand Kinetic Tracking HUD -->
-    <aside id="hand-hud-panel" class="glass-panel">
-      <div class="panel-header">
-        <div class="live-dot"></div>
-        <h2>SPATIAL KINETICS HUD</h2>
-        <span id="fps-badge" class="fps-pill">60 FPS</span>
-        <button id="btn-collapse-hud" class="panel-collapse-btn" title="Collapse HUD (Shortcut: ] )">▶</button>
-      </div>
-
-      <!-- Live Webcam PIP Stream with Canvas Wireframe Overlay -->
-      <div id="webcam-viewport" class="webcam-viewport">
-        <video id="webcam-video" autoplay playsinline muted></video>
-        <canvas id="hand-overlay-canvas"></canvas>
-        <div id="camera-loading" class="cam-overlay-msg">
-          <div class="spinner"></div>
-          <span>INITIALIZING VISION ENGINE...</span>
-        </div>
-        <div class="pip-actions">
-          <button id="btn-minimize-cam" class="cam-toggle-btn" title="Minimize / Hide Camera Window">🗕 MINIMIZE CAM</button>
-          <button id="btn-toggle-camera" class="cam-toggle-btn">TOGGLE SENSOR</button>
-        </div>
-      </div>
-
-      <!-- Kinetic State Indicators (Sleek Compact Layout) -->
-      <div class="kinetic-indicators">
-        <div class="kinetic-card">
-          <div class="kinetic-label">HANDS TRACKED</div>
-          <div id="hud-hand-count" class="kinetic-value">0 DETECTED</div>
-        </div>
-        <div class="kinetic-card">
-          <div class="kinetic-label">PINCH LOCK</div>
-          <div id="hud-pinch-status" class="kinetic-value inactive">INACTIVE</div>
-        </div>
-        <div class="kinetic-card">
-          <div class="kinetic-label">TWO-HAND DIST</div>
-          <div id="hud-hand-dist" class="kinetic-value">0 px</div>
-        </div>
-        <div class="kinetic-card">
-          <div class="kinetic-label">ACTIVE MODE</div>
-          <div id="hud-active-mode" class="kinetic-value accent">EXPLODED VIEW</div>
-        </div>
-      </div>
-    </aside>
-
-    <!-- Floating 3D Navigation & Quick Tools Dock (Always accessible) -->
-    <div id="floating-dock" class="floating-dock">
-      <button id="btn-zoom-in" class="dock-btn" title="Zoom In (+)">+</button>
-      <button id="btn-zoom-reset" class="dock-btn" title="Fit Scene (0)">⟲</button>
-      <button id="btn-zoom-out" class="dock-btn" title="Zoom Out (-)">−</button>
-      <div id="floating-status-chip" class="dock-chip">
-        <span id="chip-machine">TURBOFAN JET</span> // <span id="chip-part">ASSEMBLY LOCKED</span> // EXP: <span id="chip-exp">0%</span>
       </div>
     </div>
 
-    <!-- Bottom Gesture Guide & Status Bar -->
-    <footer id="bottom-bar" class="glass-panel">
-      <div class="gesture-hints">
-        <div class="hint-pill">
-          <span class="hint-glyph">👐</span>
-          <span class="hint-text"><strong>Two-Hand Expand:</strong> Explode machine continuously</span>
+    <!-- Floating Top-Right Live Vision Sensor (Compact Mini-PiP) -->
+    <div id="sensor-pip" class="floating-panel mini-pip">
+      <div class="pip-header">
+        <div class="live-dot"></div>
+        <span class="pip-title">KINETIC SENSOR</span>
+        <span id="fps-badge" class="fps-pill">60 FPS</span>
+        <button id="btn-minimize-cam" class="pip-toggle" title="Minimize / Expand Camera (C)">🗕</button>
+      </div>
+      <div id="webcam-viewport" class="webcam-box">
+        <video id="webcam-video" autoplay playsinline muted></video>
+        <canvas id="hand-overlay-canvas"></canvas>
+        <div id="camera-loading" class="cam-msg">
+          <div class="spinner"></div>
+          <span>CONNECTING SENSOR...</span>
         </div>
-        <div class="hint-pill">
-          <span class="hint-glyph">🤏</span>
-          <span class="hint-text"><strong>Pinch:</strong> Grab & extract part</span>
+      </div>
+      <div class="pip-status-row">
+        <span id="hud-hand-count" class="pip-stat">0 HANDS</span>
+        <span id="hud-pinch-status" class="pip-stat inactive">PINCH: FREE</span>
+        <span id="hud-hand-dist" class="pip-stat">0 px</span>
+      </div>
+    </div>
+
+    <!-- Floating Center-Bottom Master Control Dock -->
+    <div id="master-dock" class="floating-panel master-dock">
+      <!-- Continuous Explosion Controller: Dual Level (Component + Pixel Scatter) -->
+      <div class="explosion-control-cluster">
+        <div class="cluster-label">
+          <span>AXIAL & PIXEL DISPERSION:</span>
+          <strong id="explosion-percentage">0%</strong>
         </div>
-        <div class="hint-pill">
-          <span class="hint-glyph">✋</span>
-          <span class="hint-text"><strong>Palm Move:</strong> 3D Orbit</span>
+        <div class="meter-bar-track">
+          <div id="explosion-meter-bar" class="meter-bar-fill"></div>
         </div>
+        <input type="range" id="manual-explosion-slider" min="0" max="100" value="0" aria-label="Explosion Factor">
       </div>
 
-      <div class="sound-toggle-container">
-        <button id="btn-sound-toggle" class="sound-btn" title="Toggle Sci-Fi Audio Synthesizer">
-          <span id="sound-icon">🔊</span> AUDIO: ON
-        </button>
+      <!-- Quick 3D Viewport Navigation -->
+      <div class="zoom-cluster">
+        <button id="btn-zoom-in" class="dock-circle-btn" title="Zoom In (+)">+</button>
+        <button id="btn-zoom-reset" class="dock-circle-btn" title="Fit View (0)">⟲</button>
+        <button id="btn-zoom-out" class="dock-circle-btn" title="Zoom Out (-)">−</button>
       </div>
-    </footer>
+
+      <!-- Quick Audio & Mode -->
+      <button id="btn-sound-toggle" class="dock-pill-btn" title="Toggle Sci-Fi Audio Synthesizer">
+        <span id="sound-icon">🔊</span> AUDIO
+      </button>
+    </div>
+
+    <!-- Discreet Bottom Gesture Bar -->
+    <div id="gesture-guide" class="gesture-guide">
+      <span>👐 <strong>Two Hands:</strong> Axial & Pixel Cloud Explosion</span>
+      <span>🤏 <strong>Pinch:</strong> Grab & Extract Part</span>
+      <span>✋ <strong>Palm:</strong> 3D Orbit</span>
+    </div>
 
   </div>
 

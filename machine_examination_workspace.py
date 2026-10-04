@@ -193,6 +193,7 @@ class Component:
         self.screen_center = (0, 0)
         self.screen_radius = 40
         self._build_mesh()
+        self._build_pixel_cloud()
 
     def _build_mesh(self):
         if self.mesh_type == "cylinder":
@@ -205,6 +206,30 @@ class Component:
             self.lines = make_cone_lines(*self.params)
         else:
             self.lines = make_cylinder_lines(30, 40)
+
+    def _build_pixel_cloud(self):
+        """Generates micro-pixel points and radial dispersion vectors along the component surface."""
+        pts = []
+        scatter_vecs = []
+        for p1, p2 in self.lines:
+            for t in np.linspace(0, 1, 7):
+                pt = (1.0 - t) * p1 + t * p2
+                pts.append(pt)
+                dist = np.linalg.norm(pt) or 1.0
+                speed = 75.0 + float(np.random.uniform(0, 80.0))
+                noise = np.random.uniform(-18.0, 18.0, 3)
+                scatter_vecs.append((pt / dist) * speed + noise)
+        self.pixel_points = np.array(pts, dtype=float) if len(pts) > 0 else np.zeros((0, 3))
+        self.scatter_vectors = np.array(scatter_vecs, dtype=float) if len(scatter_vecs) > 0 else np.zeros((0, 3))
+
+    def get_scattered_pixels(self, global_rot, explosion_offset, pixel_factor):
+        """Computes current 3D scattered pixel points transformed by rotation and expansion."""
+        if len(self.pixel_points) == 0:
+            return np.zeros((0, 3))
+        pos = self.current_pos + explosion_offset
+        scattered = self.pixel_points + self.scatter_vectors * pixel_factor
+        scattered_rot = rotate_z(rotate_y(rotate_x(scattered, self.rotation[0]), self.rotation[1]), self.rotation[2]) + pos
+        return rotate_y(rotate_x(scattered_rot, global_rot[0]), global_rot[1])
 
     def get_transformed_lines(self, global_rot, explosion_offset=np.array([0, 0, 0], dtype=float)):
         """Computes current 3D line segments transformed by rotation and position."""
@@ -404,6 +429,7 @@ class MachineWorkspace:
         self.current_zone = 1
         self.hud_mode = 0  # 0: Full HUD, 1: Minimalist Chip, 2: Zero HUD (Zen)
         self.camera_view_mode = 0  # 0: Corner PiP (uncluttered), 1: Hidden (Pure CAD), 2: Background Translucent
+        self.pixels_enabled = True  # Dual explosion: component level + micro-pixel dispersion
         self.loose_components = []
         self.init_loose_components()
 
@@ -420,8 +446,17 @@ class MachineWorkspace:
     def reset_active_machine(self):
         self.machines = build_machines_catalog()
 
-    def render_3d_component(self, canvas, comp, origin_2d, global_rot, zoom_scale=0.85, explosion_offset=np.array([0, 0, 0])):
-        """Projects and renders 3D lines for a single mechanical component."""
+    def render_3d_component(self, canvas, comp, origin_2d, global_rot, zoom_scale=0.85, explosion_offset=np.array([0, 0, 0]), pixel_factor=0.0):
+        """Projects and renders 3D lines and micro-pixel dispersion for a single mechanical component."""
+        # 1. Render micro-pixel dispersion matrix if exploding in pixel range
+        if pixel_factor > 0:
+            pix_3d = comp.get_scattered_pixels(global_rot, explosion_offset, pixel_factor)
+            pts_pix, _ = project_3d_to_2d(pix_3d, origin_2d, scale=zoom_scale)
+            for px, py in pts_pix:
+                if 0 <= px < CANVAS_W and 0 <= py < CANVAS_H:
+                    cv2.circle(canvas, (px, py), 1, comp.color, -1)
+
+        # 2. Render solid wireframe
         lines_3d = comp.get_transformed_lines(global_rot, explosion_offset)
         all_pts_3d = []
         for p1, p2 in lines_3d:
@@ -607,8 +642,10 @@ def run_examination_workspace(dark_mode=False):
         controller.update(hands_landmarks_px, active_comps, origin_3d)
 
         # ---------------------------------------------------------
-        # Render 3D Machine Assembly & Components
+        # Render 3D Machine Assembly & Components (Dual Explosion: Components + Pixels)
         # ---------------------------------------------------------
+        pixel_factor = max(0.0, (controller.explosion_factor - 0.15) / 0.85) if workspace.pixels_enabled else 0.0
+
         if workspace.current_zone == 1 or workspace.current_zone == 3:
             active_machine = workspace.machines[workspace.active_machine_idx]
             offsets = active_machine.get_exploded_offsets(controller.explosion_factor)
@@ -616,14 +653,16 @@ def run_examination_workspace(dark_mode=False):
                 off = offsets.get(comp.comp_id, np.array([0, 0, 0], dtype=float))
                 workspace.render_3d_component(
                     canvas, comp, origin_3d, controller.global_rot,
-                    zoom_scale=controller.zoom_scale, explosion_offset=off
+                    zoom_scale=controller.zoom_scale, explosion_offset=off,
+                    pixel_factor=pixel_factor
                 )
 
         if workspace.current_zone == 2 or workspace.current_zone == 3:
             for comp in workspace.loose_components:
                 workspace.render_3d_component(
                     canvas, comp, origin_3d, controller.global_rot,
-                    zoom_scale=controller.zoom_scale
+                    zoom_scale=controller.zoom_scale,
+                    pixel_factor=pixel_factor
                 )
 
         # ---------------------------------------------------------
@@ -721,6 +760,8 @@ def run_examination_workspace(dark_mode=False):
             workspace.hud_mode = (workspace.hud_mode + 1) % 3
         elif key == ord('c') or key == ord('v'):  # c / v cycles camera views (PiP -> Hidden -> Background)
             workspace.camera_view_mode = (workspace.camera_view_mode + 1) % 3
+        elif key == ord('p'):
+            workspace.pixels_enabled = not workspace.pixels_enabled
         elif key == ord('+') or key == ord('='):
             controller.zoom_scale = min(1.8, controller.zoom_scale + 0.08)
         elif key == ord('-') or key == ord('_'):
