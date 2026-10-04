@@ -49,9 +49,24 @@
       <!-- Machine Select & Visual Modes -->
       <div class="hud-actions">
         <select id="machine-select" class="cyber-select" aria-label="Select Machine Model">
-          <option value="turbine">TURBOFAN JET ENGINE</option>
-          <option value="gearbox">PLANETARY GEARBOX</option>
-          <option value="robot_arm">ROBOTIC ACTUATOR JOINT</option>
+          <optgroup label="MOTORCYCLES & AUTOMOTIVE">
+            <option value="bike_engine" selected>4-STROKE DOHC BIKE ENGINE</option>
+            <option value="car_engine">TWIN-TURBO V8 CAR ENGINE</option>
+            <option value="auto_engine">COMPACT 3-WHEELER AUTO ENGINE</option>
+          </optgroup>
+          <optgroup label="HEAVY TRANSPORT & LOCOMOTIVE">
+            <option value="tractor_engine">HEAVY AGRICULTURAL TRACTOR DIESEL</option>
+            <option value="truck_engine">13L HEAVY TRUCK & BUS DIESEL</option>
+            <option value="train_engine">V16 LOCOMOTIVE FREIGHT POWERPLANT</option>
+          </optgroup>
+          <optgroup label="AEROSPACE & PROPULSION">
+            <option value="turbine">COMMERCIAL JET TURBOFAN (CFM/GE)</option>
+            <option value="rocket_engine">STAGED COMBUSTION ROCKET ENGINE</option>
+          </optgroup>
+          <optgroup label="MECHANISMS & ROBOTICS">
+            <option value="gearbox">PLANETARY GEARBOX</option>
+            <option value="robot_arm">ROBOTIC ACTUATOR JOINT</option>
+          </optgroup>
         </select>
 
         <select id="density-select" class="cyber-select density-select" aria-label="Select Voxel Density">
@@ -60,8 +75,11 @@
           <option value="500k">500K VOXELS (EXTREME)</option>
         </select>
         
+        <button id="btn-toggle-harness" class="action-btn active" title="Toggle Electrical Wire Harnesses & Microchips (H)">
+          <span class="btn-icon">⚡</span> WIRING & CHIPS: ON
+        </button>
         <button id="btn-toggle-wireframe" class="action-btn" title="Toggle Neon Wireframe (W)">
-          <span class="btn-icon">⚡</span> WIREFRAME
+          <span class="btn-icon">⬡</span> WIREFRAME
         </button>
         <button id="btn-toggle-pixels" class="action-btn active" title="Toggle Pixel & Particle Dispersion Matrix (P)">
           <span class="btn-icon">✦</span> PIXELS: ON
@@ -76,25 +94,29 @@
     <div id="telemetry-chip" class="floating-panel mini-card">
       <div class="chip-header">
         <span class="neon-icon">◈</span>
-        <span class="chip-title">COMPONENT TELEMETRY</span>
+        <span class="chip-title">CAD ENGINEERING TELEMETRY</span>
         <span id="chip-status" class="status-pill">NOMINAL</span>
       </div>
       <div class="chip-content">
         <div class="chip-row">
           <span class="chip-label">PART:</span>
-          <span id="part-name" class="chip-val highlight">ASSEMBLY LOCKED</span>
+          <span id="part-name" class="chip-val highlight">DOHC CYLINDER HEAD</span>
         </div>
         <div class="chip-row">
           <span class="chip-label">SUBSYSTEM:</span>
-          <span id="part-subsystem" class="chip-val">PROPULSION CORE</span>
+          <span id="part-subsystem" class="chip-val">VALVE TRAIN</span>
+        </div>
+        <div class="chip-row">
+          <span class="chip-label">ENGINEERING:</span>
+          <span id="part-engineering" class="chip-val neon-cyan-text">449.7cc / 12.5:1 CR</span>
         </div>
         <div class="chip-row">
           <span class="chip-label">MATERIAL:</span>
-          <span id="part-material" class="chip-val">Ti-6Al-4V Ti</span>
+          <span id="part-material" class="chip-val">Ti-6Al-4V Valves</span>
         </div>
         <div class="chip-row">
-          <span class="chip-label">RPM:</span>
-          <span id="part-rpm" class="chip-val">12,500 RPM</span>
+          <span class="chip-label">RATING:</span>
+          <span id="part-rpm" class="chip-val">11,500 RPM REDLINE</span>
         </div>
       </div>
     </div>
@@ -173,6 +195,62 @@
         <span id="hud-hand-count" class="pip-stat">0 HANDS</span>
         <span id="hud-pinch-status" class="pip-stat inactive">PINCH: FREE</span>
         <span id="hud-hand-dist" class="pip-stat">0 px</span>
+      </div>
+    </div>
+
+    <!-- Floating Zone 03 Sandbox Modular Component Spawner Tray (Shows in Zone 03) -->
+    <div id="sandbox-spawner-tray" class="floating-panel sandbox-tray hidden">
+      <div class="tray-title-badge">
+        <span class="neon-icon">⚙</span>
+        <span>SANDBOX COMPONENT SPAWNER (CLICK/PINCH TO SPAWN & MAGNETIC SNAP)</span>
+        <button id="btn-clear-sandbox" class="tray-clear-btn" title="Clear Sandbox Canvas">✕ CLEAR</button>
+      </div>
+      <div class="tray-components-scroll">
+        <button class="sandbox-spawn-btn" data-spawn="piston">
+          <span class="part-icon">⏏</span>
+          <span class="part-name">FORGED PISTON</span>
+          <span class="part-mass">420g</span>
+        </button>
+        <button class="sandbox-spawn-btn" data-spawn="conrod">
+          <span class="part-icon">┃</span>
+          <span class="part-name">H-BEAM CONROD</span>
+          <span class="part-mass">580g</span>
+        </button>
+        <button class="sandbox-spawn-btn" data-spawn="crankshaft">
+          <span class="part-icon">⟳</span>
+          <span class="part-name">CRANKSHAFT WEB</span>
+          <span class="part-mass">4,200g</span>
+        </button>
+        <button class="sandbox-spawn-btn" data-spawn="cylinder">
+          <span class="part-icon">⚏</span>
+          <span class="part-name">FINNED CYLINDER</span>
+          <span class="part-mass">3,100g</span>
+        </button>
+        <button class="sandbox-spawn-btn" data-spawn="turbo">
+          <span class="part-icon">◎</span>
+          <span class="part-name">TURBOCHARGER</span>
+          <span class="part-mass">7,800g</span>
+        </button>
+        <button class="sandbox-spawn-btn" data-spawn="ecu_chip">
+          <span class="part-icon">▦</span>
+          <span class="part-name">ECU MICROCHIP</span>
+          <span class="part-mass">85g</span>
+        </button>
+        <button class="sandbox-spawn-btn" data-spawn="wire_harness">
+          <span class="part-icon">〰</span>
+          <span class="part-name">WIRING LOOM</span>
+          <span class="part-mass">340g</span>
+        </button>
+        <button class="sandbox-spawn-btn" data-spawn="gear">
+          <span class="part-icon">⚙</span>
+          <span class="part-name">SPUR GEAR</span>
+          <span class="part-mass">1,400g</span>
+        </button>
+        <button class="sandbox-spawn-btn" data-spawn="rocket_bell">
+          <span class="part-icon">▽</span>
+          <span class="part-name">ROCKET NOZZLE</span>
+          <span class="part-mass">12,500g</span>
+        </button>
       </div>
     </div>
 

@@ -1,24 +1,19 @@
 /**
  * NEXUS CAD // Holographic Neon Machine & Pixel Cloud Workspace
- * Ultra-Dense Voxel CAD (100k - 500k Points) + Exact Spatial Geometry & Angle Engine
+ * Universal Iron Man Holographic CAD System
+ * Real-World Transportation & Aerospace Engines + Wire Harnesses & Microchips + Modular Touchless Sandbox
  * 
- * Core Features:
- *   1. Ultra-Dense Voxel CAD Geometry (120k to 500k Points per Machine Assembly)
- *   2. Dual-Level Continuous Explosion (Axial Spread + Volumetric Pixel Matrix Dispersion)
- *   3. "Past Perfection" Geometric Wireframe & HUD:
- *      - Translucent Palm Polygon Mesh + Knuckle Bridge + Internal Radial Struts
- *      - Centroid Target Reticle + Dynamic Dashed Fingertip Envelope
- *      - Color-Coded 5-Digit Skeletal Vectors & Concentric Joint Nodes
- *   4. Mathematical Angle & Vector Calculations:
- *      - 3D Palm Surface Normal Cross Product -> Pitch, Yaw, Roll Angles
- *      - Vector Convergence Angle for Pinch (Thumb Vector to Index Vector)
- *      - Inter-Phalangeal Joint Articulation & Extension Angles
- *      - Scale-Invariant Palm Metric & Schmitt Trigger Hysteresis
- *   5. 100% Touchless Operation:
- *      - Virtual Air-Cursor with Speed-Adaptive Double EMA Jitter Rejection
- *      - Air-Pinch Instant Click + Dwell Circular Progress Auto-Click
- *      - Direct Air-Drag for 3D Orbit, Zoom, and Dispersion Sliders
- *   6. Live Running Telemetry Ticker (Active Voxels, VRAM Buffer, Kinetic Rate, 60 FPS)
+ * Machine Catalog:
+ *   1. 4-Stroke DOHC Bike Engine (Hero Real-World Engine)
+ *   2. Twin-Turbo V8 Car Engine
+ *   3. Compact 3-Wheeler Auto-Rickshaw Engine
+ *   4. Heavy Agricultural Tractor Diesel Engine
+ *   5. 13L Heavy Commercial Truck & Bus Diesel
+ *   6. Massive V16 Freight Locomotive Powerplant
+ *   7. Commercial High-Bypass Jet Turbofan (CFM/GE)
+ *   8. Liquid Staged Combustion Rocket Engine
+ *   9. Multi-Stage Epicyclic Planetary Gearbox
+ *  10. 6-Axis Robotic Harmonic Actuator Joint
  */
 
 // -------------------------------------------------------------
@@ -89,35 +84,103 @@ class SoundEngine {
       osc.stop(this.ctx.currentTime + 0.03);
     } catch (e) {}
   }
+
+  playSnapLock() {
+    if (!this.enabled || !this.ctx) return;
+    try {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(440, this.ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(880, this.ctx.currentTime + 0.05);
+      osc.frequency.exponentialRampToValueAtTime(1760, this.ctx.currentTime + 0.12);
+      gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.14);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.14);
+    } catch (e) {}
+  }
 }
 
 const audio = new SoundEngine();
 
 // -------------------------------------------------------------
-// Component Data Registry
+// Deep Engineering CAD Component Registry (Real-World Parameters)
 // -------------------------------------------------------------
 const COMPONENT_SPECS = {
-  // Turbofan Engine
-  cone: { name: "Aero Intake Cone", sub: "Air Induction", mat: "Ti-6Al-4V Titanium", rpm: "0 (Static)" },
-  fan: { name: "Wide-Chord Fan Rotor", sub: "LP Compression", mat: "Titanium Hollow Blade", rpm: "3,200 RPM" },
-  compressor: { name: "Axial Compressor Disk", sub: "HP Compression", mat: "Nickel Superalloy", rpm: "12,400 RPM" },
-  combustor: { name: "Annular Combustor Core", sub: "Combustion Unit", mat: "Ceramic Matrix (CMC)", rpm: "0 (Thermal)" },
-  turbine: { name: "High-Pressure Turbine", sub: "Power Extraction", mat: "Single-Crystal Inconel", rpm: "12,400 RPM" },
-  nozzle: { name: "Exhaust Thrust Nozzle", sub: "Expansion Nozzle", mat: "Cobalt Base Superalloy", rpm: "0 (Static)" },
-  
-  // Gearbox
-  shaft_in: { name: "Input Drive Shaft", sub: "Torque Coupling", mat: "AISI 4340 Alloy Steel", rpm: "6,000 RPM" },
-  sun_gear: { name: "Sun Drive Gear", sub: "Planetary Reduction", mat: "Carburized Steel", rpm: "6,000 RPM" },
-  planet_gears: { name: "Triple Planet Carrier", sub: "Epicyclic Train", mat: "Case-Hardened Steel", rpm: "1,800 RPM" },
-  ring_gear: { name: "Internal Ring Gear", sub: "Outer Annulus", mat: "Nitrided Alloy", rpm: "0 (Locked)" },
-  shaft_out: { name: "Output Hub Shaft", sub: "Load Transmission", mat: "Forged High-Strength Steel", rpm: "1,200 RPM" },
+  // 1. BIKE ENGINE
+  bike_crankcase: { name: "Split Crankcase & Oil Sump", sub: "Engine Block", eng: "Integrated 6-Speed Casing", mat: "Gravity Die-Cast AlSi9Cu3", rpm: "0 (Static)" },
+  bike_crankshaft: { name: "Counterweighted Crank & Magneto", sub: "Reciprocating Hub", eng: "Stroke 63.4mm, 449.7cc", mat: "Carburized 18CrNiMo7-6", rpm: "11,500 RPM REDLINE" },
+  bike_conrod: { name: "Forged H-Beam Connecting Rod", sub: "Kinematic Link", eng: "C-to-C: 108mm, Bronze Bushing", mat: "Forged 4340 Nickel Chromoly", rpm: "11,500 RPM Peak" },
+  bike_piston: { name: "Forged Slipper-Skirt Piston", sub: "Combustion Seal", eng: "Bore 95.0mm, 3-Ring Lands", mat: "Forged 4032 Low-Expansion Al", rpm: "24.3 m/s Mean Speed" },
+  bike_cylinder: { name: "Deep-Finned Cylinder Barrel", sub: "Thermal Block", eng: "Nikasil (Ni-SiC) Bore Coated", mat: "Hypereutectic Al-Si Alloy", rpm: "Thermal: 220°C Max" },
+  bike_head: { name: "DOHC Cylinder Head & 4-Valves", sub: "Gas Exchange", eng: "38mm In / 31mm Ex, 12.5:1 CR", mat: "A356-T6 Al + Ti-6Al-4V Valves", rpm: "Dual Overhead Cam" },
+  bike_clutch: { name: "Multi-Plate Wet Clutch Pack", sub: "Torque Coupling", eng: "7 Friction / 8 Steel Discs", mat: "Kevlar-Paper / C75 Steel", rpm: "Primary: 2.14:1" },
+  bike_exhaust: { name: "Swept Tuned Header Manifold", sub: "Gas Expansion", eng: "Mandrel Bent 42mm OD Runner", mat: "SUS304 Stainless Steel", rpm: "Acoustic Scavenging" },
+  bike_harness: { name: "Ignition Lead & Sensor Harness", sub: "Electronics", eng: "CAN-Bus 1Mbps, EFI Injection", mat: "Tefzel Shielded Copper", rpm: "Signal: 12V 10A" },
+  bike_ecu: { name: "Digital Engine Control Module", sub: "Electronics", eng: "32-Bit Dual Core DSP, 40MHz", mat: "FR4 PCB / Polycarbonate Case", rpm: "Firmware: v4.8 EFI" },
 
-  // Robot Arm
-  base_turret: { name: "Base Turret Flange", sub: "Kinematic Mount", mat: "Cast Aerospace Aluminum", rpm: "±360° Yaw" },
-  stator_motor: { name: "Brushless Servo Stator", sub: "Electromagnetic Drive", mat: "Neodymium & Copper", rpm: "4,500 RPM" },
-  harmonic_drive: { name: "Harmonic Reducer Ring", sub: "Zero-Backlash Gearing", mat: "Special Spring Steel", rpm: "100:1 Ratio" },
-  pivot_yoke: { name: "Actuator Pivot Yoke", sub: "Pitch Articulation", mat: "Billet 7075-T6 Al", rpm: "±120° Pitch" },
-  end_effector: { name: "Adaptive Micro-Gripper", sub: "Payload Tooling", mat: "Carbon Fiber & Rubber", rpm: "Pneumatic 50N" }
+  // 2. CAR ENGINE (Twin-Turbo V8)
+  car_block: { name: "Twin-Turbo 90° V8 Cylinder Block", sub: "Engine Block", eng: "4.0L Displacement, Cross-Bolted", mat: "AlSi7Mg Cast Alloy", rpm: "0 (Static)" },
+  car_crankshaft: { name: "Crossplane V8 Crankshaft", sub: "Crank Assembly", eng: "Stroke 82.0mm, 8 Throws", mat: "Forged Microalloyed Steel", rpm: "7,800 RPM Redline" },
+  car_turbos: { name: "Dual Twin-Scroll Turbochargers", sub: "Forced Induction", eng: "Boost 1.8 bar, Billet Wheels", mat: "Inconel 713C / Titanium", rpm: "185,000 RPM Spool" },
+  car_heads: { name: "Dual Quad-Cam Cylinder Heads", sub: "Cylinder Heads", eng: "32-Valves, Variable Timing (VVT)", mat: "Heat-Treated A356 Al", rpm: "Double DOHC Banks" },
+  car_plenum: { name: "Symmetric Intake Plenum Runners", sub: "Induction", eng: "Tuned Runner Length 210mm", mat: "Molded Carbon Composite", rpm: "Vacuum 0.95 bar" },
+  car_harness: { name: "Automotive ECU Wiring Loom", sub: "Electrical Bus", eng: "Full Chassis CAN & FlexRay", mat: "High-Temp Cross-Linked PE", rpm: "Signal: 50A Max" },
+
+  // 3. AUTO ENGINE (Compact 3-Wheeler)
+  auto_case: { name: "Compact Commuter Crankcase", sub: "Powertrain", eng: "198cc 4-Stroke Unit Block", mat: "Pressure Die-Cast Aluminum", rpm: "0 (Static)" },
+  auto_fan_shroud: { name: "Forced Cooling Fan Shroud", sub: "Thermal Control", eng: "High-Volume Centrifugal Vanes", mat: "Stamped Sheet Steel", rpm: "Engine Direct Drive" },
+  auto_cylinder: { name: "Cast Iron Finned Cylinder", sub: "Thermal Block", eng: "Ductile Iron Bore 63.5mm", mat: "Grade 250 Grey Cast Iron", rpm: "Air-Cooled 190°C" },
+  auto_carb: { name: "Variable Venturi Carburetor", sub: "Fuel Delivery", eng: "Venturi 24mm, Mechanical Slide", mat: "Zinc Alloy Die Cast", rpm: "Atmospheric" },
+
+  // 4. TRACTOR ENGINE (Agricultural Diesel)
+  tractor_block: { name: "Structural Cast Heavy Diesel Block", sub: "Chassis Member", eng: "4.5L Inline-4, Wet Liners", mat: "High-Strength Cast Iron", rpm: "2,200 RPM Governed" },
+  tractor_pump: { name: "Inline Mechanical Fuel Injection", sub: "Fuel System", eng: "Plunger Pump, 1,200 bar", mat: "Hardened Tool Steel", rpm: "Cam-Driven 1,100 RPM" },
+  tractor_flywheel: { name: "High-Inertia Industrial Flywheel", sub: "Kinetic Storage", eng: "Mass 48kg, Diameter 420mm", mat: "Nodular Ductile Iron", rpm: "2,200 RPM Max" },
+  tractor_filter: { name: "Dual Oil-Bath Air Cleaner", sub: "Filtration", eng: "Cyclone Pre-Cleaner 99.8% Eff", mat: "Deep-Drawn Sheet Steel", rpm: "High Dust Rating" },
+
+  // 5. TRUCK & BUS HEAVY DIESEL (13L)
+  truck_block: { name: "13-Liter Heavy Commercial Block", sub: "Powertrain", eng: "Bore 130mm x Stroke 160mm", mat: "Compacted Graphite Iron (CGI)", rpm: "1,900 RPM Governed" },
+  truck_common_rail: { name: "2,500-Bar Common Rail System", sub: "Fuel Delivery", eng: "Piezo Common Rail Tube", mat: "Forged Martensitic Steel", rpm: "Pressure 250 MPa" },
+  truck_turbo: { name: "Variable Geometry Turbo (VGT)", sub: "Forced Induction", eng: "Moving Nozzle Vanes, 2.6 bar", mat: "Nickel-Resist Iron & Inconel", rpm: "130,000 RPM" },
+  truck_head: { name: "Monolithic CGI Overhead Cam Head", sub: "Valve Train", eng: "Integrated Compression Brake", mat: "Compacted Graphite Iron", rpm: "24 Heavy Valves" },
+
+  // 6. TRAIN LOCOMOTIVE POWERPLANT (V16)
+  train_crankcase: { name: "Fabricated V16 Locomotive Block", sub: "Prime Mover", eng: "175 Liters, 4,400 HP Rating", mat: "Welded Structural Steel Plate", rpm: "1,050 RPM Rated" },
+  train_turbos: { name: "Dual Heavy Locomotive Turbochargers", sub: "Induction", eng: "Twin Heavy Industrial Turbos", mat: "Cast Steel & Nimonic 90", rpm: "35,000 RPM" },
+  train_alternator: { name: "Traction Alternator Coupling Hub", sub: "Electrical Gen", eng: "Output 3.2 MW AC Power", mat: "Forged Alloy Shaft / Copper", rpm: "1,050 RPM Direct" },
+
+  // 7. AEROPLANE TURBOFAN
+  cone: { name: "Aero Intake Cowl Cone", sub: "Air Induction", eng: "CFM/GE90 Class Geometry", mat: "Ti-6Al-4V Titanium", rpm: "0 (Static)" },
+  fan: { name: "Wide-Chord Fan Rotor (18 Blades)", sub: "LP Compression", eng: "Bypass Ratio 10:1, Hollow Blade", mat: "Titanium Alloy Hollow Cavity", rpm: "3,200 RPM N1" },
+  compressor: { name: "Axial Compressor Staged Disks", sub: "HP Compression", eng: "Pressure Ratio 40:1, 4 Stages", mat: "Nickel Superalloy", rpm: "12,400 RPM N2" },
+  combustor: { name: "Annular Combustor Core & Nozzles", sub: "Combustion", eng: "16 Aerodynamic Swirl Injectors", mat: "Ceramic Matrix Composite (CMC)", rpm: "Thermal: 1,650°C" },
+  turbine: { name: "High-Pressure Turbine Stage", sub: "Power Extraction", eng: "Single-Crystal Inconel 718", mat: "Single-Crystal Superalloy", rpm: "12,400 RPM N2" },
+  nozzle: { name: "Exhaust Thrust Nozzle Cowl", sub: "Expansion", eng: "Supersonic Convergent Nozzle", mat: "Cobalt Base Superalloy", rpm: "0 (Static)" },
+
+  // 8. ROCKET ENGINE
+  rocket_turbopump: { name: "Dual Staged Fuel/Oxidizer Turbopump", sub: "Propellant Feed", eng: "Delivery: 850 kg/s @ 350 bar", mat: "Monel / Inconel 718", rpm: "36,000 RPM" },
+  rocket_preburner: { name: "Oxygen-Rich Preburner Chamber", sub: "Gas Generation", eng: "Chamber Pressure 280 bar", mat: "Copper-Zirconium Liner", rpm: "Combustion: 900 K" },
+  rocket_gimbal: { name: "Dual Hydraulic Gimbal Actuators", sub: "Thrust Vectoring", eng: "Vector Angle ±8.5°, 120 kN Force", mat: "Aerospace 7075 Al / Steel", rpm: "Dynamic Servo" },
+  rocket_combustor: { name: "Regenerative Main Combustion Chamber", sub: "Thrust Chamber", eng: "Chamber Pressure 220 bar", mat: "GRCop-84 High-Cond Copper", rpm: "Thermal: 3,300 K" },
+  rocket_bell: { name: "Contoured Regenerative Bell Nozzle", sub: "Expansion Nozzle", eng: "Area Ratio 45:1, Cooling Channels", mat: "Inconel 625 Brazed Jacket", rpm: "Thrust: 2,200 kN" },
+
+  // 9. GEARBOX
+  shaft_in: { name: "Input Drive Shaft", sub: "Torque Coupling", eng: "Splined Input Hub", mat: "AISI 4340 Alloy Steel", rpm: "6,000 RPM" },
+  sun_gear: { name: "Sun Drive Spur Gear", sub: "Planetary Reduction", eng: "14-Tooth Involute Tooth Mesh", mat: "Case-Hardened 8620 Steel", rpm: "6,000 RPM" },
+  planet_gears: { name: "Triple Planet Carrier Assembly", sub: "Epicyclic Train", eng: "3 x 24-Tooth Planet Gears", mat: "Carburized Steel", rpm: "1,800 RPM" },
+  ring_gear: { name: "Internal Annulus Ring Gear", sub: "Outer Ring", eng: "Internal Tooth Form", mat: "Nitrided Alloy Steel", rpm: "0 (Locked)" },
+  shaft_out: { name: "Output Hub Flange", sub: "Load Hub", eng: "6-Bolt Flange Circle", mat: "Forged High-Strength Steel", rpm: "1,200 RPM" },
+
+  // 10. ROBOT ARM
+  base_turret: { name: "Base Turret Mounting Flange", sub: "Kinematic Base", eng: "Radial Bolt Pattern, Center Bore", mat: "Cast Aerospace Aluminum", rpm: "±360° Yaw" },
+  stator_motor: { name: "Brushless Servo Stator Core", sub: "Electric Drive", eng: "12-Pole Copper Winding Matrix", mat: "Silicon Steel Laminations & Cu", rpm: "4,500 RPM" },
+  harmonic_drive: { name: "Harmonic Wave Flexspline Ring", sub: "Zero-Backlash", eng: "Reduction Ratio 100:1", mat: "Special High-Fatigue Spring Steel", rpm: "100:1 Ratio" },
+  pivot_yoke: { name: "Articulated Pitch Yoke Arm", sub: "Articulation", eng: "Dual Journal Pivot Bearings", mat: "Billet 7075-T6 Al", rpm: "±120° Pitch" },
+  end_effector: { name: "Adaptive Articulated Gripper", sub: "Tooling", eng: "Pneumatic 60N Clamping Force", mat: "Carbon Fiber & Rubber", rpm: "Tooling Axis" }
 };
 
 // Skeletal topology definitions
@@ -143,8 +206,8 @@ function createNeonPointTexture() {
   
   const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
   grad.addColorStop(0.0, 'rgba(255, 255, 255, 1.0)');
-  grad.addColorStop(0.2, 'rgba(0, 240, 255, 0.95)');
-  grad.addColorStop(0.5, 'rgba(0, 240, 255, 0.35)');
+  grad.addColorStop(0.18, 'rgba(0, 240, 255, 0.95)');
+  grad.addColorStop(0.48, 'rgba(0, 240, 255, 0.35)');
   grad.addColorStop(1.0, 'rgba(0, 240, 255, 0.0)');
   
   ctx.fillStyle = grad;
@@ -162,13 +225,14 @@ function createNeonPointTexture() {
 class HolographicApp {
   constructor() {
     this.canvas = document.getElementById('webgl-canvas');
-    this.currentZone = 1; // 1: Machines, 2: Components, 3: Workspace
-    this.currentMachine = 'turbine';
+    this.currentZone = 1; // 1: Machines, 2: Components, 3: Sandbox
+    this.currentMachine = 'bike_engine';
     this.explosionFactor = 0.0;
     this.isWireframe = false;
     this.pixelsEnabled = true;
+    this.harnessEnabled = true;
     this.grabbedMesh = null;
-    this.densityMode = '250k'; // '120k', '250k', '500k'
+    this.densityMode = '250k';
     this.densityMultiplier = 1.0;
 
     // Three.js Core
@@ -186,6 +250,8 @@ class HolographicApp {
     this.workspaceSandboxGroup = new THREE.Group();
     this.machineParts = [];
     this.trayParts = [];
+    this.sandboxParts = [];
+    this.harnessObjects = [];
     this.pixelClouds = [];
     this.totalVoxelCount = 0;
 
@@ -195,6 +261,7 @@ class HolographicApp {
     this.currentFPS = 60.0;
     this.kineticRate = 0.0;
     this.lastExplosionFactor = 0.0;
+    this.pulseClock = 0.0;
 
     // Air-Cursor & Scale-Invariant Hand Tracking State
     this.handsData = [];
@@ -211,14 +278,14 @@ class HolographicApp {
     this.lastRawPos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
     this.hoveredElement = null;
     this.dwellStartTime = 0;
-    this.dwellDuration = 1000; // 1.0s dwell auto-click
+    this.dwellDuration = 1000;
     this.dwellProgress = 0;
     this.isAirDragging = false;
     this.dragStartCoords = { x: 0, y: 0 };
 
     this.initThree();
     this.updateDensityMultiplier();
-    this.buildTurbineModel();
+    this.buildCurrentMachine();
     this.buildComponentsTray();
     this.setupUI();
     this.initMediaPipeHands();
@@ -231,9 +298,6 @@ class HolographicApp {
     else this.densityMultiplier = 1.0; // 250k
   }
 
-  // -----------------------------------------------------------
-  // Three.js Engine & Lighting Setup
-  // -----------------------------------------------------------
   initThree() {
     const width = window.innerWidth;
     const height = window.innerHeight;
@@ -242,8 +306,7 @@ class HolographicApp {
     this.scene.background = new THREE.Color(0x040609);
     this.scene.fog = new THREE.FogExp2(0x040609, 0.0016);
 
-    // Heroic Perspective Camera Framing
-    this.camera = new THREE.PerspectiveCamera(44, width / height, 0.1, 4000);
+    this.camera = new THREE.PerspectiveCamera(44, width / height, 0.1, 4500);
     this.camera.position.set(130, 85, 230);
 
     this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, antialias: true, alpha: true });
@@ -256,8 +319,8 @@ class HolographicApp {
     this.controls = new THREE.OrbitControls(this.camera, this.canvas);
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.06;
-    this.controls.maxDistance = 850;
-    this.controls.minDistance = 45;
+    this.controls.maxDistance = 900;
+    this.controls.minDistance = 40;
     this.controls.target.set(0, 0, 0);
 
     // Dynamic 4-Point High-Intensity Neon Studio Lighting
@@ -289,6 +352,7 @@ class HolographicApp {
     this.scene.add(this.componentsTrayGroup);
     this.scene.add(this.workspaceSandboxGroup);
     this.componentsTrayGroup.visible = false;
+    this.workspaceSandboxGroup.visible = false;
 
     window.addEventListener('resize', () => this.onWindowResize());
   }
@@ -301,7 +365,7 @@ class HolographicApp {
       metalness: 0.9,
       roughness: 0.2,
       transparent: true,
-      opacity: 0.16, // Pure ghost shell so high-density voxels dominate
+      opacity: 0.16,
       wireframe: this.isWireframe,
       depthWrite: false
     });
@@ -322,7 +386,6 @@ class HolographicApp {
 
   // -----------------------------------------------------------
   // ULTRA-DENSE VOLUMETRIC PIXEL MATRIX GENERATOR (100k - 500k PTS)
-  // Samples solid parametric surface equations and internal volumes
   // -----------------------------------------------------------
   createVolumetricPixelCloud(pointsGenCallback, colorHex, rawCount, basePointSize = 2.2) {
     const pointCount = Math.round(rawCount * this.densityMultiplier);
@@ -332,7 +395,6 @@ class HolographicApp {
     const colors = new Float32Array(pointCount * 3);
     const baseColor = new THREE.Color(colorHex);
 
-    // Auto-scale point size with density: 120k -> 2.6px, 250k -> 2.1px, 500k -> 1.6px
     const adjustedPointSize = this.densityMode === '500k' ? basePointSize * 0.75 :
                              this.densityMode === '120k' ? basePointSize * 1.25 : basePointSize;
 
@@ -350,7 +412,6 @@ class HolographicApp {
       currentPositions[i * 3 + 1] = oy;
       currentPositions[i * 3 + 2] = oz;
 
-      // Volumetric Scatter Dynamics: Radial expansion + Helical Vortex Swirl + High-Frequency Turbulence
       const dist = Math.hypot(ox, oy, oz) || 1.0;
       const radialSpeed = 70 + Math.random() * 120;
       const radialX = (ox / dist) * radialSpeed;
@@ -370,7 +431,6 @@ class HolographicApp {
       scatterVectors[i * 3 + 1] = radialY + swirlY * 0.45 + turbY;
       scatterVectors[i * 3 + 2] = radialZ + turbZ;
 
-      // High-intensity radiant neon shading with laser specular sparkle
       const shade = 0.85 + Math.random() * 0.4;
       colors[i * 3] = Math.min(1.0, baseColor.r * shade + (Math.random() > 0.90 ? 0.3 : 0));
       colors[i * 3 + 1] = Math.min(1.0, baseColor.g * shade + (Math.random() > 0.90 ? 0.3 : 0));
@@ -397,7 +457,563 @@ class HolographicApp {
   }
 
   // -----------------------------------------------------------
-  // MODEL 1: TURBOFAN JET ENGINE (240,000+ Voxels)
+  // ELECTRICAL WIRING HARNESSES & MICROCHIP GENERATORS
+  // -----------------------------------------------------------
+  createWiringHarness(pathPoints, colorHex = 0x00f0ff, pulseCount = 1200) {
+    const curve = new THREE.CatmullRomCurve3(pathPoints.map(p => new THREE.Vector3(p[0], p[1], p[2])));
+    const tubeGeo = new THREE.TubeGeometry(curve, 48, 1.8, 8, false);
+    const tubeMat = new THREE.MeshStandardMaterial({
+      color: colorHex,
+      emissive: colorHex,
+      emissiveIntensity: 0.6,
+      transparent: true,
+      opacity: 0.85,
+      depthWrite: false
+    });
+    const tube = new THREE.Mesh(tubeGeo, tubeMat);
+
+    // Glowing electrical signal pulse voxels traveling along the wire
+    const pulseGeo = new THREE.BufferGeometry();
+    const positions = new Float32Array(pulseCount * 3);
+    const colors = new Float32Array(pulseCount * 3);
+    const uvs = new Float32Array(pulseCount);
+
+    for (let i = 0; i < pulseCount; i++) {
+      const u = Math.random();
+      uvs[i] = u;
+      const pt = curve.getPoint(u);
+      positions[i * 3] = pt.x + (Math.random() - 0.5) * 2;
+      positions[i * 3 + 1] = pt.y + (Math.random() - 0.5) * 2;
+      positions[i * 3 + 2] = pt.z + (Math.random() - 0.5) * 2;
+      colors[i * 3] = 1.0;
+      colors[i * 3 + 1] = 1.0;
+      colors[i * 3 + 2] = 1.0;
+    }
+    pulseGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    pulseGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    const pulseMat = new THREE.PointsMaterial({
+      size: 2.5,
+      map: this.pointTexture,
+      vertexColors: true,
+      transparent: true,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    });
+    const pulsePoints = new THREE.Points(pulseGeo, pulseMat);
+    pulsePoints.userData = { curve, uvs, count: pulseCount };
+
+    const harnessGroup = new THREE.Group();
+    harnessGroup.add(tube);
+    harnessGroup.add(pulsePoints);
+    harnessGroup.userData = { isHarness: true, pulsePoints };
+    this.harnessObjects.push(harnessGroup);
+    return harnessGroup;
+  }
+
+  createMicrochipModule(w, l, h, label, colorHex = 0x00f0ff) {
+    const chipGroup = new THREE.Group();
+    const boxGeo = new THREE.BoxGeometry(w, h, l);
+    const boxMat = new THREE.MeshStandardMaterial({
+      color: 0x0a1018,
+      emissive: colorHex,
+      emissiveIntensity: 0.35,
+      metalness: 0.9,
+      roughness: 0.2
+    });
+    const box = new THREE.Mesh(boxGeo, boxMat);
+    this.addNeonEdges(box, colorHex);
+    chipGroup.add(box);
+
+    // Silicon die on top
+    const dieGeo = new THREE.PlaneGeometry(w * 0.65, l * 0.65);
+    dieGeo.rotateX(-Math.PI / 2);
+    const dieMat = new THREE.MeshBasicMaterial({
+      color: colorHex,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.9
+    });
+    const die = new THREE.Mesh(dieGeo, dieMat);
+    die.position.y = h / 2 + 0.4;
+    chipGroup.add(die);
+
+    // Pin header leads
+    const pinCount = 12;
+    for (let i = 0; i < pinCount; i++) {
+      const u = (i / (pinCount - 1) - 0.5) * (w * 0.85);
+      const p1 = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.8, 3.5), new THREE.MeshBasicMaterial({ color: 0xffaa00 }));
+      p1.position.set(u, 0, l / 2 + 1.7);
+      const p2 = p1.clone();
+      p2.position.set(u, 0, -l / 2 - 1.7);
+      chipGroup.add(p1);
+      chipGroup.add(p2);
+    }
+    chipGroup.userData = { isHarness: true };
+    this.harnessObjects.push(chipGroup);
+    return chipGroup;
+  }
+
+  // -----------------------------------------------------------
+  // 1. BIKE ENGINE (4-Stroke High-Rev DOHC Motorcycle Powertrain)
+  // -----------------------------------------------------------
+  buildBikeEngineModel() {
+    this.clearAssembly();
+
+    // 1. Split Crankcase with Sump & Gearbox Cavity (40,000 Voxels)
+    const caseGroup = new THREE.Group();
+    const casePixels = this.createVolumetricPixelCloud((i, total) => {
+      const x = (Math.random() - 0.5) * 75;
+      const y = (Math.random() - 0.5) * 55;
+      const z = (Math.random() - 0.5) * 85;
+      return { x, y, z };
+    }, 0x00f0ff, 40000, 2.2);
+    caseGroup.add(casePixels);
+    const caseMesh = new THREE.Mesh(new THREE.BoxGeometry(75, 55, 85), this.createTranslucentShellMaterial(0x00f0ff, 0x0066aa));
+    this.addNeonEdges(caseMesh, 0x00f0ff);
+    caseGroup.add(caseMesh);
+    caseGroup.userData = { specKey: 'bike_crankcase', baseZ: -140, pixelCloud: casePixels };
+    this.registerPart(caseGroup);
+
+    // 2. Counterweighted Crankshaft & Flywheel Magneto (38,000 Voxels)
+    const crankGroup = new THREE.Group();
+    const crankPixels = this.createVolumetricPixelCloud((i, total) => {
+      const theta = (i / total) * Math.PI * 2 * 32;
+      const r = 32 * Math.sqrt(Math.random());
+      const z = (Math.random() - 0.5) * 50;
+      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z: z };
+    }, 0xffaa00, 38000, 2.2);
+    crankGroup.add(crankPixels);
+    const crankMesh = new THREE.Mesh(new THREE.CylinderGeometry(32, 32, 50, 24), this.createTranslucentShellMaterial(0xffaa00, 0xaa5500));
+    crankMesh.rotation.z = Math.PI / 2;
+    this.addNeonEdges(crankMesh, 0xffaa00);
+    crankGroup.add(crankMesh);
+    crankGroup.userData = { specKey: 'bike_crankshaft', baseZ: -85, pixelCloud: crankPixels };
+    this.registerPart(crankGroup);
+
+    // 3. Forged H-Beam Connecting Rod (28,000 Voxels)
+    const rodGroup = new THREE.Group();
+    const rodPixels = this.createVolumetricPixelCloud((i, total) => {
+      const u = i / total;
+      const y = (u - 0.5) * 75;
+      const x = (Math.random() - 0.5) * 16;
+      const z = (Math.random() - 0.5) * 14;
+      return { x, y, z };
+    }, 0x00f0ff, 28000, 2.2);
+    rodGroup.add(rodPixels);
+    const rodMesh = new THREE.Mesh(new THREE.BoxGeometry(16, 75, 14), this.createTranslucentShellMaterial(0x00f0ff, 0x0077bb));
+    this.addNeonEdges(rodMesh, 0x00f0ff);
+    rodGroup.add(rodMesh);
+    rodGroup.userData = { specKey: 'bike_conrod', baseZ: -35, pixelCloud: rodPixels };
+    this.registerPart(rodGroup);
+
+    // 4. Forged Slipper Piston with 3 Ring Lands (32,000 Voxels)
+    const pistonGroup = new THREE.Group();
+    const pistonPixels = this.createVolumetricPixelCloud((i, total) => {
+      const theta = (i / total) * Math.PI * 2 * 36;
+      const r = 36 * Math.sqrt(Math.random());
+      const z = (Math.random() - 0.5) * 45;
+      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z: z };
+    }, 0x39ff14, 32000, 2.2);
+    pistonGroup.add(pistonPixels);
+    const pistonMesh = new THREE.Mesh(new THREE.CylinderGeometry(36, 36, 45, 28), this.createTranslucentShellMaterial(0x39ff14, 0x11aa00));
+    pistonMesh.rotation.x = Math.PI / 2;
+    this.addNeonEdges(pistonMesh, 0x39ff14);
+    pistonGroup.add(pistonMesh);
+    pistonGroup.userData = { specKey: 'bike_piston', baseZ: 20, pixelCloud: pistonPixels };
+    this.registerPart(pistonGroup);
+
+    // 5. Deep-Finned Cylinder Barrel with Nikasil Bore (48,000 Voxels)
+    const cylGroup = new THREE.Group();
+    const cylPixels = this.createVolumetricPixelCloud((i, total) => {
+      const u = i / total;
+      const finIdx = Math.floor(u * 12);
+      const isFin = (u * 12 - finIdx) > 0.45;
+      const r = isFin ? 54 + Math.random() * 6 : 38 + Math.random() * 4;
+      const theta = (i / total) * Math.PI * 2 * 45;
+      const z = (u - 0.5) * 80;
+      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z: z };
+    }, 0x00f0ff, 48000, 2.2);
+    cylGroup.add(cylPixels);
+    const cylMesh = new THREE.Mesh(new THREE.CylinderGeometry(48, 48, 80, 28), this.createTranslucentShellMaterial(0x00f0ff, 0x0066aa));
+    cylMesh.rotation.x = Math.PI / 2;
+    this.addNeonEdges(cylMesh, 0x00f0ff);
+    cylGroup.add(cylMesh);
+    cylGroup.userData = { specKey: 'bike_cylinder', baseZ: 85, pixelCloud: cylPixels };
+    this.registerPart(cylGroup);
+
+    // 6. DOHC Cylinder Head & 4-Poppet Valves (44,000 Voxels)
+    const headGroup = new THREE.Group();
+    const headPixels = this.createVolumetricPixelCloud((i, total) => {
+      const x = (Math.random() - 0.5) * 65;
+      const y = (Math.random() - 0.5) * 65;
+      const z = (Math.random() - 0.5) * 45;
+      return { x, y, z };
+    }, 0xff007f, 44000, 2.2);
+    headGroup.add(headPixels);
+    const headMesh = new THREE.Mesh(new THREE.BoxGeometry(65, 65, 45), this.createTranslucentShellMaterial(0xff007f, 0xaa0055));
+    this.addNeonEdges(headMesh, 0xff007f);
+    headGroup.add(headMesh);
+    headGroup.userData = { specKey: 'bike_head', baseZ: 145, pixelCloud: headPixels };
+    this.registerPart(headGroup);
+
+    // 7. Multi-Plate Wet Clutch Assembly (34,000 Voxels)
+    const clutchGroup = new THREE.Group();
+    const clutchPixels = this.createVolumetricPixelCloud((i, total) => {
+      const theta = (i / total) * Math.PI * 2 * 36;
+      const r = 24 + Math.random() * 24;
+      const z = (Math.random() - 0.5) * 35;
+      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z: z };
+    }, 0x39ff14, 34000, 2.2);
+    clutchGroup.add(clutchPixels);
+    clutchGroup.userData = { specKey: 'bike_clutch', baseZ: 200, pixelCloud: clutchPixels };
+    this.registerPart(clutchGroup);
+
+    // 8. Tuned Exhaust Header Pipe (25,000 Voxels)
+    const exGroup = new THREE.Group();
+    const exPixels = this.createVolumetricPixelCloud((i, total) => {
+      const u = i / total;
+      const theta = u * Math.PI * 1.4;
+      const cx = Math.sin(theta) * 55;
+      const cy = -Math.cos(theta) * 45;
+      const cz = (u - 0.5) * 75;
+      return { x: cx + (Math.random() - 0.5) * 12, y: cy + (Math.random() - 0.5) * 12, z: cz };
+    }, 0xffaa00, 25000, 2.2);
+    exGroup.add(exPixels);
+    exGroup.userData = { specKey: 'bike_exhaust', baseZ: 260, pixelCloud: exPixels };
+    this.registerPart(exGroup);
+
+    // Integrated Wire Harness & ECU Microchip Module
+    const harness = this.createWiringHarness([
+      [-40, 45, 145], [-35, 30, 85], [-30, 10, 20], [-45, -20, -85], [-50, -40, -140]
+    ], 0x00f0ff);
+    this.assemblyGroup.add(harness);
+
+    const ecu = this.createMicrochipModule(24, 32, 6, "EFI-ECU", 0x39ff14);
+    ecu.position.set(-48, -25, -140);
+    this.assemblyGroup.add(ecu);
+
+    this.updateAssemblyPositions();
+    this.refreshVoxelCount();
+  }
+
+  // -----------------------------------------------------------
+  // 2. CAR ENGINE (Twin-Turbo High-Performance V8 Engine)
+  // -----------------------------------------------------------
+  buildCarEngineModel() {
+    this.clearAssembly();
+
+    // 1. 90-Degree V8 Engine Block (55,000 Voxels)
+    const blockGroup = new THREE.Group();
+    const blockPixels = this.createVolumetricPixelCloud((i, total) => {
+      const bank = i % 2 === 0 ? 1 : -1;
+      const ang = bank * 0.785; // 45 deg
+      const u = (i / total);
+      const r = 24 + Math.random() * 26;
+      const x = Math.sin(ang) * (35 + r * 0.4);
+      const y = Math.cos(ang) * (35 + r * 0.4);
+      const z = (u - 0.5) * 120;
+      return { x, y, z };
+    }, 0x00f0ff, 55000, 2.2);
+    blockGroup.add(blockPixels);
+    const blockMesh = new THREE.Mesh(new THREE.BoxGeometry(90, 75, 120), this.createTranslucentShellMaterial(0x00f0ff, 0x0066aa));
+    this.addNeonEdges(blockMesh, 0x00f0ff);
+    blockGroup.add(blockMesh);
+    blockGroup.userData = { specKey: 'car_block', baseZ: -120, pixelCloud: blockPixels };
+    this.registerPart(blockGroup);
+
+    // 2. Crossplane V8 Crankshaft (42,000 Voxels)
+    const crankGroup = new THREE.Group();
+    const crankPixels = this.createVolumetricPixelCloud((i, total) => {
+      const u = i / total;
+      const z = (u - 0.5) * 115;
+      const pinIdx = Math.floor(u * 4);
+      const pinAngle = pinIdx * (Math.PI / 2);
+      const r = 26 * Math.sqrt(Math.random());
+      return { x: Math.cos(pinAngle) * r, y: Math.sin(pinAngle) * r, z };
+    }, 0xffaa00, 42000, 2.2);
+    crankGroup.add(crankPixels);
+    crankGroup.userData = { specKey: 'car_crankshaft', baseZ: -60, pixelCloud: crankPixels };
+    this.registerPart(crankGroup);
+
+    // 3. Dual Quad-Cam Cylinder Heads (52,000 Voxels)
+    const headsGroup = new THREE.Group();
+    const headsPixels = this.createVolumetricPixelCloud((i, total) => {
+      const bank = i % 2 === 0 ? 1 : -1;
+      const bx = bank * 45 + (Math.random() - 0.5) * 20;
+      const by = 45 + (Math.random() - 0.5) * 20;
+      const bz = (Math.random() - 0.5) * 110;
+      return { x: bx, y: by, z: bz };
+    }, 0xff007f, 52000, 2.2);
+    headsGroup.add(headsPixels);
+    headsGroup.userData = { specKey: 'car_heads', baseZ: 10, pixelCloud: headsPixels };
+    this.registerPart(headsGroup);
+
+    // 4. Symmetric Twin Turbochargers (48,000 Voxels)
+    const turboGroup = new THREE.Group();
+    const turboPixels = this.createVolumetricPixelCloud((i, total) => {
+      const side = i % 2 === 0 ? 1 : -1;
+      const cx = side * 55;
+      const theta = (i / total) * Math.PI * 2 * 32;
+      const r = (theta / (Math.PI * 2 * 32)) * 26 + 8;
+      const x = cx + Math.cos(theta) * r;
+      const y = -10 + Math.sin(theta) * r;
+      const z = (Math.random() - 0.5) * 35;
+      return { x, y, z };
+    }, 0x39ff14, 48000, 2.2);
+    turboGroup.add(turboPixels);
+    turboGroup.userData = { specKey: 'car_turbos', baseZ: 85, pixelCloud: turboPixels };
+    this.registerPart(turboGroup);
+
+    // 5. Symmetric Intake Plenum Runners (38,000 Voxels)
+    const plenumGroup = new THREE.Group();
+    const plenumPixels = this.createVolumetricPixelCloud((i, total) => {
+      const x = (Math.random() - 0.5) * 55;
+      const y = 65 + (Math.random() - 0.5) * 25;
+      const z = (Math.random() - 0.5) * 95;
+      return { x, y, z };
+    }, 0x00f0ff, 38000, 2.2);
+    plenumGroup.add(plenumPixels);
+    plenumGroup.userData = { specKey: 'car_plenum', baseZ: 155, pixelCloud: plenumPixels };
+    this.registerPart(plenumGroup);
+
+    // Automotive Multi-Branch CAN Wiring Harness & Dual-DSP ECU
+    const leftHarness = this.createWiringHarness([[-45, 55, 60], [-40, 40, 0], [-35, 10, -60], [0, 65, -120]], 0x39ff14);
+    const rightHarness = this.createWiringHarness([[45, 55, 60], [40, 40, 0], [35, 10, -60], [0, 65, -120]], 0x00f0ff);
+    this.assemblyGroup.add(leftHarness);
+    this.assemblyGroup.add(rightHarness);
+
+    const carECU = this.createMicrochipModule(36, 48, 8, "V8-PCM", 0xffaa00);
+    carECU.position.set(0, 72, -120);
+    this.assemblyGroup.add(carECU);
+
+    this.updateAssemblyPositions();
+    this.refreshVoxelCount();
+  }
+
+  // -----------------------------------------------------------
+  // 3. AUTO ENGINE (Compact 3-Wheeler Powertrain)
+  // -----------------------------------------------------------
+  buildAutoEngineModel() {
+    this.clearAssembly();
+
+    // 1. Commuter Crankcase Unit (38,000 Voxels)
+    const caseGroup = new THREE.Group();
+    const casePixels = this.createVolumetricPixelCloud((i, total) => {
+      const x = (Math.random() - 0.5) * 60;
+      const y = (Math.random() - 0.5) * 50;
+      const z = (Math.random() - 0.5) * 70;
+      return { x, y, z };
+    }, 0x00f0ff, 38000, 2.2);
+    caseGroup.add(casePixels);
+    caseGroup.userData = { specKey: 'auto_case', baseZ: -100, pixelCloud: casePixels };
+    this.registerPart(caseGroup);
+
+    // 2. Cast Iron Finned Cylinder (42,000 Voxels)
+    const cylGroup = new THREE.Group();
+    const cylPixels = this.createVolumetricPixelCloud((i, total) => {
+      const theta = (i / total) * Math.PI * 2 * 36;
+      const r = 32 + (i % 8 === 0 ? 14 : 2);
+      const z = (i / total) * 65 - 32.5;
+      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
+    }, 0xffaa00, 42000, 2.2);
+    cylGroup.add(cylPixels);
+    cylGroup.userData = { specKey: 'auto_cylinder', baseZ: -25, pixelCloud: cylPixels };
+    this.registerPart(cylGroup);
+
+    // 3. Forced-Air Cooling Fan Shroud (36,000 Voxels)
+    const fanGroup = new THREE.Group();
+    const fanPixels = this.createVolumetricPixelCloud((i, total) => {
+      const theta = (i / total) * Math.PI * 2 * 28;
+      const r = 42 * Math.sqrt(Math.random());
+      const z = (Math.random() - 0.5) * 28;
+      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
+    }, 0x39ff14, 36000, 2.2);
+    fanGroup.add(fanPixels);
+    fanGroup.userData = { specKey: 'auto_fan_shroud', baseZ: 45, pixelCloud: fanPixels };
+    this.registerPart(fanGroup);
+
+    // 4. Variable Venturi Carburetor (28,000 Voxels)
+    const carbGroup = new THREE.Group();
+    const carbPixels = this.createVolumetricPixelCloud((i, total) => {
+      const x = 35 + (Math.random() - 0.5) * 24;
+      const y = 20 + (Math.random() - 0.5) * 35;
+      const z = (Math.random() - 0.5) * 24;
+      return { x, y, z };
+    }, 0xff007f, 28000, 2.2);
+    carbGroup.add(carbPixels);
+    carbGroup.userData = { specKey: 'auto_carb', baseZ: 110, pixelCloud: carbPixels };
+    this.registerPart(carbGroup);
+
+    this.updateAssemblyPositions();
+    this.refreshVoxelCount();
+  }
+
+  // -----------------------------------------------------------
+  // 4. TRACTOR ENGINE (Agricultural Heavy Diesel)
+  // -----------------------------------------------------------
+  buildTractorEngineModel() {
+    this.clearAssembly();
+
+    // 1. Cast-Iron Heavy Diesel Block (54,000 Voxels)
+    const blockGroup = new THREE.Group();
+    const blockPixels = this.createVolumetricPixelCloud((i, total) => {
+      const x = (Math.random() - 0.5) * 70;
+      const y = (Math.random() - 0.5) * 85;
+      const z = (Math.random() - 0.5) * 135;
+      return { x, y, z };
+    }, 0x00f0ff, 54000, 2.2);
+    blockGroup.add(blockPixels);
+    blockGroup.userData = { specKey: 'tractor_block', baseZ: -110, pixelCloud: blockPixels };
+    this.registerPart(blockGroup);
+
+    // 2. Mechanical Inline Fuel Injection Pump (44,000 Voxels)
+    const pumpGroup = new THREE.Group();
+    const pumpPixels = this.createVolumetricPixelCloud((i, total) => {
+      const x = -48 + (Math.random() - 0.5) * 24;
+      const y = -10 + (Math.random() - 0.5) * 35;
+      const z = (Math.random() - 0.5) * 85;
+      return { x, y, z };
+    }, 0xffaa00, 44000, 2.2);
+    pumpGroup.add(pumpPixels);
+    pumpGroup.userData = { specKey: 'tractor_pump', baseZ: -35, pixelCloud: pumpPixels };
+    this.registerPart(pumpGroup);
+
+    // 3. High-Inertia Industrial Flywheel (42,000 Voxels)
+    const flyGroup = new THREE.Group();
+    const flyPixels = this.createVolumetricPixelCloud((i, total) => {
+      const theta = (i / total) * Math.PI * 2 * 36;
+      const r = 52 * Math.sqrt(Math.random());
+      const z = (Math.random() - 0.5) * 26;
+      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
+    }, 0x39ff14, 42000, 2.2);
+    flyGroup.add(flyPixels);
+    flyGroup.userData = { specKey: 'tractor_flywheel', baseZ: 40, pixelCloud: flyPixels };
+    this.registerPart(flyGroup);
+
+    // 4. Cyclone Oil-Bath Air Cleaner (35,000 Voxels)
+    const filterGroup = new THREE.Group();
+    const filterPixels = this.createVolumetricPixelCloud((i, total) => {
+      const theta = (i / total) * Math.PI * 2 * 28;
+      const r = 28 * Math.sqrt(Math.random());
+      const z = (i / total) * 75 - 37.5;
+      return { x: 38 + Math.cos(theta) * r, y: 45 + Math.sin(theta) * r, z };
+    }, 0xff007f, 35000, 2.2);
+    filterGroup.add(filterPixels);
+    filterGroup.userData = { specKey: 'tractor_filter', baseZ: 115, pixelCloud: filterPixels };
+    this.registerPart(filterGroup);
+
+    this.updateAssemblyPositions();
+    this.refreshVoxelCount();
+  }
+
+  // -----------------------------------------------------------
+  // 5. TRUCK & BUS HEAVY DIESEL (13-Liter Commercial Engine)
+  // -----------------------------------------------------------
+  buildTruckEngineModel() {
+    this.clearAssembly();
+
+    // 1. 13-Liter Monolithic CGI Block (58,000 Voxels)
+    const blockGroup = new THREE.Group();
+    const blockPixels = this.createVolumetricPixelCloud((i, total) => {
+      const x = (Math.random() - 0.5) * 80;
+      const y = (Math.random() - 0.5) * 95;
+      const z = (Math.random() - 0.5) * 145;
+      return { x, y, z };
+    }, 0x00f0ff, 58000, 2.2);
+    blockGroup.add(blockPixels);
+    blockGroup.userData = { specKey: 'truck_block', baseZ: -125, pixelCloud: blockPixels };
+    this.registerPart(blockGroup);
+
+    // 2. 2,500-Bar Piezo Common Rail Line (42,000 Voxels)
+    const railGroup = new THREE.Group();
+    const railPixels = this.createVolumetricPixelCloud((i, total) => {
+      const z = (i / total) * 130 - 65;
+      const theta = (i / total) * Math.PI * 2 * 24;
+      const r = 8 + (i % 6 === 0 ? 16 : 0);
+      return { x: -35 + Math.cos(theta) * r, y: 38 + Math.sin(theta) * r, z };
+    }, 0xffaa00, 42000, 2.2);
+    railGroup.add(railPixels);
+    railGroup.userData = { specKey: 'truck_common_rail', baseZ: -50, pixelCloud: railPixels };
+    this.registerPart(railGroup);
+
+    // 3. Variable Geometry Turbocharger (48,000 Voxels)
+    const vgtGroup = new THREE.Group();
+    const vgtPixels = this.createVolumetricPixelCloud((i, total) => {
+      const theta = (i / total) * Math.PI * 2 * 36;
+      const r = 36 * Math.sqrt(Math.random());
+      const z = (Math.random() - 0.5) * 45;
+      return { x: 48 + Math.cos(theta) * r, y: 15 + Math.sin(theta) * r, z };
+    }, 0x39ff14, 48000, 2.2);
+    vgtGroup.add(vgtPixels);
+    vgtGroup.userData = { specKey: 'truck_turbo', baseZ: 25, pixelCloud: vgtPixels };
+    this.registerPart(vgtGroup);
+
+    // 4. CGI Cylinder Head with Compression Brake (46,000 Voxels)
+    const headGroup = new THREE.Group();
+    const headPixels = this.createVolumetricPixelCloud((i, total) => {
+      const x = (Math.random() - 0.5) * 75;
+      const y = 52 + (Math.random() - 0.5) * 28;
+      const z = (Math.random() - 0.5) * 135;
+      return { x, y, z };
+    }, 0xff007f, 46000, 2.2);
+    headGroup.add(headPixels);
+    headGroup.userData = { specKey: 'truck_head', baseZ: 100, pixelCloud: headPixels };
+    this.registerPart(headGroup);
+
+    this.updateAssemblyPositions();
+    this.refreshVoxelCount();
+  }
+
+  // -----------------------------------------------------------
+  // 6. TRAIN LOCOMOTIVE POWERPLANT (Massive V16 Prime Mover)
+  // -----------------------------------------------------------
+  buildTrainEngineModel() {
+    this.clearAssembly();
+
+    // 1. Fabricated V16 Locomotive Crankcase (65,000 Voxels)
+    const caseGroup = new THREE.Group();
+    const casePixels = this.createVolumetricPixelCloud((i, total) => {
+      const x = (Math.random() - 0.5) * 95;
+      const y = (Math.random() - 0.5) * 110;
+      const z = (Math.random() - 0.5) * 180;
+      return { x, y, z };
+    }, 0x00f0ff, 65000, 2.2);
+    caseGroup.add(casePixels);
+    caseGroup.userData = { specKey: 'train_crankcase', baseZ: -140, pixelCloud: casePixels };
+    this.registerPart(caseGroup);
+
+    // 2. Dual Massive Industrial Turbo-Superchargers (55,000 Voxels)
+    const turboGroup = new THREE.Group();
+    const turboPixels = this.createVolumetricPixelCloud((i, total) => {
+      const side = i % 2 === 0 ? 1 : -1;
+      const cx = side * 50;
+      const theta = (i / total) * Math.PI * 2 * 36;
+      const r = 42 * Math.sqrt(Math.random());
+      return { x: cx + Math.cos(theta) * r, y: 65 + Math.sin(theta) * r, z: (Math.random() - 0.5) * 60 };
+    }, 0xffaa00, 55000, 2.2);
+    turboGroup.add(turboPixels);
+    turboGroup.userData = { specKey: 'train_turbos', baseZ: -40, pixelCloud: turboPixels };
+    this.registerPart(turboGroup);
+
+    // 3. Traction Alternator Coupling Hub (50,000 Voxels)
+    const altGroup = new THREE.Group();
+    const altPixels = this.createVolumetricPixelCloud((i, total) => {
+      const theta = (i / total) * Math.PI * 2 * 48;
+      const r = 62 * Math.sqrt(Math.random());
+      const z = (Math.random() - 0.5) * 55;
+      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
+    }, 0x39ff14, 50000, 2.2);
+    altGroup.add(altPixels);
+    altGroup.userData = { specKey: 'train_alternator', baseZ: 60, pixelCloud: altPixels };
+    this.registerPart(altGroup);
+
+    this.updateAssemblyPositions();
+    this.refreshVoxelCount();
+  }
+
+  // -----------------------------------------------------------
+  // 7. AEROPLANE TURBOFAN (CFM/GE90 Class High-Bypass Jet)
   // -----------------------------------------------------------
   buildTurbineModel() {
     this.clearAssembly();
@@ -408,29 +1024,15 @@ class HolographicApp {
       const u = i / total;
       const r = Math.pow(u, 0.72) * 32 + (Math.random() - 0.5) * 1.2;
       const z = (1 - u) * 65 - 32.5;
-      const theta = i * 2.399963; // Golden ratio spiral for continuous solid surface
+      const theta = i * 2.399963;
       return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z: z };
     }, 0x00f0ff, 25000, 2.2);
     coneGroup.add(conePixels);
-
-    const coneGeo = new THREE.ConeGeometry(32, 65, 32);
-    coneGeo.rotateX(Math.PI / 2);
-    const coneShell = new THREE.Mesh(coneGeo, this.createTranslucentShellMaterial(0x00f0ff, 0x0088cc));
-    this.addNeonEdges(coneShell, 0x00f0ff);
-    coneGroup.add(coneShell);
     coneGroup.userData = { specKey: 'cone', baseZ: -140, pixelCloud: conePixels };
     this.registerPart(coneGroup);
 
-    // 2. Wide-Chord Fan Rotor (18 Twisted Blades, 62,000 Blade Voxels + 18,000 Hub Voxels = 80,000 Voxels)
+    // 2. Wide-Chord Fan Rotor (18 Blades, 80,000 Voxels)
     const fanGroup = new THREE.Group();
-    const fanHubPixels = this.createVolumetricPixelCloud((i, total) => {
-      const theta = (i / total) * Math.PI * 2 * 36;
-      const r = 26 * Math.sqrt(Math.random());
-      const z = (Math.random() - 0.5) * 20;
-      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z: z };
-    }, 0x00f0ff, 18000, 2.2);
-    fanGroup.add(fanHubPixels);
-
     const fanBladePixels = this.createVolumetricPixelCloud((i, total) => {
       const bladeIdx = Math.floor(i / (total / 18));
       const bladeAngle = (bladeIdx / 18) * Math.PI * 2;
@@ -443,15 +1045,9 @@ class HolographicApp {
       const by = Math.sin(bladeAngle) * span + Math.cos(bladeAngle) * chord * Math.cos(twist);
       const bz = chord * Math.sin(twist) + (Math.random() - 0.5) * 1.8;
       return { x: bx, y: by, z: bz };
-    }, 0x39ff14, 62000, 2.2);
+    }, 0x39ff14, 80000, 2.2);
     fanGroup.add(fanBladePixels);
-
-    const fanHubGeo = new THREE.CylinderGeometry(26, 26, 18, 24);
-    fanHubGeo.rotateX(Math.PI / 2);
-    const fanHubShell = new THREE.Mesh(fanHubGeo, this.createTranslucentShellMaterial(0x39ff14, 0x11aa00));
-    this.addNeonEdges(fanHubShell, 0x39ff14);
-    fanGroup.add(fanHubShell);
-    fanGroup.userData = { specKey: 'fan', baseZ: -80, pixelCloud: fanBladePixels, subCloud: fanHubPixels };
+    fanGroup.userData = { specKey: 'fan', baseZ: -80, pixelCloud: fanBladePixels };
     this.registerPart(fanGroup);
 
     // 3. LP & HP Compressor Disks (45,000 Voxels)
@@ -462,33 +1058,21 @@ class HolographicApp {
       const stageRadius = 52 + stage * 4.5;
       const theta = (i / total) * Math.PI * 2 * 64;
       const r = 18 + Math.random() * (stageRadius - 18);
-      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z: stageZ + (Math.random() - 0.5) * 3.5 };
+      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z: stageZ };
     }, 0x00f0ff, 45000, 2.2);
     compGroup.add(compPixels);
-
-    const compDrumGeo = new THREE.CylinderGeometry(52, 65, 42, 32);
-    compDrumGeo.rotateX(Math.PI / 2);
-    const compShell = new THREE.Mesh(compDrumGeo, this.createTranslucentShellMaterial(0x00f0ff, 0x0066aa));
-    this.addNeonEdges(compShell, 0x00f0ff);
-    compGroup.add(compShell);
     compGroup.userData = { specKey: 'compressor', baseZ: -18, pixelCloud: compPixels };
     this.registerPart(compGroup);
 
-    // 4. Annular Combustor Core & Fuel Injector Ring (40,000 Voxels)
+    // 4. Annular Combustor Core & Nozzles (40,000 Voxels)
     const combGroup = new THREE.Group();
     const combPixels = this.createVolumetricPixelCloud((i, total) => {
       const theta = (i / total) * Math.PI * 2 * 32;
       const r = 48 + Math.random() * 16;
       const z = (Math.random() - 0.5) * 52;
-      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z: z };
+      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
     }, 0xffaa00, 40000, 2.2);
     combGroup.add(combPixels);
-
-    const combGeo = new THREE.CylinderGeometry(62, 62, 52, 32, 1, true);
-    combGeo.rotateX(Math.PI / 2);
-    const combShell = new THREE.Mesh(combGeo, this.createTranslucentShellMaterial(0xffaa00, 0xcc6600));
-    this.addNeonEdges(combShell, 0xff9900);
-    combGroup.add(combShell);
     combGroup.userData = { specKey: 'combustor', baseZ: 48, pixelCloud: combPixels };
     this.registerPart(combGroup);
 
@@ -500,34 +1084,22 @@ class HolographicApp {
       const u = (i % (total / 28)) / (total / 28);
       const r = 26 + u * 38;
       const z = (Math.random() - 0.5) * 18;
-      return { x: Math.cos(bladeAngle) * r, y: Math.sin(bladeAngle) * r, z: z };
+      return { x: Math.cos(bladeAngle) * r, y: Math.sin(bladeAngle) * r, z };
     }, 0xb026ff, 38000, 2.2);
     turbGroup.add(turbPixels);
-
-    const turbGeo = new THREE.CylinderGeometry(42, 42, 22, 28);
-    turbGeo.rotateX(Math.PI / 2);
-    const turbShell = new THREE.Mesh(turbGeo, this.createTranslucentShellMaterial(0xb026ff, 0x7700cc));
-    this.addNeonEdges(turbShell, 0xb026ff);
-    turbGroup.add(turbShell);
     turbGroup.userData = { specKey: 'turbine', baseZ: 110, pixelCloud: turbPixels };
     this.registerPart(turbGroup);
 
-    // 6. Thrust Nozzle Cowl & Supersonic Exhaust Stream (32,000 Voxels)
+    // 6. Thrust Nozzle Cowl (32,000 Voxels)
     const nozzGroup = new THREE.Group();
     const nozzPixels = this.createVolumetricPixelCloud((i, total) => {
       const u = i / total;
       const z = u * 75 - 37.5;
-      const r = 58 - u * 18 + (Math.random() - 0.5) * 2.5;
+      const r = 58 - u * 18;
       const theta = (i / total) * Math.PI * 2 * 45;
-      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z: z };
+      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
     }, 0xff007f, 32000, 2.2);
     nozzGroup.add(nozzPixels);
-
-    const nozzGeo = new THREE.ConeGeometry(58, 75, 32, 1, true);
-    nozzGeo.rotateX(-Math.PI / 2);
-    const nozzShell = new THREE.Mesh(nozzGeo, this.createTranslucentShellMaterial(0xff007f, 0xaa0044));
-    this.addNeonEdges(nozzShell, 0xff007f);
-    nozzGroup.add(nozzShell);
     nozzGroup.userData = { specKey: 'nozzle', baseZ: 175, pixelCloud: nozzPixels };
     this.registerPart(nozzGroup);
 
@@ -536,49 +1108,95 @@ class HolographicApp {
   }
 
   // -----------------------------------------------------------
-  // MODEL 2: PLANETARY GEARBOX (250,000+ Voxels)
+  // 8. ROCKET ENGINE (Liquid Bipropellant Staged Combustion)
+  // -----------------------------------------------------------
+  buildRocketEngineModel() {
+    this.clearAssembly();
+
+    // 1. Dual Staged Turbopump Assembly (44,000 Voxels)
+    const pumpGroup = new THREE.Group();
+    const pumpPixels = this.createVolumetricPixelCloud((i, total) => {
+      const side = i % 2 === 0 ? 1 : -1;
+      const cx = side * 30;
+      const theta = (i / total) * Math.PI * 2 * 36;
+      const r = 22 * Math.sqrt(Math.random());
+      return { x: cx + Math.cos(theta) * r, y: Math.sin(theta) * r, z: (Math.random() - 0.5) * 35 };
+    }, 0x00f0ff, 44000, 2.2);
+    pumpGroup.add(pumpPixels);
+    pumpGroup.userData = { specKey: 'rocket_turbopump', baseZ: -120, pixelCloud: pumpPixels };
+    this.registerPart(pumpGroup);
+
+    // 2. Preburner & Gimbal Actuators (38,000 Voxels)
+    const gimbalGroup = new THREE.Group();
+    const gimbalPixels = this.createVolumetricPixelCloud((i, total) => {
+      const theta = (i / total) * Math.PI * 2 * 28;
+      const r = 26 + (Math.random() - 0.5) * 6;
+      const z = (Math.random() - 0.5) * 45;
+      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
+    }, 0xffaa00, 38000, 2.2);
+    gimbalGroup.add(gimbalPixels);
+    gimbalGroup.userData = { specKey: 'rocket_gimbal', baseZ: -55, pixelCloud: gimbalPixels };
+    this.registerPart(gimbalGroup);
+
+    // 3. Regenerative Main Combustion Chamber (45,000 Voxels)
+    const combGroup = new THREE.Group();
+    const combPixels = this.createVolumetricPixelCloud((i, total) => {
+      const u = i / total;
+      const r = 32 - Math.sin(u * Math.PI) * 10;
+      const theta = (i / total) * Math.PI * 2 * 45;
+      const z = (u - 0.5) * 55;
+      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
+    }, 0x39ff14, 45000, 2.2);
+    combGroup.add(combPixels);
+    combGroup.userData = { specKey: 'rocket_combustor', baseZ: 15, pixelCloud: combPixels };
+    this.registerPart(combGroup);
+
+    // 4. Contoured Regenerative Bell Nozzle with Cooling Tubes (68,000 Voxels)
+    const bellGroup = new THREE.Group();
+    const bellPixels = this.createVolumetricPixelCloud((i, total) => {
+      const u = i / total;
+      const r = 22 + Math.pow(u, 1.4) * 65; // Rao parabolic expansion bell
+      const theta = (i / total) * Math.PI * 2 * 64;
+      const z = u * 110 - 20;
+      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
+    }, 0xff007f, 68000, 2.2);
+    bellGroup.add(bellPixels);
+    bellGroup.userData = { specKey: 'rocket_bell', baseZ: 95, pixelCloud: bellPixels };
+    this.registerPart(bellGroup);
+
+    this.updateAssemblyPositions();
+    this.refreshVoxelCount();
+  }
+
+  // -----------------------------------------------------------
+  // 9. PLANETARY GEARBOX
   // -----------------------------------------------------------
   buildGearboxModel() {
     this.clearAssembly();
 
-    // 1. Input Drive Shaft (26,000 Voxels)
     const shaftGroup = new THREE.Group();
     const shaftPixels = this.createVolumetricPixelCloud((i, total) => {
       const z = (i / total) * 85 - 42.5;
       const theta = (i / total) * Math.PI * 2 * 28;
       const r = 12 * Math.sqrt(Math.random());
-      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z: z };
+      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
     }, 0x00f0ff, 26000, 2.2);
     shaftGroup.add(shaftPixels);
-
-    const shaftGeo = new THREE.CylinderGeometry(12, 12, 85, 24);
-    shaftGeo.rotateX(Math.PI / 2);
-    const shaftShell = new THREE.Mesh(shaftGeo, this.createTranslucentShellMaterial(0x00f0ff, 0x0077aa));
-    this.addNeonEdges(shaftShell, 0x00f0ff);
-    shaftGroup.add(shaftShell);
     shaftGroup.userData = { specKey: 'shaft_in', baseZ: -125, pixelCloud: shaftPixels };
     this.registerPart(shaftGroup);
 
-    // 2. Central Sun Gear with Involute Profile (48,000 Voxels)
     const sunGroup = new THREE.Group();
     const sunPixels = this.createVolumetricPixelCloud((i, total) => {
       const theta = (i / total) * Math.PI * 2 * 28;
       const tooth = Math.sin(theta * 14) * 5.0;
-      const r = 26 + tooth + (Math.random() - 0.5) * 3.5;
+      const r = 26 + tooth;
       const z = (Math.random() - 0.5) * 26;
-      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z: z };
+      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
     }, 0xffaa00, 48000, 2.2);
     sunGroup.add(sunPixels);
-
-    const sunGeo = new THREE.CylinderGeometry(28, 28, 26, 16);
-    sunGeo.rotateX(Math.PI / 2);
-    const sunShell = new THREE.Mesh(sunGeo, this.createTranslucentShellMaterial(0xffaa00, 0xaa5500));
-    this.addNeonEdges(sunShell, 0xffaa00);
-    sunGroup.add(sunShell);
     sunGroup.userData = { specKey: 'sun_gear', baseZ: -55, pixelCloud: sunPixels };
     this.registerPart(sunGroup);
 
-    // 3. Planetary Trio Carrier (96,000 Voxels)
     const planetGroup = new THREE.Group();
     const planetPixels = this.createVolumetricPixelCloud((i, total) => {
       const pIdx = Math.floor(i / (total / 3));
@@ -588,54 +1206,34 @@ class HolographicApp {
       const localI = i % (total / 3);
       const theta = (localI / (total / 3)) * Math.PI * 2 * 24;
       const tooth = Math.sin(theta * 12) * 3.5;
-      const r = 20 + tooth + (Math.random() - 0.5) * 2.5;
+      const r = 20 + tooth;
       const z = (Math.random() - 0.5) * 22;
-      return { x: cx + Math.cos(theta) * r, y: cy + Math.sin(theta) * r, z: z };
+      return { x: cx + Math.cos(theta) * r, y: cy + Math.sin(theta) * r, z };
     }, 0x39ff14, 96000, 2.2);
     planetGroup.add(planetPixels);
-
-    const carrierGeo = new THREE.CylinderGeometry(62, 62, 10, 28);
-    carrierGeo.rotateX(Math.PI / 2);
-    const carrierShell = new THREE.Mesh(carrierGeo, this.createTranslucentShellMaterial(0x39ff14, 0x11aa00));
-    this.addNeonEdges(carrierShell, 0x39ff14);
-    planetGroup.add(carrierShell);
     planetGroup.userData = { specKey: 'planet_gears', baseZ: 10, pixelCloud: planetPixels };
     this.registerPart(planetGroup);
 
-    // 4. Ring Gear Outer Annulus (50,000 Voxels)
     const ringGroup = new THREE.Group();
     const ringPixels = this.createVolumetricPixelCloud((i, total) => {
       const theta = (i / total) * Math.PI * 2 * 56;
       const tooth = Math.sin(theta * 28) * 4;
-      const r = 84 + tooth + (Math.random() - 0.5) * 4;
+      const r = 84 + tooth;
       const z = (Math.random() - 0.5) * 34;
-      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z: z };
+      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
     }, 0xff007f, 50000, 2.2);
     ringGroup.add(ringPixels);
-
-    const ringGeo = new THREE.CylinderGeometry(86, 86, 32, 28, 1, true);
-    ringGeo.rotateX(Math.PI / 2);
-    const ringShell = new THREE.Mesh(ringGeo, this.createTranslucentShellMaterial(0xff007f, 0xaa0055));
-    this.addNeonEdges(ringShell, 0xff007f);
-    ringGroup.add(ringShell);
     ringGroup.userData = { specKey: 'ring_gear', baseZ: 75, pixelCloud: ringPixels };
     this.registerPart(ringGroup);
 
-    // 5. Output Flange Shaft (28,000 Voxels)
     const outGroup = new THREE.Group();
     const outPixels = this.createVolumetricPixelCloud((i, total) => {
       const z = (i / total) * 75 - 37.5;
       const theta = (i / total) * Math.PI * 2 * 24;
       const r = 18 * Math.sqrt(Math.random());
-      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z: z };
+      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
     }, 0x00f0ff, 28000, 2.2);
     outGroup.add(outPixels);
-
-    const outGeo = new THREE.CylinderGeometry(18, 28, 75, 24);
-    outGeo.rotateX(Math.PI / 2);
-    const outShell = new THREE.Mesh(outGeo, this.createTranslucentShellMaterial(0x00f0ff, 0x0088cc));
-    this.addNeonEdges(outShell, 0x00f0ff);
-    outGroup.add(outShell);
     outGroup.userData = { specKey: 'shaft_out', baseZ: 140, pixelCloud: outPixels };
     this.registerPart(outGroup);
 
@@ -644,66 +1242,44 @@ class HolographicApp {
   }
 
   // -----------------------------------------------------------
-  // MODEL 3: ROBOTIC ACTUATOR JOINT (230,000+ Voxels)
+  // 10. ROBOTIC ACTUATOR JOINT
   // -----------------------------------------------------------
   buildRobotArmModel() {
     this.clearAssembly();
 
-    // 1. Base Mounting Turret (46,000 Voxels)
     const baseGroup = new THREE.Group();
     const basePixels = this.createVolumetricPixelCloud((i, total) => {
       const theta = (i / total) * Math.PI * 2 * 36;
       const r = 30 + Math.random() * 45;
       const z = (Math.random() - 0.5) * 26;
-      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z: z };
+      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
     }, 0x00f0ff, 46000, 2.2);
     baseGroup.add(basePixels);
-
-    const baseGeo = new THREE.CylinderGeometry(65, 75, 26, 32);
-    baseGeo.rotateX(Math.PI / 2);
-    const baseShell = new THREE.Mesh(baseGeo, this.createTranslucentShellMaterial(0x00f0ff, 0x0066aa));
-    this.addNeonEdges(baseShell, 0x00f0ff);
-    baseGroup.add(baseShell);
     baseGroup.userData = { specKey: 'base_turret', baseZ: -120, pixelCloud: basePixels };
     this.registerPart(baseGroup);
 
-    // 2. Brushless Stator & Rotor Core (55,000 Voxels)
     const statGroup = new THREE.Group();
     const statPixels = this.createVolumetricPixelCloud((i, total) => {
       const theta = (i / total) * Math.PI * 2 * 48;
       const r = 24 + Math.random() * 30;
       const z = (Math.random() - 0.5) * 38;
-      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z: z };
+      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
     }, 0xff007f, 55000, 2.2);
     statGroup.add(statPixels);
-
-    const statGeo = new THREE.CylinderGeometry(52, 52, 38, 24);
-    statGeo.rotateX(Math.PI / 2);
-    const statShell = new THREE.Mesh(statGeo, this.createTranslucentShellMaterial(0xff007f, 0x990044));
-    this.addNeonEdges(statShell, 0xff007f);
-    statGroup.add(statShell);
     statGroup.userData = { specKey: 'stator_motor', baseZ: -50, pixelCloud: statPixels };
     this.registerPart(statGroup);
 
-    // 3. Harmonic Reducer Ring (42,000 Voxels)
     const harmGroup = new THREE.Group();
     const harmPixels = this.createVolumetricPixelCloud((i, total) => {
       const theta = (i / total) * Math.PI * 2 * 48;
       const r = 38 + Math.random() * 12;
       const z = (Math.random() - 0.5) * 26;
-      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z: z };
+      return { x: Math.cos(theta) * r, y: Math.sin(theta) * r, z };
     }, 0xffaa00, 42000, 2.2);
     harmGroup.add(harmPixels);
-
-    const harmGeo = new THREE.CylinderGeometry(46, 46, 26, 28);
-    harmGeo.rotateX(Math.PI / 2);
-    const harmShell = new THREE.Mesh(harmGeo, this.createTranslucentShellMaterial(0xffaa00, 0xaa5500));
-    this.addNeonEdges(harmShell, 0xffaa00);
-    harmGroup.add(harmShell);
     harmGroup.userData = { specKey: 'harmonic_drive', baseZ: 15, pixelCloud: harmPixels };
     this.registerPart(harmGroup);
 
-    // 4. Articulation Yoke Arm (46,000 Voxels)
     const yokeGroup = new THREE.Group();
     const yokePixels = this.createVolumetricPixelCloud((i, total) => {
       const x = (Math.random() - 0.5) * 44;
@@ -712,15 +1288,9 @@ class HolographicApp {
       return { x, y, z };
     }, 0x00f0ff, 46000, 2.2);
     yokeGroup.add(yokePixels);
-
-    const yokeGeo = new THREE.BoxGeometry(44, 78, 32);
-    const yokeShell = new THREE.Mesh(yokeGeo, this.createTranslucentShellMaterial(0x00f0ff, 0x0088cc));
-    this.addNeonEdges(yokeShell, 0x00f0ff);
-    yokeGroup.add(yokeShell);
     yokeGroup.userData = { specKey: 'pivot_yoke', baseZ: 75, pixelCloud: yokePixels };
     this.registerPart(yokeGroup);
 
-    // 5. Adaptive Gripper & End Effector (44,000 Voxels)
     const gripGroup = new THREE.Group();
     const gripPixels = this.createVolumetricPixelCloud((i, total) => {
       const isLeft = i % 2 === 0;
@@ -731,10 +1301,6 @@ class HolographicApp {
       return { x, y, z };
     }, 0x39ff14, 44000, 2.2);
     gripGroup.add(gripPixels);
-
-    const gBase = new THREE.Mesh(new THREE.BoxGeometry(36, 22, 26), this.createTranslucentShellMaterial(0x39ff14, 0x11aa00));
-    this.addNeonEdges(gBase, 0x39ff14);
-    gripGroup.add(gBase);
     gripGroup.userData = { specKey: 'end_effector', baseZ: 145, pixelCloud: gripPixels };
     this.registerPart(gripGroup);
 
@@ -742,14 +1308,29 @@ class HolographicApp {
     this.refreshVoxelCount();
   }
 
+  buildCurrentMachine() {
+    if (this.currentMachine === 'bike_engine') this.buildBikeEngineModel();
+    else if (this.currentMachine === 'car_engine') this.buildCarEngineModel();
+    else if (this.currentMachine === 'auto_engine') this.buildAutoEngineModel();
+    else if (this.currentMachine === 'tractor_engine') this.buildTractorEngineModel();
+    else if (this.currentMachine === 'truck_engine') this.buildTruckEngineModel();
+    else if (this.currentMachine === 'train_engine') this.buildTrainEngineModel();
+    else if (this.currentMachine === 'turbine') this.buildTurbineModel();
+    else if (this.currentMachine === 'rocket_engine') this.buildRocketEngineModel();
+    else if (this.currentMachine === 'gearbox') this.buildGearboxModel();
+    else this.buildRobotArmModel();
+  }
+
   buildComponentsTray() {
     this.trayParts = [];
     const matParts = [
-      { key: 'fan', geo: new THREE.CylinderGeometry(36, 36, 12, 24), col: 0x39ff14, x: -260 },
-      { key: 'compressor', geo: new THREE.CylinderGeometry(32, 40, 20, 24), col: 0x00f0ff, x: -130 },
-      { key: 'sun_gear', geo: new THREE.CylinderGeometry(24, 24, 18, 14), col: 0xffaa00, x: 0 },
-      { key: 'combustor', geo: new THREE.CylinderGeometry(30, 30, 32, 32, 1, true), col: 0xff007f, x: 130 },
-      { key: 'nozzle', geo: new THREE.ConeGeometry(26, 46, 32), col: 0xb026ff, x: 260 }
+      { key: 'bike_piston', geo: new THREE.CylinderGeometry(28, 28, 36, 24), col: 0x39ff14, x: -320 },
+      { key: 'bike_conrod', geo: new THREE.BoxGeometry(14, 55, 12), col: 0x00f0ff, x: -210 },
+      { key: 'bike_cylinder', geo: new THREE.CylinderGeometry(38, 38, 55, 24), col: 0x00f0ff, x: -100 },
+      { key: 'sun_gear', geo: new THREE.CylinderGeometry(24, 24, 18, 14), col: 0xffaa00, x: 10 },
+      { key: 'rocket_bell', geo: new THREE.ConeGeometry(32, 65, 32), col: 0xff007f, x: 120 },
+      { key: 'fan', geo: new THREE.CylinderGeometry(36, 36, 12, 24), col: 0x39ff14, x: 230 },
+      { key: 'turbo', geo: new THREE.TorusGeometry(24, 10, 16, 32), col: 0xffaa00, x: 340 }
     ];
 
     matParts.forEach(p => {
@@ -769,14 +1350,74 @@ class HolographicApp {
     });
   }
 
+  // -----------------------------------------------------------
+  // ZONE 03 SANDBOX MODULAR SPAWNER & MAGNETIC SNAPPING
+  // -----------------------------------------------------------
+  spawnSandboxPart(partType) {
+    let newMesh = null;
+    let ports = [];
+    const colors = { piston: 0x39ff14, conrod: 0x00f0ff, crankshaft: 0xffaa00, cylinder: 0x00f0ff, turbo: 0xffaa00, ecu_chip: 0x39ff14, wire_harness: 0x00f0ff, gear: 0xffaa00, rocket_bell: 0xff007f };
+    const col = colors[partType] || 0x00f0ff;
+
+    if (partType === 'piston') {
+      newMesh = new THREE.Mesh(new THREE.CylinderGeometry(26, 26, 35, 24), this.createTranslucentShellMaterial(col, col));
+      ports = [{ id: 'wrist_pin', pos: new THREE.Vector3(0, -10, 0), snapWith: 'small_end' }];
+    } else if (partType === 'conrod') {
+      newMesh = new THREE.Mesh(new THREE.BoxGeometry(14, 55, 12), this.createTranslucentShellMaterial(col, col));
+      ports = [
+        { id: 'small_end', pos: new THREE.Vector3(0, 26, 0), snapWith: 'wrist_pin' },
+        { id: 'big_end', pos: new THREE.Vector3(0, -26, 0), snapWith: 'crank_pin' }
+      ];
+    } else if (partType === 'crankshaft') {
+      newMesh = new THREE.Mesh(new THREE.CylinderGeometry(28, 28, 45, 24), this.createTranslucentShellMaterial(col, col));
+      newMesh.rotation.z = Math.PI / 2;
+      ports = [{ id: 'crank_pin', pos: new THREE.Vector3(22, 0, 0), snapWith: 'big_end' }];
+    } else if (partType === 'cylinder') {
+      newMesh = new THREE.Mesh(new THREE.CylinderGeometry(36, 36, 65, 24), this.createTranslucentShellMaterial(col, col));
+      ports = [{ id: 'cylinder_base', pos: new THREE.Vector3(0, -32, 0), snapWith: 'wrist_pin' }];
+    } else if (partType === 'turbo') {
+      newMesh = new THREE.Mesh(new THREE.TorusGeometry(26, 12, 16, 32), this.createTranslucentShellMaterial(col, col));
+      ports = [{ id: 'turbo_flange', pos: new THREE.Vector3(-25, 0, 0), snapWith: 'exhaust_port' }];
+    } else if (partType === 'ecu_chip') {
+      newMesh = this.createMicrochipModule(28, 38, 7, "SANDBOX-ECU", 0x39ff14);
+      ports = [{ id: 'ecu_port', pos: new THREE.Vector3(0, 0, 0), snapWith: 'loom_lead' }];
+    } else if (partType === 'wire_harness') {
+      newMesh = this.createWiringHarness([[-25, 0, 0], [0, 20, 0], [25, 0, 0]], 0x00f0ff);
+      ports = [{ id: 'loom_lead', pos: new THREE.Vector3(25, 0, 0), snapWith: 'ecu_port' }];
+    } else if (partType === 'gear') {
+      newMesh = new THREE.Mesh(new THREE.CylinderGeometry(26, 26, 16, 18), this.createTranslucentShellMaterial(col, col));
+      ports = [{ id: 'gear_bore', pos: new THREE.Vector3(0, 0, 0), snapWith: 'shaft_hub' }];
+    } else {
+      newMesh = new THREE.Mesh(new THREE.ConeGeometry(32, 65, 32), this.createTranslucentShellMaterial(col, col));
+      ports = [{ id: 'bell_throat', pos: new THREE.Vector3(0, -30, 0), snapWith: 'combustor_port' }];
+    }
+
+    this.addNeonEdges(newMesh, col);
+    // Random placement in sandbox view
+    const spawnX = (Math.random() - 0.5) * 160;
+    const spawnY = (Math.random() - 0.5) * 80;
+    newMesh.position.set(spawnX, spawnY, 0);
+    newMesh.userData = { isSandboxItem: true, partType, ports, specKey: `bike_${partType}` };
+
+    this.workspaceSandboxGroup.add(newMesh);
+    this.sandboxParts.push(newMesh);
+    audio.playAirClick();
+    this.updateTelemetry(`bike_${partType}`);
+  }
+
+  clearSandbox() {
+    while (this.workspaceSandboxGroup.children.length > 0) {
+      this.workspaceSandboxGroup.remove(this.workspaceSandboxGroup.children[0]);
+    }
+    this.sandboxParts = [];
+    audio.playPinchLock();
+  }
+
   registerPart(meshOrGroup) {
     this.assemblyGroup.add(meshOrGroup);
     this.machineParts.push(meshOrGroup);
     if (meshOrGroup.userData.pixelCloud) {
       this.pixelClouds.push(meshOrGroup.userData.pixelCloud);
-    }
-    if (meshOrGroup.userData.subCloud) {
-      this.pixelClouds.push(meshOrGroup.userData.subCloud);
     }
   }
 
@@ -785,6 +1426,7 @@ class HolographicApp {
       this.assemblyGroup.remove(this.assemblyGroup.children[0]);
     }
     this.machineParts = [];
+    this.harnessObjects = [];
     this.pixelClouds = [];
     this.totalVoxelCount = 0;
   }
@@ -806,7 +1448,7 @@ class HolographicApp {
   }
 
   // -----------------------------------------------------------
-  // Continuous Dual-Level Explosion & Pixel Dispersion Engine
+  // DUAL-LEVEL CONTINUOUS EXPLOSION & DISPERSION ENGINE
   // -----------------------------------------------------------
   updateAssemblyPositions() {
     const num = this.machineParts.length;
@@ -819,8 +1461,8 @@ class HolographicApp {
       const spread = distFromCenter * maxSpread * this.explosionFactor;
       part.position.z = part.userData.baseZ + spread;
 
-      const updateCloud = (pCloud) => {
-        if (!pCloud) return;
+      const pCloud = part.userData.pixelCloud;
+      if (pCloud) {
         pCloud.visible = this.pixelsEnabled;
         if (this.pixelsEnabled) {
           const pixelFactor = Math.max(0, (this.explosionFactor - 0.08) / 0.92);
@@ -845,24 +1487,15 @@ class HolographicApp {
               child.material.opacity = Math.max(0.06, 0.20 - pixelFactor * 0.16);
             }
           });
-        } else {
-          part.traverse(child => {
-            if (child.isMesh && child.material) {
-              child.material.opacity = 0.20;
-            }
-          });
         }
-      };
-
-      updateCloud(part.userData.pixelCloud);
-      updateCloud(part.userData.subCloud);
+      }
     });
   }
 
   setExplosion(val) {
     const clamped = Math.max(0, Math.min(1, val));
     const delta = Math.abs(clamped - this.lastExplosionFactor);
-    this.kineticRate = delta * 1400; // Kinetic rate in px/s
+    this.kineticRate = delta * 1400;
     this.lastExplosionFactor = clamped;
     this.explosionFactor = clamped;
     this.updateAssemblyPositions();
@@ -900,6 +1533,18 @@ class HolographicApp {
     }
   }
 
+  toggleHarness() {
+    this.harnessEnabled = !this.harnessEnabled;
+    this.harnessObjects.forEach(obj => {
+      obj.visible = this.harnessEnabled;
+    });
+    const btn = document.getElementById('btn-toggle-harness');
+    if (btn) {
+      btn.classList.toggle('active', this.harnessEnabled);
+      btn.innerHTML = `<span class="btn-icon">⚡</span> WIRING & CHIPS: ${this.harnessEnabled ? 'ON' : 'OFF'}`;
+    }
+  }
+
   switchZone(zoneId) {
     this.currentZone = zoneId;
     document.querySelectorAll('.pill-btn').forEach((btn, idx) => {
@@ -907,15 +1552,24 @@ class HolographicApp {
       btn.setAttribute('aria-selected', idx + 1 === zoneId);
     });
 
+    const sandboxTray = document.getElementById('sandbox-spawner-tray');
+
     if (zoneId === 1) {
       this.assemblyGroup.visible = true;
       this.componentsTrayGroup.visible = false;
+      this.workspaceSandboxGroup.visible = false;
+      if (sandboxTray) sandboxTray.classList.add('hidden');
     } else if (zoneId === 2) {
       this.assemblyGroup.visible = false;
       this.componentsTrayGroup.visible = true;
+      this.workspaceSandboxGroup.visible = false;
+      if (sandboxTray) sandboxTray.classList.add('hidden');
     } else {
-      this.assemblyGroup.visible = true;
-      this.componentsTrayGroup.visible = true;
+      // Zone 03: Sandbox Mode
+      this.assemblyGroup.visible = false;
+      this.componentsTrayGroup.visible = false;
+      this.workspaceSandboxGroup.visible = true;
+      if (sandboxTray) sandboxTray.classList.remove('hidden');
     }
   }
 
@@ -927,6 +1581,8 @@ class HolographicApp {
     if (pName) pName.textContent = spec.name.toUpperCase();
     const pSub = document.getElementById('part-subsystem');
     if (pSub) pSub.textContent = spec.sub;
+    const pEng = document.getElementById('part-engineering');
+    if (pEng) pEng.textContent = spec.eng;
     const pMat = document.getElementById('part-material');
     if (pMat) pMat.textContent = spec.mat;
     const pRpm = document.getElementById('part-rpm');
@@ -935,7 +1591,6 @@ class HolographicApp {
 
   // -----------------------------------------------------------
   // SCALE-INVARIANT SPATIAL GEOMETRY & ANGLE ENGINE
-  // "Past Perfection" Geometric Wireframes + Vector Angles
   // -----------------------------------------------------------
   initMediaPipeHands() {
     const video = document.getElementById('webcam-video');
@@ -970,7 +1625,7 @@ class HolographicApp {
       const countBadge = document.getElementById('hud-hand-count');
       if (countBadge) countBadge.textContent = `${numHands} HANDS`;
 
-      // 1. Two-Hand Explosion Gesture (Normalized by Average Palm Span)
+      // 1. Two-Hand Explosion Gesture
       if (numHands >= 2) {
         const h1 = this.handsData[0][0];
         const h2 = this.handsData[1][0];
@@ -997,7 +1652,7 @@ class HolographicApp {
         return;
       }
 
-      // 2. Comprehensive Geometrical Tracking & Mathematical Angle Extraction
+      // 2. Comprehensive Geometry Wireframes & Angle Extractions
       const primaryHand = this.handsData[0];
       this.computeValuedAngles(primaryHand, overlayCanvas.width, overlayCanvas.height);
       this.drawFullNeuralGeometry(overlayCtx, primaryHand, overlayCanvas.width, overlayCanvas.height);
@@ -1065,7 +1720,6 @@ class HolographicApp {
     const indexPIP = lms[6];
     const indexDIP = lms[7];
 
-    // 1. Palm Scale Metric
     const palmDist3D = Math.hypot(
       wrist.x - middleMCP.x,
       wrist.y - middleMCP.y,
@@ -1073,7 +1727,6 @@ class HolographicApp {
     );
     this.palmScale = Math.max(0.04, palmDist3D);
 
-    // 2. Pinch Distance Ratio
     const pinchDist3D = Math.hypot(
       thumbTip.x - indexTip.x,
       thumbTip.y - indexTip.y,
@@ -1081,35 +1734,23 @@ class HolographicApp {
     );
     this.pinchRatio = pinchDist3D / this.palmScale;
 
-    // 3. 3D Palm Orientation (Surface Normal Vector via Cross Product)
-    const v1 = {
-      x: indexMCP.x - wrist.x,
-      y: indexMCP.y - wrist.y,
-      z: indexMCP.z - wrist.z
-    };
-    const v2 = {
-      x: pinkyMCP.x - wrist.x,
-      y: pinkyMCP.y - wrist.y,
-      z: pinkyMCP.z - wrist.z
-    };
-
-    // Normal = v1 x v2
+    // 3D Palm Orientation (Normal via Cross Product)
+    const v1 = { x: indexMCP.x - wrist.x, y: indexMCP.y - wrist.y, z: indexMCP.z - wrist.z };
+    const v2 = { x: pinkyMCP.x - wrist.x, y: pinkyMCP.y - wrist.y, z: pinkyMCP.z - wrist.z };
     const nx = v1.y * v2.z - v1.z * v2.y;
     const ny = v1.z * v2.x - v1.x * v2.z;
     const nz = v1.x * v2.y - v1.y * v2.x;
     const norm = Math.hypot(nx, ny, nz) || 1.0;
-
     const normX = nx / norm;
     const normY = ny / norm;
     const normZ = nz / norm;
 
-    // Euler angles in degrees
     const pitch = Math.round(Math.atan2(normY, Math.hypot(normX, normZ)) * (180 / Math.PI));
     const yaw = Math.round(Math.atan2(normX, normZ) * (180 / Math.PI));
     const roll = Math.round(Math.atan2(v1.y, v1.x) * (180 / Math.PI));
     this.palmOrientation = { pitch, yaw, roll };
 
-    // 4. Pinch Vector Convergence Angle
+    // Pinch Vector Convergence Angle
     const vThumb = { x: thumbTip.x - lms[2].x, y: thumbTip.y - lms[2].y, z: thumbTip.z - lms[2].z };
     const vIndex = { x: indexTip.x - lms[5].x, y: indexTip.y - lms[5].y, z: indexTip.z - lms[5].z };
     const dotTI = vThumb.x * vIndex.x + vThumb.y * vIndex.y + vThumb.z * vIndex.z;
@@ -1118,7 +1759,7 @@ class HolographicApp {
     const cosAngle = THREE.MathUtils.clamp(dotTI / (magT * magI), -1.0, 1.0);
     this.pinchConvergenceAngle = Math.round(Math.acos(cosAngle) * (180 / Math.PI));
 
-    // 5. Index Joint Articulation Angle
+    // Index Joint Articulation Angle
     const vPip = { x: indexPIP.x - indexMCP.x, y: indexPIP.y - indexMCP.y };
     const vDip = { x: indexTip.x - indexPIP.x, y: indexTip.y - indexPIP.y };
     const dotPipDip = vPip.x * vDip.x + vPip.y * vDip.y;
@@ -1127,7 +1768,6 @@ class HolographicApp {
     const cosArt = THREE.MathUtils.clamp(dotPipDip / (magPip * magDip), -1.0, 1.0);
     this.indexArticulationAngle = Math.round(Math.acos(cosArt) * (180 / Math.PI));
 
-    // 6. Maximum Fingertip Span
     let maxSpan = 0;
     for (let i = 0; i < FINGERTIP_IDS.length; i++) {
       for (let j = i + 1; j < FINGERTIP_IDS.length; j++) {
@@ -1161,7 +1801,6 @@ class HolographicApp {
 
   // -----------------------------------------------------------
   // "PAST PERFECTION" GEOMETRIC WIREFRAME RENDERER
-  // Translucent Palm Polygon + Knuckle Bridge + Centroid Reticle + Dashed Envelope
   // -----------------------------------------------------------
   drawFullNeuralGeometry(ctx, lms, w, h) {
     const px = lms.map(p => ({ x: p.x * w, y: p.y * h }));
@@ -1175,8 +1814,6 @@ class HolographicApp {
     ctx.closePath();
     ctx.fillStyle = 'rgba(0, 240, 255, 0.22)';
     ctx.fill();
-
-    // Perimeter stroke
     ctx.strokeStyle = '#00f0ff';
     ctx.lineWidth = 1.8;
     ctx.stroke();
@@ -1191,7 +1828,7 @@ class HolographicApp {
     ctx.lineWidth = 1.5;
     ctx.stroke();
 
-    // 3. Internal Palm Radial Struts (Wrist to Knuckles)
+    // 3. Internal Palm Radial Struts
     const wrist = px[0];
     ctx.strokeStyle = 'rgba(180, 210, 240, 0.4)';
     ctx.lineWidth = 1;
@@ -1202,7 +1839,7 @@ class HolographicApp {
       ctx.stroke();
     });
 
-    // 4. Centroid Target Reticle on Palm Center
+    // 4. Centroid Target Reticle
     const palmCx = PALM_LOOP.reduce((sum, idx) => sum + px[idx].x, 0) / PALM_LOOP.length;
     const palmCy = PALM_LOOP.reduce((sum, idx) => sum + px[idx].y, 0) / PALM_LOOP.length;
     this.drawReticle(ctx, palmCx, palmCy, 9, '#ffaa00');
@@ -1220,7 +1857,7 @@ class HolographicApp {
     ctx.stroke();
     ctx.setLineDash([]);
 
-    // 6. Skeletal Bone Vector Rays for All 5 Digits
+    // 6. Skeletal Bone Vector Rays
     const fingerColors = ['#39ff14', '#00f0ff', '#00f0ff', '#00f0ff', '#39ff14'];
     FINGER_CHAINS.forEach((chain, fIdx) => {
       const col = fingerColors[fIdx];
@@ -1295,7 +1932,7 @@ class HolographicApp {
     cursor.classList.toggle('pinching', this.isPinching);
 
     const hitElement = document.elementFromPoint(screenX, screenY);
-    const interactiveTarget = hitElement ? hitElement.closest('button, select, input, .pill-btn, .action-btn, .start-btn, .dock-circle-btn, .dock-pill-btn') : null;
+    const interactiveTarget = hitElement ? hitElement.closest('button, select, input, .pill-btn, .action-btn, .start-btn, .dock-circle-btn, .dock-pill-btn, .sandbox-spawn-btn') : null;
 
     const labelElem = document.getElementById('air-cursor-label');
 
@@ -1364,11 +2001,19 @@ class HolographicApp {
           } else {
             this.assemblyGroup.rotation.y += dx * 0.008;
             this.assemblyGroup.rotation.x += dy * 0.008;
+            if (this.workspaceSandboxGroup.visible) {
+              this.workspaceSandboxGroup.rotation.y += dx * 0.008;
+              this.workspaceSandboxGroup.rotation.x += dy * 0.008;
+            }
           }
         }
         const modeBadge = document.getElementById('usage-mode');
         if (modeBadge) modeBadge.textContent = this.grabbedMesh ? 'PART EXTRACT' : '3D ORBIT';
       } else {
+        if (this.isAirDragging && this.grabbedMesh && this.currentZone === 3) {
+          // Check magnetic port snapping on release in Sandbox
+          this.checkMagneticSnapping(this.grabbedMesh);
+        }
         this.isAirDragging = false;
         if (this.grabbedMesh) this.grabbedMesh = null;
         const modeBadge = document.getElementById('usage-mode');
@@ -1410,7 +2055,7 @@ class HolographicApp {
 
     const candidates = this.currentZone === 1 ? this.machineParts :
                        this.currentZone === 2 ? this.trayParts :
-                       [...this.machineParts, ...this.trayParts];
+                       this.sandboxParts;
 
     const flatMeshes = [];
     candidates.forEach(c => {
@@ -1448,6 +2093,38 @@ class HolographicApp {
     }
   }
 
+  checkMagneticSnapping(activePart) {
+    if (!activePart || !activePart.userData || !activePart.userData.ports) return;
+    const activePorts = activePart.userData.ports;
+
+    for (let otherPart of this.sandboxParts) {
+      if (otherPart === activePart) continue;
+      if (!otherPart.userData || !otherPart.userData.ports) continue;
+      const otherPorts = otherPart.userData.ports;
+
+      for (let ap of activePorts) {
+        for (let op of otherPorts) {
+          if (ap.snapWith === op.id || op.snapWith === ap.id) {
+            const worldAp = ap.pos.clone().add(activePart.position);
+            const worldOp = op.pos.clone().add(otherPart.position);
+            const dist = worldAp.distanceTo(worldOp);
+
+            if (dist < 32.0) {
+              // Magnetic Snap!
+              const offset = worldOp.clone().sub(ap.pos);
+              activePart.position.copy(offset);
+              audio.playSnapLock();
+
+              const modeBadge = document.getElementById('usage-mode');
+              if (modeBadge) modeBadge.textContent = 'MAGNETIC SNAP LOCKED!';
+              return;
+            }
+          }
+        }
+      }
+    }
+  }
+
   // -----------------------------------------------------------
   // UI & Event Bindings
   // -----------------------------------------------------------
@@ -1469,9 +2146,7 @@ class HolographicApp {
 
     document.getElementById('machine-select').onchange = (e) => {
       this.currentMachine = e.target.value;
-      if (this.currentMachine === 'turbine') this.buildTurbineModel();
-      else if (this.currentMachine === 'gearbox') this.buildGearboxModel();
-      else this.buildRobotArmModel();
+      this.buildCurrentMachine();
     };
 
     const densitySelect = document.getElementById('density-select');
@@ -1479,20 +2154,30 @@ class HolographicApp {
       densitySelect.onchange = (e) => {
         this.densityMode = e.target.value;
         this.updateDensityMultiplier();
-        if (this.currentMachine === 'turbine') this.buildTurbineModel();
-        else if (this.currentMachine === 'gearbox') this.buildGearboxModel();
-        else this.buildRobotArmModel();
+        this.buildCurrentMachine();
       };
     }
 
+    document.getElementById('btn-toggle-harness').onclick = () => this.toggleHarness();
     document.getElementById('btn-toggle-wireframe').onclick = () => this.toggleWireframe();
     document.getElementById('btn-toggle-pixels').onclick = () => this.togglePixels();
     document.getElementById('btn-reset-assembly').onclick = () => {
       this.setExplosion(0);
-      if (this.currentMachine === 'turbine') this.buildTurbineModel();
-      else if (this.currentMachine === 'gearbox') this.buildGearboxModel();
-      else this.buildRobotArmModel();
+      this.buildCurrentMachine();
     };
+
+    const clearSandboxBtn = document.getElementById('btn-clear-sandbox');
+    if (clearSandboxBtn) {
+      clearSandboxBtn.onclick = () => this.clearSandbox();
+    }
+
+    // Sandbox Spawner Buttons Bindings
+    document.querySelectorAll('.sandbox-spawn-btn').forEach(btn => {
+      btn.onclick = () => {
+        const pType = btn.getAttribute('data-spawn');
+        this.spawnSandboxPart(pType);
+      };
+    });
 
     document.getElementById('manual-explosion-slider').oninput = (e) => {
       this.setExplosion(e.target.value / 100);
@@ -1512,7 +2197,7 @@ class HolographicApp {
       this.camera.position.z = Math.max(80, this.camera.position.z - 35);
     };
     document.getElementById('btn-zoom-out').onclick = () => {
-      this.camera.position.z = Math.min(600, this.camera.position.z + 35);
+      this.camera.position.z = Math.min(650, this.camera.position.z + 35);
     };
     document.getElementById('btn-zoom-reset').onclick = () => {
       this.camera.position.set(130, 85, 230);
@@ -1528,6 +2213,7 @@ class HolographicApp {
       if (e.key === '1') this.switchZone(1);
       if (e.key === '2') this.switchZone(2);
       if (e.key === '3') this.switchZone(3);
+      if (e.key === 'h' || e.key === 'H') this.toggleHarness();
       if (e.key === 'w' || e.key === 'W') this.toggleWireframe();
       if (e.key === 'p' || e.key === 'P') this.togglePixels();
       if (e.key === 'r' || e.key === 'R') document.getElementById('btn-reset-assembly').click();
@@ -1563,6 +2249,24 @@ class HolographicApp {
       const statusPill = document.getElementById('usage-status');
       if (statusPill) statusPill.textContent = `LIVE ${this.currentFPS}FPS`;
     }
+
+    // Pulse active electrical signals along wiring harnesses
+    this.pulseClock += 0.008;
+    this.harnessObjects.forEach(h => {
+      const p = h.userData.pulsePoints;
+      if (p && p.userData && p.userData.curve) {
+        const curve = p.userData.curve;
+        const uvs = p.userData.uvs;
+        const count = p.userData.count;
+        const posAttr = p.geometry.attributes.position;
+        for (let i = 0; i < count; i++) {
+          uvs[i] = (uvs[i] + 0.004) % 1.0;
+          const pt = curve.getPoint(uvs[i]);
+          posAttr.setXYZ(i, pt.x, pt.y, pt.z);
+        }
+        posAttr.needsUpdate = true;
+      }
+    });
 
     if (!this.isAirDragging && !this.isPinching && this.currentZone === 1) {
       this.assemblyGroup.rotation.z += 0.0035;
