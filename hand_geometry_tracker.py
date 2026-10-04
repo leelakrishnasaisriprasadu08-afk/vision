@@ -211,34 +211,41 @@ def extract_fingers_without_palm(frame: np.ndarray):
         if hull is None or len(hull) < 3:
             continue
             
-        defects = cv2.convexityDefects(cnt, hull)
         candidate_tips = []
         valleys = []
         
-        if defects is not None:
-            for i in range(defects.shape[0]):
-                s, e, f, d = defects[i, 0]
-                start = cnt[s][0]
-                end = cnt[e][0]
-                far = cnt[f][0]
-                
-                # Check apex angle at the valley
-                a = np.linalg.norm(end - start)
-                b = np.linalg.norm(far - start)
-                c = np.linalg.norm(end - far)
-                
-                if b > 1e-3 and c > 1e-3:
-                    cos_angle = (b**2 + c**2 - a**2) / (2 * b * c)
-                    angle = np.degrees(np.arccos(np.clip(cos_angle, -1.0, 1.0)))
+        try:
+            defects = cv2.convexityDefects(cnt, hull)
+            if defects is not None:
+                for s, e, f, d in defects.reshape(-1, 4):
+                    start = (int(cnt[s][0][0]), int(cnt[s][0][1]))
+                    end = (int(cnt[e][0][0]), int(cnt[e][0][1]))
+                    far = (int(cnt[f][0][0]), int(cnt[f][0][1]))
                     
-                    # Defect must be a deep valley between fingers
-                    if angle <= 88 and d > 800:
-                        valleys.append(tuple(far))
-                        candidate_tips.append(tuple(start))
-                        candidate_tips.append(tuple(end))
+                    # Check apex angle at the valley
+                    start_pt = np.array(start, dtype=float)
+                    end_pt = np.array(end, dtype=float)
+                    far_pt = np.array(far, dtype=float)
+                    
+                    a = np.linalg.norm(end_pt - start_pt)
+                    b = np.linalg.norm(far_pt - start_pt)
+                    c = np.linalg.norm(end_pt - far_pt)
+                    
+                    if b > 1e-3 and c > 1e-3:
+                        cos_angle = (b**2 + c**2 - a**2) / (2 * b * c)
+                        angle = np.degrees(np.arccos(np.clip(cos_angle, -1.0, 1.0)))
                         
-        # Also include extreme contour points (topmost/leftmost/rightmost) if not already found
-        topmost = tuple(cnt[cnt[:, :, 1].argmin()][0])
+                        # Defect must be a deep valley between fingers
+                        if angle <= 88 and d > 800:
+                            valleys.append(far)
+                            candidate_tips.append(start)
+                            candidate_tips.append(end)
+        except Exception:
+            pass
+                        
+        # Also include extreme contour points (topmost)
+        top_idx = cnt[:, :, 1].argmin()
+        topmost = (int(cnt[top_idx][0][0]), int(cnt[top_idx][0][1]))
         candidate_tips.append(topmost)
         
         # 3. Cluster & Filter Fingertip Peaks (merge nearby points on the same finger tip)
