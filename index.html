@@ -53,6 +53,12 @@
           <option value="gearbox">PLANETARY GEARBOX</option>
           <option value="robot_arm">ROBOTIC ACTUATOR JOINT</option>
         </select>
+
+        <select id="density-select" class="cyber-select density-select" aria-label="Select Voxel Density">
+          <option value="120k">120K VOXELS (HD)</option>
+          <option value="250k" selected>250K VOXELS (ULTRA CAD)</option>
+          <option value="500k">500K VOXELS (EXTREME)</option>
+        </select>
         
         <button id="btn-toggle-wireframe" class="action-btn" title="Toggle Neon Wireframe (W)">
           <span class="btn-icon">⚡</span> WIREFRAME
@@ -103,11 +109,11 @@
       <div class="chip-content">
         <div class="chip-row">
           <span class="chip-label">ACTIVE VOXELS:</span>
-          <span id="usage-voxels" class="chip-val neon-green-text">42,600 PTS</span>
+          <span id="usage-voxels" class="chip-val neon-green-text">250,000 PTS</span>
         </div>
         <div class="chip-row">
           <span class="chip-label">BUFFER MEMORY:</span>
-          <span id="usage-vram" class="chip-val neon-cyan-text">18.4 MB VRAM</span>
+          <span id="usage-vram" class="chip-val neon-cyan-text">32.5 MB VRAM</span>
         </div>
         <div class="chip-row">
           <span class="chip-label">PIXEL KINETIC:</span>
@@ -116,6 +122,33 @@
         <div class="chip-row">
           <span class="chip-label">HAND ENGINE:</span>
           <span id="usage-mode" class="chip-val">AIR-CURSOR READY</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating Live Geometric Angle & Orientation Telemetry Panel -->
+    <div id="geometry-telemetry-chip" class="floating-panel mini-card geometry-card">
+      <div class="chip-header">
+        <span class="neon-icon neon-cyan-text">📐</span>
+        <span class="chip-title">SPATIAL GEOMETRY & ANGLES</span>
+        <span id="geo-status" class="status-pill cyan-pill">CALIBRATED</span>
+      </div>
+      <div class="chip-content">
+        <div class="chip-row">
+          <span class="chip-label">PALM 3D (P/Y/R):</span>
+          <span id="geo-palm-pyr" class="chip-val highlight">+0° / +0° / +0°</span>
+        </div>
+        <div class="chip-row">
+          <span class="chip-label">PINCH CONVERGENCE:</span>
+          <span id="geo-pinch-angle" class="chip-val neon-green-text">42.5° (FREE)</span>
+        </div>
+        <div class="chip-row">
+          <span class="chip-label">INDEX ARTICULATION:</span>
+          <span id="geo-index-angle" class="chip-val">174.2° (EXT)</span>
+        </div>
+        <div class="chip-row">
+          <span class="chip-label">PALM SCALE / SPAN:</span>
+          <span id="geo-palm-span" class="chip-val neon-magenta-text">145 px</span>
         </div>
       </div>
     </div>
